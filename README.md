@@ -423,8 +423,10 @@ Agent 路由提供两种实现，由 `AGENT_ENGINE` 环境变量切换，默认 
 
 ## 后续计划
 
-- 用 LangGraph 重构当前 `if/else` 路由为显式状态图，保留现有评测作为回归保障。
-- 扩展真实 LLM 的工具调用评测，加入更多坏例和成本、延迟观测。
-- 补充截图、架构图和最终简历项目描述，形成完整投递材料。
-- 在可用的 Docker 环境中验证 `docker compose up` 完整链路。
+以下为投递前可继续打磨的方向（按价值排序）：
+
+- 用 LangGraph `ToolMessage`/原生消息流进一步把 Planner 与 Execution 真正接成端到端图（当前是 Prompt 驱动 JSON + 原生 function calling 双实现，后续可让一条消息贯穿不同节点）。
+- 给 `run_conversation_memory_eval.py` 接入 mock planner，让全量 29 项 eval 不再依赖真实 DeepSeek planner 的随机性，稳定 29/29 可复现。
+- 在可用 Docker 环境（云服务器 / Linux 主机）验证 `docker compose up` 完整链路，并补一份 `docs/demo.md` 演示脚本。
+- 增加观测指标：单次 /chat 的延迟、引用失败率、LLM Token 用量、工具调用命中率的简易统计，便于面试时拿数字讲"工程化"。
 
