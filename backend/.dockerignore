@@ -1,0 +1,7 @@
+.venv
+__pycache__
+*.pyc
+.env
+data/chroma
+data/*.db
+data/tickets.json

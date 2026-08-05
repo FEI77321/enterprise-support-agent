@@ -1,0 +1,31 @@
+# 模块职责：容器编排文件：一次性构建向量索引、启动后端与前端，并持久化 SQLite/Chroma 数据。
+
+services:
+  # 一次性服务：构建 Chroma 向量索引（跑完即退出，不给它配端口）
+  backend-init:
+    build: ./backend
+    command: python -m scripts.build_vector_index
+    volumes:
+      - ./backend/data:/app/data
+    restart: "no"
+
+  # 后端服务
+  backend:
+    build: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    env_file: .env
+    volumes:
+      - ./backend/data:/app/data
+    depends_on:
+      backend-init:
+        condition: service_completed_successfully
+
+  # 前端服务（nginx 托管构建产物）
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend

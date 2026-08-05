@@ -1,0 +1,71 @@
+# 模块职责：环境变量配置读取模块：把字符串形式的环境变量安全转换为布尔值、浮点数以及 OpenAI、DeepSeek 等模型配置，避免配置错误散落在业务代码中。
+
+import os
+
+
+def get_bool_env(name: str, default: bool = False) -> bool:  # 函数：负责 获取 布尔 环境变量 相关逻辑。
+    value = os.getenv(name)
+
+    if value is None:
+        return default
+
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+def is_llm_answer_enabled() -> bool:  # 函数：负责 is 大模型 回答 enabled 相关逻辑。
+    return get_bool_env("ENABLE_LLM_ANSWER", default=False)
+
+
+def get_llm_provider() -> str:  # 函数：负责 获取 大模型 Provider 相关逻辑。
+    return os.getenv("LLM_PROVIDER", "stub").lower()
+
+
+def get_openai_api_key() -> str | None:  # 函数：负责 获取 OpenAI API key 相关逻辑。
+    return os.getenv("OPENAI_API_KEY")
+
+
+def get_openai_model() -> str:  # 函数：负责 获取 OpenAI 数据模型 相关逻辑。
+    return os.getenv("OPENAI_MODEL", "gpt-5")
+
+
+def get_float_env(name: str, default: float) -> float:  # 函数：负责 获取 浮点 环境变量 相关逻辑。
+    value = os.getenv(name)
+
+    if value is None:
+        return default
+
+    try:
+        return float(value)
+    except ValueError:
+        return default
+
+
+def get_openai_timeout_seconds() -> float:  # 函数：负责 获取 OpenAI timeout seconds 相关逻辑。
+    return get_float_env("OPENAI_TIMEOUT_SECONDS", default=20.0)
+
+
+def get_deepseek_api_key() -> str | None:  # 函数：获取 DeepSeek API Key。
+    return os.getenv("DEEPSEEK_API_KEY")
+
+
+def get_deepseek_model() -> str:  # 函数：获取 DeepSeek 模型名称。
+    return os.getenv(
+        "DEEPSEEK_MODEL",
+        "deepseek-v4-flash",
+    )
+
+
+def get_deepseek_base_url() -> str:  # 函数：获取 DeepSeek OpenAI 兼容接口地址。
+    return os.getenv(
+        "DEEPSEEK_BASE_URL",
+        "https://api.deepseek.com",
+    )
+
+
+def get_deepseek_timeout_seconds() -> float:  # 函数：获取 DeepSeek 调用超时时间。
+    return get_float_env(
+        "DEEPSEEK_TIMEOUT_SECONDS",
+        default=20.0,
+    )
+
+def get_agent_engine() -> str:  # 函数：获取 Agent 编排引擎：rules=if/else 版，langgraph=状态图版。
+    return os.getenv("AGENT_ENGINE", "rules").lower()

@@ -1,0 +1,151 @@
+[
+  {
+    "id": "case_001",
+    "type": "chat_answer",
+    "input": {
+      "message": "VPN 连不上怎么办？"
+    },
+    "expected": {
+      "response_type": "answer",
+      "source": "vpn_guide.md",
+      "workflow_contains": ["extract_ticket_id", "search_knowledge_base", "knowledge_answer"]
+    }
+  },
+  {
+    "id": "case_002",
+    "type": "chat_answer",
+    "input": {
+      "message": "怎么申请报销？"
+    },
+    "expected": {
+      "response_type": "answer",
+      "source": "reimbursement_policy.md"
+    }
+  },
+  {
+    "id": "case_003",
+    "type": "chat_answer",
+    "input": {
+      "message": "年假怎么申请？"
+    },
+    "expected": {
+      "response_type": "answer",
+      "source": "leave_policy.md"
+    }
+  },
+  {
+    "id": "case_004",
+    "type": "chat_answer",
+    "input": {
+      "message": "账号登录不了怎么办？"
+    },
+    "expected": {
+      "response_type": "answer",
+      "source": "account_login_faq.md"
+    }
+  },
+  {
+    "id": "case_005",
+    "type": "ticket_created",
+    "input": {
+      "message": "我的电脑蓝屏了，开不了机"
+    },
+    "expected": {
+      "response_type": "ticket_created",
+      "priority": "HIGH"
+    }
+  },
+  {
+    "id": "case_006",
+    "type": "ticket_created",
+    "input": {
+      "message": "打印机一直卡纸，没人会修"
+    },
+    "expected": {
+      "response_type": "ticket_created",
+      "priority": "MEDIUM"
+    }
+  },
+  {
+    "id": "case_007",
+    "type": "ticket_created",
+    "input": {
+      "message": "显示器突然黑屏，影响办公"
+    },
+    "expected": {
+      "response_type": "ticket_created",
+      "priority": "MEDIUM"
+    }
+  },
+  {
+    "id": "case_008",
+    "type": "badcase",
+    "input": {
+      "message": "远程办公连不上公司内网"
+    },
+    "expected": {
+      "response_type": "answer",
+      "source": "vpn_guide.md",
+      "note": "当前关键词检索可能搜不到，这是后续升级 RAG 的 badcase"
+    }
+  },
+  {
+  "id": "case_009",
+  "input": {
+    "message": "我想报销"
+  },
+  "expected": {
+    "response_type": "clarify"
+  }
+},
+  {
+  "id": "case_010",
+  "type": "chat_answer",
+  "input": {
+    "message": "VPN 720 错误怎么办"
+  },
+  "expected": {
+    "response_type": "answer",
+    "source": "vpn_guide.md",
+    "chunk_id": "vpn_guide.md::chunk-6"
+  }
+},
+  {
+  "id": "case_011",
+  "input": {
+    "message": "虚拟网卡驱动"
+  },
+  "expected": {
+    "response_type": "clarify",
+    "source": "vpn_guide.md",
+    "chunk_id": "vpn_guide.md::chunk-6",
+    "workflow_contains": ["search_knowledge_base", "search_vector_store", "vector_clarify"]
+  }
+},
+  {
+  "id": "case_012",
+  "type": "ticket_status_not_found",
+  "input": {
+    "message": "帮我查一下 TICKET-20990101-9999"
+  },
+  "expected": {
+    "response_type": "ticket_status",
+    "answer_contains": "没有找到工单",
+    "workflow_contains": ["extract_ticket_id", "query_ticket_status", "ticket_not_found"]
+  }
+},
+  {
+  "id": "case_013",
+  "input": {
+    "message": "VPN 720 错误怎么办"
+  },
+  "env": {
+    "ENABLE_LLM_ANSWER": "true",
+    "LLM_PROVIDER": "stub"
+  },
+  "expected": {
+    "response_type": "answer",
+    "workflow_contains": ["rule_answer", "llm_answer", "knowledge_answer"]
+  }
+}
+]

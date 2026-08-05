@@ -1,0 +1,3242 @@
+[
+  {
+    "ticket_id": "TICKET-20260725-0001",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "IN_PROGRESS",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-25T22:09:45"
+  },
+  {
+    "ticket_id": "TICKET-20260726-0002",
+    "title": "账号登录异常",
+    "description": "我要转人工，我的账号一直登录不了",
+    "category": "ACCOUNT",
+    "priority": "MEDIUM",
+    "status": "IN_PROGRESS",
+    "assignee": "Human Support Team",
+    "created_at": "2026-07-26T20:21:32"
+  },
+  {
+    "ticket_id": "TICKET-20260726-0003",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "IN_PROGRESS",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-26T20:21:32"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0004",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T17:17:21"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0005",
+    "title": "用户支持请求",
+    "description": "11111",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T18:55:36"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0006",
+    "title": "用户支持请求",
+    "description": "怎么申请报销？",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T19:21:54"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0007",
+    "title": "用户支持请求",
+    "description": "年假怎么申请？",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T19:21:54"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0008",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T19:21:54"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0009",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T19:21:54"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0010",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T19:21:54"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0011",
+    "title": "用户支持请求",
+    "description": "怎么申请报销？",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T22:40:21"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0012",
+    "title": "用户支持请求",
+    "description": "年假怎么申请？",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T22:40:21"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0013",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T22:40:21"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0014",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T22:40:21"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0015",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T22:40:21"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0016",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T22:47:33"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0017",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T22:47:33"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0018",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T22:47:33"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0019",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:02:50"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0020",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:02:50"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0021",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:02:50"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0022",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:09:09"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0023",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:09:09"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0024",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:09:09"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0025",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:21:40"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0026",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:24:03"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0027",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:24:03"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0028",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:24:03"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0029",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:25:17"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0030",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:25:17"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0031",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:25:17"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0032",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:28:37"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0033",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:28:37"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0034",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:28:37"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0035",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:34:25"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0036",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:34:25"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0037",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:34:25"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0038",
+    "title": "用户支持请求",
+    "description": "TICKET-20260727-0001",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:35:27"
+  },
+  {
+    "ticket_id": "TICKET-20260727-0039",
+    "title": "用户支持请求",
+    "description": "查一下 TICKET-20260727-0001 的状态",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-27T23:35:54"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0040",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T12:38:57"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0041",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T12:38:57"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0042",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T12:38:57"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0043",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，无法正常办公",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T12:41:44"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0044",
+    "title": "用户支持请求",
+    "description": "huai",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T12:42:01"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0045",
+    "title": "用户支持请求",
+    "description": "坏",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T12:42:10"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0046",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T12:52:53"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0047",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T12:52:53"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0048",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T12:52:53"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0049",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T13:04:13"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0050",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T13:04:13"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0051",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T13:04:13"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0052",
+    "title": "用户支持请求",
+    "description": "111",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T13:06:39"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0053",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T13:09:29"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0054",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T13:09:29"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0055",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T13:09:29"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0056",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T13:27:56"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0057",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T13:55:50"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0058",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T13:55:50"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0059",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T13:55:50"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0060",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T14:11:33"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0061",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T14:11:33"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0062",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T14:11:33"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0063",
+    "title": "用户支持请求",
+    "description": "办公室空调漏水影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T14:13:20"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0064",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T14:26:55"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0065",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T14:26:55"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0066",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T14:26:55"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0067",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T15:37:11"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0068",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T15:37:11"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0069",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T15:37:11"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0070",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T15:52:18"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0071",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T15:52:18"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0072",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T15:52:18"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0073",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T16:03:07"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0074",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T16:03:07"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0075",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T16:03:07"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0076",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T16:23:00"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0077",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T16:23:00"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0078",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T16:23:00"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0079",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T16:34:27"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0080",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T16:34:27"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0081",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T16:34:27"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0082",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T16:35:38"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0083",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T16:35:38"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0084",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T16:35:38"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0085",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T17:23:56"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0086",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T17:23:56"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0087",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T17:23:56"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0088",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T17:42:43"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0089",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T17:42:43"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0090",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T17:42:43"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0091",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T17:49:24"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0092",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T17:49:24"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0093",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T17:49:24"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0094",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T18:11:57"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0095",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T18:11:57"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0096",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T18:11:57"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0097",
+    "title": "用户支持请求",
+    "description": "在家办公时企业资源",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T18:37:44"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0098",
+    "title": "用户支持请求",
+    "description": "虚拟网卡驱动",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T18:39:36"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0099",
+    "title": "用户支持请求",
+    "description": "请重装虚拟网卡驱动",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T18:47:32"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0100",
+    "title": "用户支持请求",
+    "description": "请按以下步骤排查：",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T18:48:08"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0101",
+    "title": "用户支持请求",
+    "description": "请按以下步骤排查：",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T18:48:09"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0102",
+    "title": "用户支持请求",
+    "description": "1  2   3   4  5   请重装虚拟网卡驱动。",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T18:52:17"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0103",
+    "title": "用户支持请求",
+    "description": "虚拟网卡驱动。",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T18:53:44"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0104",
+    "title": "用户支持请求",
+    "description": "虚拟网卡驱动",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T19:20:26"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0105",
+    "title": "用户支持请求",
+    "description": "虚拟网卡驱动",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T19:21:51"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0106",
+    "title": "用户支持请求",
+    "description": "虚拟网卡驱动",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T19:21:53"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0107",
+    "title": "用户支持请求",
+    "description": "虚拟网卡驱动",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T19:22:49"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0108",
+    "title": "用户支持请求",
+    "description": "string",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T19:27:08"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0109",
+    "title": "用户支持请求",
+    "description": "虚拟网卡驱动",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T19:27:47"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0110",
+    "title": "用户支持请求",
+    "description": "虚拟网卡驱动",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T19:30:23"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0111",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T19:35:37"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0112",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T19:35:37"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0113",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T19:35:37"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0114",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T20:10:36"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0115",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T20:10:36"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0116",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T20:10:36"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0117",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T20:46:08"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0118",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T20:46:08"
+  },
+  {
+    "ticket_id": "TICKET-20260728-0119",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-28T20:46:09"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0120",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T18:06:47"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0121",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T18:06:47"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0122",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T18:06:47"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0123",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T18:39:01"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0124",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T18:39:01"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0125",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T18:39:02"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0126",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T18:49:32"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0127",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T18:49:32"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0128",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T18:49:32"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0129",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T18:54:35"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0130",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T18:54:35"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0131",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T18:54:36"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0132",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T19:19:48"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0133",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T19:19:48"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0134",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T19:19:48"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0135",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T19:35:44"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0136",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T19:35:45"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0137",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T19:35:45"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0138",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T19:43:57"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0139",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T19:43:57"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0140",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T19:43:57"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0141",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T22:50:53"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0142",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T22:50:53"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0143",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T22:50:54"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0144",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T22:56:32"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0145",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T22:56:32"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0146",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T22:56:33"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0147",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:44:25"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0148",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:44:25"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0149",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:44:25"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0150",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:47:00"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0151",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:47:00"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0152",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:47:01"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0153",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:47:23"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0154",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:47:23"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0155",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:47:23"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0156",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:48:58"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0157",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:48:58"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0158",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:48:58"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0159",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:56:14"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0160",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:56:14"
+  },
+  {
+    "ticket_id": "TICKET-20260729-0161",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-29T23:56:14"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0162",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T00:14:58"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0163",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T00:14:59"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0164",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T00:14:59"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0165",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T00:16:42"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0166",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T00:16:42"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0167",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T00:16:42"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0168",
+    "title": "用户支持请求",
+    "description": "测试 Tool Calling 创建工单",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T01:34:23"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0169",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T02:05:18"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0170",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T02:05:18"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0171",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T02:05:19"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0172",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T02:10:01"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0173",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T02:10:01"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0174",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T02:10:01"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0175",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T12:41:19"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0176",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T12:41:19"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0177",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T12:41:20"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0178",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T14:23:15"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0179",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T14:23:16"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0180",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T14:23:16"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0181",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T16:43:41"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0182",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T16:43:41"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0183",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T16:43:41"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0184",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T17:44:22"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0185",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T17:44:22"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0186",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T17:44:22"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0187",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T17:47:55"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0188",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T17:47:55"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0189",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T17:47:56"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0190",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T17:47:59"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0191",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T17:47:59"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0192",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T17:47:59"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0193",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T18:46:41"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0194",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T18:46:41"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0195",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T18:46:42"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0196",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T19:06:04"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0197",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T19:06:04"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0198",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T19:06:05"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0199",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T21:16:33"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0200",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T21:16:33"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0201",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T21:16:33"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0202",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T22:05:33"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0203",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T22:05:33"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0204",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T22:05:34"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0205",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T22:45:51"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0206",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T22:46:47"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0207",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T22:46:47"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0208",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T22:46:47"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0209",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T22:59:48"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0210",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T22:59:48"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0211",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T22:59:48"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0212",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T23:14:51"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0213",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T23:14:51"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0214",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T23:14:51"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0215",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T23:34:07"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0216",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T23:34:07"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0217",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T23:34:08"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0218",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T23:43:52"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0219",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T23:43:52"
+  },
+  {
+    "ticket_id": "TICKET-20260730-0220",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-30T23:43:52"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0221",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T14:20:43"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0222",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T14:20:43"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0223",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T14:20:43"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0224",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T17:34:16"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0225",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T17:34:16"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0226",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T17:34:16"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0227",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:05:47"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0228",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:05:47"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0229",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:05:48"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0230",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:05:54"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0231",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:05:54"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0232",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:05:55"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0233",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:13:08"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0234",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:13:09"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0235",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:13:09"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0236",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:33:04"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0237",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:33:05"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0238",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:33:05"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0239",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:37:38"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0240",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:37:38"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0241",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T18:37:38"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0242",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T20:57:59"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0243",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T20:58:00"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0244",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T20:58:00"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0245",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T21:48:32"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0246",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T21:48:32"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0247",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T21:48:33"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0248",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T22:10:26"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0249",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T22:10:27"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0250",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T22:10:27"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0251",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T22:40:27"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0252",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T22:40:27"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0253",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T22:40:27"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0254",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:05:57"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0255",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:05:57"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0256",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:05:58"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0257",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:07:51"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0258",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:07:51"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0259",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:07:51"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0260",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:11:54"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0261",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:11:54"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0262",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:11:55"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0263",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:33:29"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0264",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:33:29"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0265",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:33:29"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0266",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:36:40"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0267",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:36:41"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0268",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:36:41"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0269",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:37:16"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0270",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:37:16"
+  },
+  {
+    "ticket_id": "TICKET-20260731-0271",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-07-31T23:37:17"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0272",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T14:49:31"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0273",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T14:49:31"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0274",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T14:49:31"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0275",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T15:12:26"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0276",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T15:12:26"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0277",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T15:12:26"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0278",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T15:58:06"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0279",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T15:58:06"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0280",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T15:58:06"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0281",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T16:40:40"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0282",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T16:40:40"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0283",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T16:40:40"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0284",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T17:08:13"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0285",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T17:08:13"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0286",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T17:08:13"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0287",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T17:43:03"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0288",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T17:43:03"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0289",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T17:43:04"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0290",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T17:55:22"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0291",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T17:55:22"
+  },
+  {
+    "ticket_id": "TICKET-20260801-0292",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-01T17:55:22"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0293",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T16:45:00"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0294",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T16:45:00"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0295",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T16:45:00"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0296",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T16:58:51"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0297",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T16:58:51"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0298",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T16:58:51"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0299",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T16:59:28"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0300",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T16:59:28"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0301",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T16:59:28"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0302",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T17:00:06"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0303",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T17:00:06"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0304",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T17:00:06"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0305",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T17:02:51"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0306",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T17:02:51"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0307",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T17:02:51"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0308",
+    "title": "VPN 连接异常",
+    "description": "创建工单：VPN 登录失败，用户无法连接公司网络",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T18:05:14"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0309",
+    "title": "VPN 连接异常",
+    "description": "创建工单：VPN 登录失败，用户无法连接公司网络",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T18:38:55"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0310",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T19:16:45"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0311",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T19:16:46"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0312",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T19:16:46"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0313",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T19:17:42"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0314",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T19:17:42"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0315",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T19:17:42"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0316",
+    "title": "VPN 连接异常",
+    "description": "创建工单：VPN 登录失败，用户无法连接公司网络",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T19:21:44"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0317",
+    "title": "电脑蓝屏无法正常使用",
+    "description": "我的电脑蓝屏了，开不了机",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T19:21:48"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0318",
+    "title": "用户支持请求",
+    "description": "打印机一直卡纸，没人会修",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T19:21:48"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0319",
+    "title": "用户支持请求",
+    "description": "显示器突然黑屏，影响办公",
+    "category": "IT_SUPPORT",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T19:21:49"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0320",
+    "title": "VPN 连接异常",
+    "description": "创建工单：VPN 登录失败，用户无法连接公司网络",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T19:57:12"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0321",
+    "title": "VPN 连接异常",
+    "description": "创建工单：VPN 登录失败，用户无法连接公司网络",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T21:09:10"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0322",
+    "title": "VPN 连接异常",
+    "description": "创建工单：VPN 登录失败，用户无法连接公司网络",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T21:21:15"
+  },
+  {
+    "ticket_id": "TICKET-20260802-0323",
+    "title": "VPN 连接异常",
+    "description": "创建工单：VPN 登录失败，用户无法连接公司网络",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-02T21:25:27"
+  },
+  {
+    "ticket_id": "TICKET-20260803-0324",
+    "title": "VPN 连接异常",
+    "description": "创建工单：VPN 登录失败，用户无法连接公司网络",
+    "category": "IT_SUPPORT",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "assignee": "IT Support Team",
+    "created_at": "2026-08-03T15:48:30"
+  }
+]
