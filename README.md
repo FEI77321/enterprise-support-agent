@@ -421,12 +421,3 @@ Agent 路由提供两种实现，由 `AGENT_ENGINE` 环境变量切换，默认 
 
 > 我做了一个企业 IT 支持 Agent。它先判断用户是否在问企业支持问题，再根据工单号、知识库置信度和检索结果决定查询工单、回答、追问或创建工单。RAG 层结合关键词检索、ChromaDB 向量检索、exact match 和 rerank，并以 chunk 级来源返回证据。高置信命中后，我把当前知识块作为上下文传给 DeepSeek 生成自然语言回答，同时校验模型返回的文件与 chunk 引用；不合法或模型异常就降级到规则答案。除此之外，我实现了工具规划、统一执行、SQLite 持久化和删除确认，并通过 28 组本地 eval 覆盖核心分支。前端使用 React 展示回答、来源、工单和 Agent 执行轨迹。项目同时提供 PowerShell 一键启动脚本与 Docker Compose 编排，分别满足本机演示与容器化交付。
 
-## 后续计划
-
-以下为投递前可继续打磨的方向（按价值排序）：
-
-- 用 LangGraph `ToolMessage`/原生消息流进一步把 Planner 与 Execution 真正接成端到端图（当前是 Prompt 驱动 JSON + 原生 function calling 双实现，后续可让一条消息贯穿不同节点）。
-- 给 `run_conversation_memory_eval.py` 接入 mock planner，让全量 29 项 eval 不再依赖真实 DeepSeek planner 的随机性，稳定 29/29 可复现。
-- 在可用 Docker 环境（云服务器 / Linux 主机）验证 `docker compose up` 完整链路，并补一份 `docs/demo.md` 演示脚本。
-- 增加观测指标：单次 /chat 的延迟、引用失败率、LLM Token 用量、工具调用命中率的简易统计，便于面试时拿数字讲"工程化"。
-
