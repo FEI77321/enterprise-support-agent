@@ -131,6 +131,7 @@ def search_knowledge_base_tool(query: str, top_k: int = 3) -> ToolResult:  # 函
                     "content": result.content,
                     "score": result.score,
                     "chunk_id": result.chunk_id,
+                    "context_chunk_id": result.context_chunk_id,
                 }
                 for result in results
             ],

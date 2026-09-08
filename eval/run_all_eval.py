@@ -11,6 +11,9 @@ PYTHON = PROJECT_ROOT / "backend" / ".venv" / "Scripts" / "python.exe"
 
 EVAL_SCRIPTS = [
     "eval/run_config_eval.py",
+    "eval/run_redis_config_eval.py",
+    "eval/run_rate_limit_eval.py",
+    "eval/run_llm_retry_eval.py",
     "eval/run_tool_eval.py",
     "eval/run_tool_action_policy_eval.py",
     "eval/run_tool_confirmation_eval.py",
@@ -26,6 +29,7 @@ EVAL_SCRIPTS = [
     "eval/run_tool_call_auto_eval.py",
     "eval/run_llm_quality_eval.py",
     "eval/run_api_smoke_eval.py",
+    "eval/run_sse_eval.py",
     "eval/run_api_startup_eval.py",
     "eval/run_manual_eval.py",
     "eval/run_conversation_memory_eval.py",
@@ -37,8 +41,16 @@ EVAL_SCRIPTS = [
     "eval/run_chat_irrelevant_eval.py",
     "eval/run_routing_threshold_eval.py",
     "eval/run_rag_golden_eval.py",
+    "eval/run_parent_chunk_eval.py",
+    "eval/run_rag_answer_completeness_eval.py",
+    "eval/run_parent_chunk_source_eval.py",
+    "eval/run_parent_chunk_source_eval.py",
+    "eval/run_langgraph_parity_eval.py",
+    "eval/run_parent_context_structure_eval.py",
+    "eval/run_answer_quality_auto_eval.py",
     "eval/run_langgraph_parity_eval.py",
     "eval/run_api_contract_eval.py",
+    "eval/run_mcp_server_eval.py",
 ]
 
 

@@ -1,0 +1,353 @@
+{
+  "cases": [
+    {
+      "id": "rag_001",
+      "query": "VPN 720 错误怎么办",
+      "expected_file": "vpn_guide.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": 1,
+        "answer_relevance": 1,
+        "citation_correctness": 1
+      },
+      "notes": "回答中的 VPN 排查步骤及 720 错误处理均能在引用父块中找到；直接回答了问题；引用 parent-chunk-2 与回答内容一致。"
+    },
+    {
+      "id": "rag_002",
+      "query": "怎么申请报销",
+      "expected_file": "reimbursement_policy.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_003",
+      "query": "年假怎么申请",
+      "expected_file": "leave_policy.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_004",
+      "query": "账号登录不了怎么办",
+      "expected_file": "account_login_faq.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_006",
+      "query": "远程办公时访问不了公司内网",
+      "expected_file": "vpn_guide.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": 1,
+        "answer_relevance": 1,
+        "citation_correctness": 1
+      },
+      "notes": "回答给出 VPN 无法连接的完整排查步骤，内容均由 parent-chunk-2 支持；远程办公无法访问公司内网属于该排查场景；唯一来源引用与回答一致。"
+    },
+    {
+      "id": "rag_007",
+      "query": "出差费用怎么走流程",
+      "expected_file": "reimbursement_policy.md",
+      "expected_context_chunk_id": "reimbursement_policy.md::parent-chunk-3",
+      "expected_answer_contains": [
+        "登录 OA 系统",
+        "上传发票和付款凭证",
+        "财务审核",
+        "审核通过后 3-5 个工作日打款"
+      ],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_008",
+      "query": "MFA 验证码收不到怎么办",
+      "expected_file": "account_login_faq.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": 1,
+        "answer_relevance": 1,
+        "citation_correctness": 1
+      },
+      "notes": "回答覆盖企业绑定手机号与 MFA 认证器时间同步两项排查；所有步骤由唯一的 parent-chunk-2 支持，且来源引用一致。"
+    },
+    {
+      "id": "rag_009",
+      "query": "病假申请需要什么材料",
+      "expected_file": "leave_policy.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_010",
+      "query": "虚拟网卡驱动",
+      "expected_file": "vpn_guide.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_011",
+      "query": "账号被锁了怎么办",
+      "expected_file": "account_login_faq.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_013",
+      "query": "VPN 报 691 怎么处理",
+      "expected_file": "vpn_guide.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_014",
+      "query": "报销要上传哪些凭证",
+      "expected_file": "reimbursement_policy.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_015",
+      "query": "超过五千的费用还需要谁审批",
+      "expected_file": "reimbursement_policy.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": 1,
+        "answer_relevance": 1,
+        "citation_correctness": 1
+      },
+      "notes": "回答准确说明单笔超过 5000 元的报销需部门负责人额外审批；正文与唯一返回的 chunk-11 来源完全一致。"
+    },
+    {
+      "id": "rag_016",
+      "query": "请年假需要提前几天提交",
+      "expected_file": "leave_policy.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_017",
+      "query": "密码过期后要怎么处理",
+      "expected_file": "account_login_faq.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_019",
+      "query": "报销审批通过后多久能打款",
+      "expected_file": "reimbursement_policy.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_020",
+      "query": "连续请假 6 天需要谁审批",
+      "expected_file": "leave_policy.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_021",
+      "query": "调休需要关联什么记录",
+      "expected_file": "leave_policy.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_022",
+      "query": "账号连续输错 5 次会怎样",
+      "expected_file": "account_login_faq.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_023",
+      "query": "VPN 客户端需要更新吗",
+      "expected_file": "vpn_guide.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_025",
+      "query": "VPN 连不上时先检查什么",
+      "expected_file": "vpn_guide.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_026",
+      "query": "远程办公 VPN 故障的工单优先级是什么",
+      "expected_file": "vpn_guide.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_027",
+      "query": "年假要满足什么条件才能使用",
+      "expected_file": "leave_policy.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_028",
+      "query": "账号安全问题是什么优先级",
+      "expected_file": "account_login_faq.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_029",
+      "query": "报销在什么系统里提交",
+      "expected_file": "reimbursement_policy.md",
+      "expected_context_chunk_id": null,
+      "expected_answer_contains": [],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    },
+    {
+      "id": "rag_031",
+      "query": "年假有哪些规则",
+      "expected_file": "leave_policy.md",
+      "expected_context_chunk_id": "leave_policy.md::parent-chunk-3",
+      "expected_answer_contains": [
+        "入职满一年后可使用年假",
+        "提前 3 个工作日提交",
+        "连续请假超过 5 天",
+        "病假需要上传医院证明",
+        "调休需要关联加班记录"
+      ],
+      "manual_scores": {
+        "faithfulness": null,
+        "answer_relevance": null,
+        "citation_correctness": null
+      },
+      "notes": ""
+    }
+  ]
+}

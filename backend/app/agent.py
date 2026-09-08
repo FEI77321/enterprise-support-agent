@@ -16,6 +16,8 @@ from app.config import is_llm_answer_enabled
 logger = logging.getLogger(__name__)
 TICKET_PATTERN = re.compile(r"TICKET-\d{8}-\d{4}", re.IGNORECASE)
 VECTOR_FALLBACK_THRESHOLD = 0.4
+RULE_ANSWER_MIN_SCORE = 3
+RULE_ANSWER_MIN_MARGIN = 1
 CITATION_PAIR_PATTERN = re.compile(
     r"File:\s*([^\s,]+)\s*,\s*Chunk ID:\s*([^\s,]+)",
     re.IGNORECASE,
@@ -23,7 +25,7 @@ CITATION_PAIR_PATTERN = re.compile(
 SUPPORT_INTENT_KEYWORDS = [
         "vpn", "720", "691", "远程办公", "内网", "虚拟网卡",
         "账号", "登录", "密码", "验证码", "mfa", "锁定",
-        "报销", "发票", "差旅", "审批",
+        "报销", "发票", "差旅", "审批", "出差",
         "请假", "年假", "调休", "病假",
         "蓝屏", "黑屏", "显示器", "屏幕", "打印机", "电脑", "故障", "无法", "开不了",
     ]
@@ -46,9 +48,38 @@ def _has_valid_llm_citations(answer: str, sources: list[Source]) -> bool:  # 函
     )
 
 
-def handle_message(message: str) -> ChatResponse:  # 函数：负责 处理 消息 相关逻辑。
+def _has_confident_rule_answer(
+    query: str,
+    results: list[SearchResult],
+) -> bool:
+    """判断关键词检索是否有足够明确的首条证据可直接回答。"""
+    if not results:
+        return False
+
+    best_score = results[0].score
+
+    if best_score < RULE_ANSWER_MIN_SCORE:
+        return False
+
+    if len(results) == 1:
+        return True
+
+    second_score = results[1].score
+    if best_score - second_score >= RULE_ANSWER_MIN_MARGIN:
+        return True
+
+    return any(
+        marker in query
+        for marker in ("怎么", "如何", "哪些", "多久", "谁", "几", "什么")
+    )
+
+
+def handle_message(
+    message: str,
+    request_id: str | None = None,
+) -> ChatResponse:  # 函数：负责 处理 消息 相关逻辑。
     state = AgentState(
-        request_id=str(uuid4()),
+        request_id=request_id or str(uuid4()),
         message=message,
     )
 
@@ -128,20 +159,24 @@ def handle_message(message: str) -> ChatResponse:  # 函数：负责 处理 消�
                 content=item["content"],
                 score=item["score"],
                 chunk_id=item["chunk_id"],
+                context_chunk_id=item.get("context_chunk_id"),
             )
             for item in search_data.get("results", [])
         ]
 
     results = state.knowledge_results
-    if results and results[0].score >= 6:
+    if _has_confident_rule_answer(message, results):
         sources = [
             Source(
                 file=result.file,
                 snippet=_snippet(result.content),
                 score=result.score,
-                chunk_id=result.chunk_id,
+                chunk_id=(
+                    result.context_chunk_id
+                    or result.chunk_id
+                ),
             )
-            for result in results
+            for result in results[:1]
         ]
         state.sources = sources
 
@@ -195,7 +230,10 @@ def handle_message(message: str) -> ChatResponse:  # 函数：负责 处理 消�
                 file=result.file,
                 snippet=_snippet(result.content),
                 score=result.score,
-                chunk_id=result.chunk_id,
+                chunk_id=(
+                    result.context_chunk_id
+                    or result.chunk_id
+                ),
             )
             for result in results
         ]
@@ -237,6 +275,32 @@ def handle_message(message: str) -> ChatResponse:  # 函数：负责 处理 消�
             for item in vector_data.get("results", [])
         ]
     vector_results = state.vector_results
+    if (
+        vector_results
+        and vector_results[0].score >= VECTOR_FALLBACK_THRESHOLD
+        and vector_results[0].score >= 1.0
+    ):
+        best = vector_results[0]
+
+        state.sources = [
+            Source(
+                file=best.file,
+                snippet=_snippet(best.content),
+                score=int(best.score * 100),
+                chunk_id=best.chunk_id,
+            )
+        ]
+        state.answer = (
+            f"根据《{best.file}》中的相关内容，可以参考以下处理方式：\n\n"
+            f"{best.content}\n\n"
+            "参考来源：\n"
+            f"- File: {best.file}, Chunk ID: {best.chunk_id}"
+        )
+        state.add_step("vector_answer")
+        state.response_type = "answer"
+        log_workflow(state)
+        return build_chat_response(state)
+
     if vector_results and vector_results[0].score >= VECTOR_FALLBACK_THRESHOLD:
         sources = [
             Source(

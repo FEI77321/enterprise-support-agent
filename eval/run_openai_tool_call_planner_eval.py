@@ -30,9 +30,10 @@ class FakeResponses:  # 类：模拟 OpenAI 客户端中的 responses 子对象�
 
 
 class FakeOpenAI:  # 类：模拟 OpenAI 客户端，供离线测试注入使用。
-    def __init__(self, api_key: str, timeout: float):  # 函数：初始化当前对象所需的状态或依赖。
+    def __init__(self, api_key: str, timeout: float, max_retries: int = 0):  # 函数：初始化当前对象所需的状态或依赖。
         captured["api_key"] = api_key
         captured["timeout"] = timeout
+        captured["max_retries"] = max_retries
         self.responses = FakeResponses(captured)
 
 

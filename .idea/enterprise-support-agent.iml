@@ -5,11 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/backend" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/backend/.venv" />
     </content>
-    <orderEntry type="jdk" jdkName="~\Documents\Codex\2026-07-24\1\enterprise-support-agent\backend\.venv" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="D:\MyKnowledgeBase\文件资料\学习\enterprise-support-agent\backend\.venv" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
-  <component name="PackageRequirementsSettings" />
-  <component name="PyDocumentationSettings" />
-  <component name="ReSTService" />
-  <component name="TestRunnerService" />
 </module>

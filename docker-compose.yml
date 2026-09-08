@@ -1,9 +1,24 @@
 # 模块职责：容器编排文件：一次性构建向量索引、启动后端与前端，并持久化 SQLite/Chroma 数据。
 
 services:
+  # Redis：P2 的共享基础设施，后续用于限流、会话和缓存。
+  redis:
+    image: redis:7.4-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
   # 一次性服务：构建 Chroma 向量索引（跑完即退出，不给它配端口）
   backend-init:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     command: python -m scripts.build_vector_index
     volumes:
       - ./backend/data:/app/data
@@ -11,16 +26,24 @@ services:
 
   # 后端服务
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
     env_file: .env
+    environment:
+      REDIS_ENABLED: "true"
+      REDIS_URL: redis://redis:6379/0
+      RATE_LIMIT_ENABLED: "true"
     volumes:
       - ./backend/data:/app/data
     depends_on:
       backend-init:
         condition: service_completed_successfully
+      redis:
+        condition: service_healthy
 
   # 前端服务（nginx 托管构建产物）
   frontend:
@@ -29,3 +52,6 @@ services:
       - "5173:80"
     depends_on:
       - backend
+
+volumes:
+  redis-data:

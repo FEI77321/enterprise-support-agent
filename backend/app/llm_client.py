@@ -15,6 +15,7 @@ from app.config import (
     get_openai_model,
     get_openai_timeout_seconds,
 )
+from app.llm_retry import call_with_retry
 @dataclass
 class LLMAnswerResult:  # 类：封装大模型回答文本、可用状态和失败原因。
     answer: str
@@ -53,12 +54,16 @@ def generate_answer_result(prompt: str) -> LLMAnswerResult:  # 函数：负责 �
 
             model = get_openai_model()
             timeout = get_openai_timeout_seconds()
-            client = OpenAI(api_key=api_key, timeout=timeout)
+            client = OpenAI(api_key=api_key, timeout=timeout, max_retries=0)
             logger.info("openai_call_start model=%s timeout=%s", model, timeout)
 
-            response = client.responses.create(
-                model=model,
-                input=prompt,
+            response = call_with_retry(
+                lambda: client.responses.create(
+                    model=model,
+                    input=prompt,
+                ),
+                provider=provider,
+                operation_name="answer",
             )
             logger.info("openai_call_end model=%s", model)
 
@@ -100,6 +105,7 @@ def generate_answer_result(prompt: str) -> LLMAnswerResult:  # 函数：负责 �
                 api_key=api_key,
                 base_url=base_url,
                 timeout=timeout,
+                max_retries=0,
             )
 
             logger.info(
@@ -108,14 +114,18 @@ def generate_answer_result(prompt: str) -> LLMAnswerResult:  # 函数：负责 �
                 timeout,
             )
 
-            response = client.chat.completions.create(
-                model=model,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt,
-                    }
-                ],
+            response = call_with_retry(
+                lambda: client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": prompt,
+                        }
+                    ],
+                ),
+                provider=provider,
+                operation_name="answer",
             )
 
             answer = response.choices[0].message.content
@@ -172,12 +182,16 @@ def generate_openai_answer(prompt: str) -> str:  # 函数：负责 生成 OpenAI
 
         model = get_openai_model()
         timeout = get_openai_timeout_seconds()
-        client = OpenAI(api_key=api_key, timeout=timeout)
+        client = OpenAI(api_key=api_key, timeout=timeout, max_retries=0)
         logger.info("openai_call_start model=%s timeout=%s", model, timeout)
 
-        response = client.responses.create(
-            model=model,
-            input=prompt,
+        response = call_with_retry(
+            lambda: client.responses.create(
+                model=model,
+                input=prompt,
+            ),
+            provider="openai",
+            operation_name="answer",
         )
         logger.info("openai_call_end model=%s", model)
         return response.output_text

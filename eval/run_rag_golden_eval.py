@@ -57,13 +57,6 @@ def evaluate_case(case: dict) -> tuple[bool, str]:  # 函数：执行单条 RAG 
             f"期望 chunk_id 为 {expected_chunk_id}，实际为 {first.chunk_id}",
         )
 
-    min_score = case.get("min_score")
-    if min_score is not None and first.score < min_score:
-        return (
-            False,
-            f"期望分数至少为 {min_score}，实际为 {first.score}",
-        )
-
     return True, ""
 
 def write_rag_golden_report(

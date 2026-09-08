@@ -13,6 +13,7 @@ from app.config import (
     get_deepseek_model,
     get_deepseek_timeout_seconds,
 )
+from app.llm_retry import call_with_retry
 logger = logging.getLogger(__name__)
 def _get_current_message(planner_input: str) -> str:  # 函数：从包含历史对话的规划输入中提取当前用户消息。
     if CURRENT_MESSAGE_MARKER not in planner_input:
@@ -113,11 +114,16 @@ def plan_tool_call_with_openai(message: str) -> str:  # 函数：负责 plan 工
     client = OpenAI(
         api_key=api_key,
         timeout=timeout_seconds,
+        max_retries=0,
     )
 
-    response = client.responses.create(
-        model=model,
-        input=prompt,
+    response = call_with_retry(
+        lambda: client.responses.create(
+            model=model,
+            input=prompt,
+        ),
+        provider="openai",
+        operation_name="tool_plan",
     )
 
     return response.output_text
@@ -147,6 +153,7 @@ def plan_tool_call_with_deepseek(message: str) -> str:  # 函数：调用 DeepSe
             api_key=api_key,
             base_url=base_url,
             timeout=timeout,
+            max_retries=0,
         )
 
         logger.info(
@@ -155,14 +162,18 @@ def plan_tool_call_with_deepseek(message: str) -> str:  # 函数：调用 DeepSe
             timeout,
         )
 
-        response = client.chat.completions.create(
-            model=model,
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt,
-                }
-            ],
+        response = call_with_retry(
+            lambda: client.chat.completions.create(
+                model=model,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt,
+                    }
+                ],
+            ),
+            provider="deepseek",
+            operation_name="tool_plan",
         )
 
         llm_output = response.choices[0].message.content
@@ -223,25 +234,29 @@ def plan_tool_call_with_deepseek_native(message: str) -> str:  # 函数：原生
             api_key=api_key,
             base_url=base_url,
             timeout=timeout,
+            max_retries=0,
         )
 
         logger.info("deepseek_native_tool_plan_start model=%s", model)
 
-        response = client.chat.completions.create(
-            model=model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": "你是一个企业 IT 支持助手。请根据用户消息选择合适的工具：用户提到 TICKET- 工单号时调用 query_ticket_status；用户想查知识库时调用 search_knowledge_base；用户想创建工单时调用 create_ticket；用户想删除工单时调用 delete_ticket。",
-                },
-                {
-                    "role": "user",
-                    "content": message,
-                }
-            ],
-
-            tools=tools,          # ← 传工具 schema，模型原生识别
-            tool_choice="auto",   # ← 让模型自己决定调不调
+        response = call_with_retry(
+            lambda: client.chat.completions.create(
+                model=model,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "你是一个企业 IT 支持助手。请根据用户消息选择合适的工具：用户提到 TICKET- 工单号时调用 query_ticket_status；用户想查知识库时调用 search_knowledge_base；用户想创建工单时调用 create_ticket；用户想删除工单时调用 delete_ticket。",
+                    },
+                    {
+                        "role": "user",
+                        "content": message,
+                    }
+                ],
+                tools=tools,
+                tool_choice="auto",
+            ),
+            provider="deepseek",
+            operation_name="tool_plan_native",
         )
 
         choice = response.choices[0].message

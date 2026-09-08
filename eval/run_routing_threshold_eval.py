@@ -66,13 +66,13 @@ def run_with_mocked_search(
         agent_module.run_tool = old_run_tool
 
 
-def test_keyword_score_at_answer_threshold() -> tuple[bool, str]:  # 测试函数：验证关键词分数等于 6 时返回明确答案。
+def test_single_clear_keyword_result_answers() -> tuple[bool, str]:  # 测试函数：验证单条明确关键词证据达到新阈值后直接回答。
     response, called_tools = run_with_mocked_search(
         knowledge_results=[
             {
                 "file": "vpn_guide.md",
                 "content": "请检查 VPN 客户端配置。",
-                "score": 6,
+                "score": 3,
                 "chunk_id": "vpn_guide.md::chunk-6",
             }
         ],
@@ -80,32 +80,38 @@ def test_keyword_score_at_answer_threshold() -> tuple[bool, str]:  # 测试函�
     )
 
     if response.type != "answer":
-        return False, f"分数为 6 时应返回 answer，实际为 {response.type}"
+        return False, f"单条明确证据分数为 3 时应返回 answer，实际为 {response.type}"
 
     if "search_vector_store" in called_tools:
-        return False, "关键词分数已达到回答阈值，不应继续调用向量检索"
+        return False, "关键词证据已足够明确，不应继续调用向量检索"
 
     return True, ""
 
 
-def test_keyword_score_below_answer_threshold() -> tuple[bool, str]:  # 测试函数：验证关键词分数低于 6 时返回澄清而非明确回答。
+def test_ambiguous_keyword_results_clarify() -> tuple[bool, str]:  # 测试函数：验证多条并列候选且问题不明确时返回澄清。
     response, called_tools = run_with_mocked_search(
         knowledge_results=[
             {
                 "file": "vpn_guide.md",
                 "content": "请检查 VPN 客户端配置。",
-                "score": 5,
+                "score": 3,
                 "chunk_id": "vpn_guide.md::chunk-6",
-            }
+            },
+            {
+                "file": "vpn_guide.md",
+                "content": "请检查 VPN 网络状态。",
+                "score": 3,
+                "chunk_id": "vpn_guide.md::chunk-7",
+            },
         ],
         vector_results=[],
     )
 
     if response.type != "clarify":
-        return False, f"分数为 5 时应返回 clarify，实际为 {response.type}"
+        return False, f"并列候选且问题不明确时应返回 clarify，实际为 {response.type}"
 
     if "search_vector_store" in called_tools:
-        return False, "已有低置信关键词结果时，不应继续调用向量检索"
+        return False, "已有待澄清关键词结果时，不应继续调用向量检索"
 
     return True, ""
 
@@ -156,8 +162,8 @@ def test_vector_score_below_fallback_threshold_creates_ticket() -> tuple[bool, s
 
 def main() -> None:  # 函数：运行本文件定义的全部检索路由阈值评估。
     tests = [
-        ("keyword_score_at_answer_threshold", test_keyword_score_at_answer_threshold),
-        ("keyword_score_below_answer_threshold", test_keyword_score_below_answer_threshold),
+        ("single_clear_keyword_result_answers", test_single_clear_keyword_result_answers),
+        ("ambiguous_keyword_results_clarify", test_ambiguous_keyword_results_clarify),
         ("vector_score_at_fallback_threshold", test_vector_score_at_fallback_threshold),
         ("vector_score_below_fallback_threshold_creates_ticket", test_vector_score_below_fallback_threshold_creates_ticket),
     ]

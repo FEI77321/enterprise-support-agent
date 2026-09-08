@@ -4,9 +4,9 @@
 
 ## 评测结论
 
-端到端评测结果：`Passed: 13/13`
+端到端评测结果：`Passed: 11/13`
 
-结论：全部端到端 case 已通过，当前 Agent 主流程可以作为稳定版本继续迭代。
+结论：存在 2 个失败 case，需要优先定位并修复。
 
 ## 一键评测入口
 
@@ -23,7 +23,7 @@ Config eval passed.
 Tool eval: Passed 7/7
 LLM quality eval: Passed 3/3
 API smoke eval: Passed 4/4
-Manual eval: Passed 13/13
+Manual eval: Passed 11/13
 Eval suites passed: 5/5
 ```
 
@@ -54,8 +54,8 @@ Eval suites passed: 5/5
 | case_007 | PASS | 显示器突然黑屏，影响办公 | response_type=ticket_created; priority=MEDIUM | 是 |
 | case_008 | PASS | 远程办公连不上公司内网 | response_type=answer; source=vpn_guide.md | 否 |
 | case_009 | PASS | 我想报销 | response_type=clarify | 否 |
-| case_010 | PASS | VPN 720 错误怎么办 | response_type=answer; source=vpn_guide.md; chunk_id=vpn_guide.md::chunk-6 | 否 |
-| case_011 | PASS | 虚拟网卡驱动 | response_type=clarify; source=vpn_guide.md; chunk_id=vpn_guide.md::chunk-6; workflow contains: search_knowledge_base -> search_vector_store -> vector_clarify | 否 |
+| case_010 | FAIL | VPN 720 错误怎么办 | response_type=answer; source=vpn_guide.md; chunk_id=vpn_guide.md::chunk-6 | 否 |
+| case_011 | FAIL | 虚拟网卡驱动 | response_type=clarify; source=vpn_guide.md; chunk_id=vpn_guide.md::chunk-6; workflow contains: search_knowledge_base -> search_vector_store -> vector_clarify | 否 |
 | case_012 | PASS | 帮我查一下 TICKET-20990101-9999 | response_type=ticket_status; workflow contains: extract_ticket_id -> query_ticket_status -> ticket_not_found; answer contains: 没有找到工单 | 否 |
 | case_013 | PASS | VPN 720 错误怎么办 | response_type=answer; workflow contains: rule_answer -> llm_answer -> knowledge_answer | 否 |
 
@@ -89,7 +89,7 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: VPN 连不上怎么办？
 - Expected: {"response_type": "answer", "source": "vpn_guide.md", "workflow_contains": ["extract_ticket_id", "search_knowledge_base", "knowledge_answer"]}
 - Env: {}
-- Actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 6, 'chunk_id': 'vpn_guide.md::chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
+- Actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 13, 'chunk_id': 'vpn_guide.md::parent-chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
 - Ticket created: False
 
 ### case_002 PASS
@@ -97,7 +97,7 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: 怎么申请报销？
 - Expected: {"response_type": "answer", "source": "reimbursement_policy.md"}
 - Env: {}
-- Actual: type=answer, sources=[{'file': 'reimbursement_policy.md', 'score': 9, 'chunk_id': 'reimbursement_policy.md::chunk-2'}, {'file': 'leave_policy.md', 'score': 3, 'chunk_id': 'leave_policy.md::chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
+- Actual: type=answer, sources=[{'file': 'reimbursement_policy.md', 'score': 3, 'chunk_id': 'reimbursement_policy.md::parent-chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
 - Ticket created: False
 
 ### case_003 PASS
@@ -105,7 +105,7 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: 年假怎么申请？
 - Expected: {"response_type": "answer", "source": "leave_policy.md"}
 - Env: {}
-- Actual: type=answer, sources=[{'file': 'leave_policy.md', 'score': 6, 'chunk_id': 'leave_policy.md::chunk-3'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
+- Actual: type=answer, sources=[{'file': 'leave_policy.md', 'score': 5, 'chunk_id': 'leave_policy.md::parent-chunk-3'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
 - Ticket created: False
 
 ### case_004 PASS
@@ -113,7 +113,7 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: 账号登录不了怎么办？
 - Expected: {"response_type": "answer", "source": "account_login_faq.md"}
 - Env: {}
-- Actual: type=answer, sources=[{'file': 'account_login_faq.md', 'score': 6, 'chunk_id': 'account_login_faq.md::chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
+- Actual: type=answer, sources=[{'file': 'account_login_faq.md', 'score': 6, 'chunk_id': 'account_login_faq.md::parent-chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
 - Ticket created: False
 
 ### case_005 PASS
@@ -121,7 +121,7 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: 我的电脑蓝屏了，开不了机
 - Expected: {"response_type": "ticket_created", "priority": "HIGH"}
 - Env: {}
-- Actual: type=ticket_created, sources=[], ticket_id=TICKET-20260805-0382,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'create_ticket', 'ticket_created']
+- Actual: type=ticket_created, sources=[], ticket_id=TICKET-20260908-0461,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'create_ticket', 'ticket_created']
 - Ticket created: True
 
 ### case_006 PASS
@@ -129,7 +129,7 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: 打印机一直卡纸，没人会修
 - Expected: {"response_type": "ticket_created", "priority": "MEDIUM"}
 - Env: {}
-- Actual: type=ticket_created, sources=[], ticket_id=TICKET-20260805-0383,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'create_ticket', 'ticket_created']
+- Actual: type=ticket_created, sources=[], ticket_id=TICKET-20260908-0462,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'create_ticket', 'ticket_created']
 - Ticket created: True
 
 ### case_007 PASS
@@ -137,7 +137,7 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: 显示器突然黑屏，影响办公
 - Expected: {"response_type": "ticket_created", "priority": "MEDIUM"}
 - Env: {}
-- Actual: type=ticket_created, sources=[], ticket_id=TICKET-20260805-0384,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'create_ticket', 'ticket_created']
+- Actual: type=ticket_created, sources=[], ticket_id=TICKET-20260908-0463,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'create_ticket', 'ticket_created']
 - Ticket created: True
 
 ### case_008 PASS
@@ -145,7 +145,7 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: 远程办公连不上公司内网
 - Expected: {"response_type": "answer", "source": "vpn_guide.md", "note": "当前关键词检索可能搜不到，这是后续升级 RAG 的 badcase"}
 - Env: {}
-- Actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 9, 'chunk_id': 'vpn_guide.md::chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
+- Actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 8, 'chunk_id': 'vpn_guide.md::parent-chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
 - Ticket created: False
 
 ### case_009 PASS
@@ -153,24 +153,26 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: 我想报销
 - Expected: {"response_type": "clarify"}
 - Env: {}
-- Actual: type=clarify, sources=[{'file': 'reimbursement_policy.md', 'score': 3, 'chunk_id': 'reimbursement_policy.md::chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'clarify']
+- Actual: type=clarify, sources=[{'file': 'reimbursement_policy.md', 'score': 3, 'chunk_id': 'reimbursement_policy.md::parent-chunk-2'}, {'file': 'reimbursement_policy.md', 'score': 3, 'chunk_id': 'reimbursement_policy.md::parent-chunk-3'}, {'file': 'reimbursement_policy.md', 'score': 3, 'chunk_id': 'reimbursement_policy.md::parent-chunk-3'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'clarify']
 - Ticket created: False
 
-### case_010 PASS
+### case_010 FAIL
 
 - Input: VPN 720 错误怎么办
 - Expected: {"response_type": "answer", "source": "vpn_guide.md", "chunk_id": "vpn_guide.md::chunk-6"}
 - Env: {}
-- Actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 6, 'chunk_id': 'vpn_guide.md::chunk-6'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
+- Actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 16, 'chunk_id': 'vpn_guide.md::parent-chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
 - Ticket created: False
+- Reason: expected chunk_id vpn_guide.md::chunk-6, got ['vpn_guide.md::parent-chunk-2']; actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 16, 'chunk_id': 'vpn_guide.md::parent-chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
 
-### case_011 PASS
+### case_011 FAIL
 
 - Input: 虚拟网卡驱动
 - Expected: {"response_type": "clarify", "source": "vpn_guide.md", "chunk_id": "vpn_guide.md::chunk-6", "workflow_contains": ["search_knowledge_base", "search_vector_store", "vector_clarify"]}
 - Env: {}
-- Actual: type=clarify, sources=[{'file': 'vpn_guide.md', 'score': 200, 'chunk_id': 'vpn_guide.md::chunk-6'}, {'file': 'reimbursement_policy.md', 'score': 58, 'chunk_id': 'reimbursement_policy.md::chunk-3'}, {'file': 'reimbursement_policy.md', 'score': 31, 'chunk_id': 'reimbursement_policy.md::chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'vector_clarify']
+- Actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 200, 'chunk_id': 'vpn_guide.md::chunk-6'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'vector_answer']
 - Ticket created: False
+- Reason: expected type clarify, got answer; actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 200, 'chunk_id': 'vpn_guide.md::chunk-6'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'vector_answer']
 
 ### case_012 PASS
 
@@ -185,8 +187,20 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: VPN 720 错误怎么办
 - Expected: {"response_type": "answer", "workflow_contains": ["rule_answer", "llm_answer", "knowledge_answer"]}
 - Env: {"ENABLE_LLM_ANSWER": "true", "LLM_PROVIDER": "stub"}
-- Actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 6, 'chunk_id': 'vpn_guide.md::chunk-6'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'llm_answer', 'llm_invalid_citation_fallback', 'knowledge_answer']
+- Actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 16, 'chunk_id': 'vpn_guide.md::parent-chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'llm_answer', 'llm_invalid_citation_fallback', 'knowledge_answer']
 - Ticket created: False
+
+## 失败 Case
+
+### case_010
+
+- Message: VPN 720 错误怎么办
+- Reason: expected chunk_id vpn_guide.md::chunk-6, got ['vpn_guide.md::parent-chunk-2']; actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 16, 'chunk_id': 'vpn_guide.md::parent-chunk-2'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'rule_answer', 'knowledge_answer']
+
+### case_011
+
+- Message: 虚拟网卡驱动
+- Reason: expected type clarify, got answer; actual: type=answer, sources=[{'file': 'vpn_guide.md', 'score': 200, 'chunk_id': 'vpn_guide.md::chunk-6'}], ticket_id=None,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'vector_answer']
 
 ## 面试讲法
 

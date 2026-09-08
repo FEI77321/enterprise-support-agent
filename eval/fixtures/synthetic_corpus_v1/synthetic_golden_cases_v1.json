@@ -1,0 +1,99 @@
+{
+  "suite_id": "enterprise_support_synthetic_golden_v1",
+  "corpus_id": "enterprise_support_synthetic_v1",
+  "source_type": "synthetic",
+  "status": "pre_ingestion_contract",
+  "purpose": "Golden cases for the future ingestion, versioning, traceability, table, and OCR pipeline. They are not runnable against the current backend/data/docs retrieval path.",
+  "cases": [
+    {
+      "id": "syn_001", "query": "申请一台 9000 元的笔记本需要谁审批？", "category": "threshold_rule", "difficulty": "medium", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-MD-001"], "expected_document_id": "ESA-SYN-MD-001", "expected_document_version": "1.0", "expected_page": null, "latest_version_only": false,
+      "expected_answer_contains": ["超过 8000 元", "部门负责人"], "failure_mode": "number_threshold", "expected_evidence_text": "金额超过 8000 元时，部门负责人还需审批。"
+    },
+    {
+      "id": "syn_002", "query": "设备维修费用达到重置成本的 60%，能直接报废吗？", "category": "exception_rule", "difficulty": "hard", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-MD-001"], "expected_document_id": "ESA-SYN-MD-001", "expected_document_version": "1.0", "expected_page": null, "latest_version_only": false,
+      "expected_answer_contains": ["不得直接报废", "无法维修", "超过重置成本 60%"], "failure_mode": "exception_context", "expected_evidence_text": "损坏设备不得直接报废。IT 应先创建维修记录。"
+    },
+    {
+      "id": "syn_003", "query": "35 人无法办公的故障属于什么优先级，多久响应？", "category": "priority_and_sla", "difficulty": "medium", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-MD-002"], "expected_document_id": "ESA-SYN-MD-002", "expected_document_version": "1.0", "expected_page": null, "latest_version_only": false,
+      "expected_answer_contains": ["P1", "15 分钟"], "failure_mode": "table_row", "expected_evidence_text": "P1：核心业务或超过 30 人无法工作；首次响应目标 15 分钟。"
+    },
+    {
+      "id": "syn_004", "query": "P2 事件持续 4 小时没有恢复，下一步怎么做？", "category": "escalation_rule", "difficulty": "medium", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-MD-002"], "expected_document_id": "ESA-SYN-MD-002", "expected_document_version": "1.0", "expected_page": null, "latest_version_only": false,
+      "expected_answer_contains": ["升级至二线团队"], "failure_mode": "table_row", "expected_evidence_text": "P2 事件 4 小时未恢复即升级至二线团队。"
+    },
+    {
+      "id": "syn_005", "query": "新员工开户时会自动拿到管理员权限吗？", "category": "negative_policy", "difficulty": "medium", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-MD-003", "ESA-SYN-MD-004"], "expected_document_id": "ESA-SYN-MD-004", "expected_document_version": "2.0", "expected_page": null, "latest_version_only": true,
+      "expected_answer_contains": ["不得", "自动授予"], "failure_mode": "version_conflict", "expected_evidence_text": "管理员权限不得随开户流程自动授予。"
+    },
+    {
+      "id": "syn_006", "query": "生产环境写权限需要哪些审批？", "category": "multi_approval", "difficulty": "hard", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-MD-004"], "expected_document_id": "ESA-SYN-MD-004", "expected_document_version": "2.0", "expected_page": null, "latest_version_only": true,
+      "expected_answer_contains": ["系统负责人", "信息安全负责人"], "failure_mode": "multi_fact", "expected_evidence_text": "写权限必须同时获得系统负责人和信息安全负责人审批。"
+    },
+    {
+      "id": "syn_007", "query": "员工离职后高权限账号的审计记录要保留多久？", "category": "version_conflict", "difficulty": "hard", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-MD-003", "ESA-SYN-MD-004"], "expected_document_id": "ESA-SYN-MD-004", "expected_document_version": "2.0", "expected_page": null, "latest_version_only": true,
+      "expected_answer_contains": ["180 天", "令牌和 API Key"], "failure_mode": "superseded_version", "expected_evidence_text": "高权限账号需要在停用后保留 180 天审计记录。"
+    },
+    {
+      "id": "syn_008", "query": "严格机密数据能通过邮件发给外部合作方吗？", "category": "policy_exception", "difficulty": "medium", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-MD-005"], "expected_document_id": "ESA-SYN-MD-005", "expected_document_version": "1.0", "expected_page": null, "latest_version_only": false,
+      "expected_answer_contains": ["默认不得", "受控文件交换系统", "有效期"], "failure_mode": "exception_context", "expected_evidence_text": "严格机密数据默认不得通过邮件发送。"
+    },
+    {
+      "id": "syn_009", "query": "客户合同可以放到个人网盘吗？", "category": "classification_rule", "difficulty": "medium", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-MD-005"], "expected_document_id": "ESA-SYN-MD-005", "expected_document_version": "1.0", "expected_page": null, "latest_version_only": false,
+      "expected_answer_contains": ["机密", "禁止个人网盘"], "failure_mode": "table_row", "expected_evidence_text": "客户合同属于机密数据，应加密存储，禁止个人网盘。"
+    },
+    {
+      "id": "syn_010", "query": "最新远程访问规范里，VPN 空闲多久会自动断开？", "category": "pdf_version", "difficulty": "hard", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-PDF-001", "ESA-SYN-PDF-002"], "expected_document_id": "ESA-SYN-PDF-002", "expected_document_version": "2.0", "expected_page": 1, "latest_version_only": true,
+      "expected_answer_contains": ["15 分钟"], "failure_mode": "superseded_version", "expected_evidence_text": "远程会话闲置超过 15 分钟时，系统应自动断开。"
+    },
+    {
+      "id": "syn_011", "query": "远程访问出现重复 MFA 拒绝，最新版要求多久内提交安全事件？", "category": "pdf_version", "difficulty": "hard", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-PDF-001", "ESA-SYN-PDF-002"], "expected_document_id": "ESA-SYN-PDF-002", "expected_document_version": "2.0", "expected_page": 1, "latest_version_only": true,
+      "expected_answer_contains": ["30 分钟", "审计记录"], "failure_mode": "superseded_version", "expected_evidence_text": "员工应在 30 分钟内提交安全事件。"
+    },
+    {
+      "id": "syn_012", "query": "购买 6000 元软件需要谁审批，还要准备什么材料？", "category": "pdf_table", "difficulty": "hard", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-PDF-003"], "expected_document_id": "ESA-SYN-PDF-003", "expected_document_version": "1.0", "expected_page": 1, "latest_version_only": false,
+      "expected_answer_contains": ["直属主管", "部门负责人", "财务负责人", "供应商报价", "预算编号"], "failure_mode": "table_multi_column", "expected_evidence_text": "采购软件 5001 元及以上需要直属主管、部门负责人和财务负责人审批。"
+    },
+    {
+      "id": "syn_013", "query": "高风险网络变更应该安排在什么时间窗口，谁来审批？", "category": "pdf_table", "difficulty": "hard", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-PDF-005"], "expected_document_id": "ESA-SYN-PDF-005", "expected_document_version": "1.0", "expected_page": 1, "latest_version_only": false,
+      "expected_answer_contains": ["每月第二个周六", "22:00 - 02:00", "网络负责人", "业务负责人", "值班经理"], "failure_mode": "table_multi_column", "expected_evidence_text": "高风险变更每月第二个周六 22:00 - 02:00 执行。"
+    },
+    {
+      "id": "syn_014", "query": "季度结算前 2 天能不能做标准网络变更？", "category": "negative_policy", "difficulty": "hard", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-PDF-005"], "expected_document_id": "ESA-SYN-PDF-005", "expected_document_version": "1.0", "expected_page": 1, "latest_version_only": false,
+      "expected_answer_contains": ["冻结期", "禁止非紧急变更", "P1 紧急修复"], "failure_mode": "date_boundary", "expected_evidence_text": "季度结算日前 3 个工作日禁止非紧急变更。"
+    },
+    {
+      "id": "syn_015", "query": "发生 P1 安全事件的前 30 分钟，哪些操作不能做？", "category": "pdf_workflow", "difficulty": "hard", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-PDF-004"], "expected_document_id": "ESA-SYN-PDF-004", "expected_document_version": "1.0", "expected_page": 1, "latest_version_only": false,
+      "expected_answer_contains": ["不得删除日志", "不得重启关键服务器", "不得擅自对外发布信息"], "failure_mode": "multi_fact", "expected_evidence_text": "禁止删除日志、重启关键服务器或擅自对外发布信息。"
+    },
+    {
+      "id": "syn_016", "query": "访客可以进入机房吗？", "category": "ocr_gate", "difficulty": "hard", "expected_action": "needs_ocr",
+      "index_scope": ["ESA-SYN-PDF-006"], "expected_document_id": "ESA-SYN-PDF-006", "expected_document_version": "1.0", "expected_page": 1, "latest_version_only": false,
+      "expected_answer_contains": [], "failure_mode": "image_only_document", "expected_evidence_text": "访客不得进入机房、财务区或未授权办公区域。"
+    },
+    {
+      "id": "syn_017", "query": "员工离职时，IT 需要在什么时候停用账号并检查什么？", "category": "cross_fact", "difficulty": "hard", "expected_action": "answer",
+      "index_scope": ["ESA-SYN-MD-004"], "expected_document_id": "ESA-SYN-MD-004", "expected_document_version": "2.0", "expected_page": null, "latest_version_only": true,
+      "expected_answer_contains": ["最后工作日 17:00 前", "令牌和 API Key"], "failure_mode": "multi_fact", "expected_evidence_text": "IT 应在最后工作日 17:00 前停用账号。"
+    },
+    {
+      "id": "syn_018", "query": "火星出差的报销标准是多少？", "category": "no_answer", "difficulty": "medium", "expected_action": "refuse",
+      "index_scope": ["ESA-SYN-MD-001", "ESA-SYN-MD-002", "ESA-SYN-MD-003", "ESA-SYN-MD-004", "ESA-SYN-MD-005", "ESA-SYN-PDF-001", "ESA-SYN-PDF-002", "ESA-SYN-PDF-003", "ESA-SYN-PDF-004", "ESA-SYN-PDF-005", "ESA-SYN-PDF-006"], "expected_document_id": null, "expected_document_version": null, "expected_page": null, "latest_version_only": false,
+      "expected_answer_contains": [], "failure_mode": "out_of_corpus", "expected_evidence_text": null
+    }
+  ]
+}

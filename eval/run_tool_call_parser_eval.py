@@ -111,6 +111,20 @@ def test_parse_no_tool_call() -> tuple[bool, str]:  # 测试函数：验证 解�
     return True, ""
 
 
+def test_parse_string_null_as_no_tool_call() -> tuple[bool, str]:  # 测试函数：验证模型把 null 错输出成字符串时仍按无工具处理。
+    result = parse_and_validate_tool_call(
+        '{"tool_name": "null", "arguments": {}}'
+    )
+
+    if not result.success:
+        return False, f"期望字符串 null 按无工具解析成功，实际 error={result.error}"
+
+    if result.tool_name is not None:
+        return False, f"期望 tool_name=None，实际为 {result.tool_name}"
+
+    return True, ""
+
+
 def test_parse_invalid_json() -> tuple[bool, str]:  # 测试函数：验证 解析 非法 json 场景。
     result = parse_tool_call("not json")
 
@@ -151,6 +165,7 @@ def main() -> None:  # 函数：运行本文件定义的主流程或全部评估
     tests = [
         ("parse_valid_tool_call", test_parse_valid_tool_call),
         ("parse_no_tool_call", test_parse_no_tool_call),
+        ("parse_string_null_as_no_tool_call", test_parse_string_null_as_no_tool_call),
         ("parse_invalid_json", test_parse_invalid_json),
         ("parse_invalid_tool_name", test_parse_invalid_tool_name),
         ("parse_invalid_arguments", test_parse_invalid_arguments),

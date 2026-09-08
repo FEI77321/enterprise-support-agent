@@ -2,9 +2,23 @@
 
 import logging
 
+from app.observability import RequestIdFilter
+
 
 def configure_logging() -> None:  # 函数：负责 configure logging 相关逻辑。
     logging.basicConfig(
         level=logging.INFO,
-        format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+        format=(
+            "%(asctime)s %(levelname)s "
+            "request_id=%(request_id)s "
+            "[%(name)s] %(message)s"
+        ),
     )
+
+    root_logger = logging.getLogger()
+    for handler in root_logger.handlers:
+        if not any(
+            isinstance(log_filter, RequestIdFilter)
+            for log_filter in handler.filters
+        ):
+            handler.addFilter(RequestIdFilter())

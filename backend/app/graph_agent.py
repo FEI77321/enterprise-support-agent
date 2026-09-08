@@ -3,6 +3,7 @@
 from app.agent import (
     TICKET_PATTERN,
     VECTOR_FALLBACK_THRESHOLD,
+    _has_confident_rule_answer,
     _is_support_related,
     _has_valid_llm_citations,
     _snippet,
@@ -20,6 +21,7 @@ from app.vector_store import VectorSearchResult
 
 
 class GraphState(TypedDict):  # 类：LangGraph 的共享状态，字段与 agent_state.AgentState 对齐。
+    request_id: str
     message: str
     ticket_id: str | None
     in_support_scope: bool
@@ -95,6 +97,7 @@ def search_knowledge_base(state: GraphState) -> dict:  # 节点：关键词检�
                 content=item["content"],
                 score=item["score"],
                 chunk_id=item["chunk_id"],
+                context_chunk_id=item.get("context_chunk_id"),
             )
             for item in search_data.get("results", [])
         ]
@@ -104,8 +107,13 @@ def search_knowledge_base(state: GraphState) -> dict:  # 节点：关键词检�
 def answer_high_confidence(state: GraphState) -> dict:  # 节点：高置信命中后组装回答（含 LLM 校验）。
     results = state["knowledge_results"]
     sources = [
-        Source(file=r.file, snippet=_snippet(r.content), score=r.score, chunk_id=r.chunk_id)
-        for r in results
+        Source(
+            file=r.file,
+            snippet=_snippet(r.content),
+            score=r.score,
+            chunk_id=r.context_chunk_id or r.chunk_id,
+        )
+        for r in results[:1]
     ]
     answer = build_answer(state["message"], results)
     steps = ["rule_answer"]
@@ -134,7 +142,12 @@ def answer_high_confidence(state: GraphState) -> dict:  # 节点：高置信命�
 def clarify(state: GraphState) -> dict:  # 节点：低置信澄清追问。
     results = state["knowledge_results"]
     sources = [
-        Source(file=r.file, snippet=_snippet(r.content), score=r.score, chunk_id=r.chunk_id)
+        Source(
+            file=r.file,
+            snippet=_snippet(r.content),
+            score=r.score,
+            chunk_id=r.context_chunk_id or r.chunk_id,
+        )
         for r in results
     ]
     return {
@@ -160,6 +173,32 @@ def search_vector_store(state: GraphState) -> dict:  # 节点：向量检索 fal
             for item in vector_data.get("results", [])
         ]
     return {"vector_results": results, "workflow_steps": ["search_vector_store"]}
+
+
+def vector_answer(state: GraphState) -> dict:
+    """高置信向量命中时，直接依据首条证据回答。"""
+    best = state["vector_results"][0]
+
+    source = Source(
+        file=best.file,
+        snippet=_snippet(best.content),
+        score=int(best.score * 100),
+        chunk_id=best.chunk_id,
+    )
+
+    answer = (
+        f"根据《{best.file}》中的相关内容，可以参考以下处理方式：\n\n"
+        f"{best.content}\n\n"
+        "参考来源：\n"
+        f"- File: {best.file}, Chunk ID: {best.chunk_id}"
+    )
+
+    return {
+        "sources": [source],
+        "answer": answer,
+        "response_type": "answer",
+        "workflow_steps": ["vector_answer"],
+    }
 
 
 def vector_clarify(state: GraphState) -> dict:  # 节点：向量命中后的澄清追问。
@@ -213,7 +252,7 @@ def route_after_scope(state: GraphState) -> str:  # 函数：范围内 → 检�
 
 def route_after_kb(state: GraphState) -> str:  # 函数：按关键词检索分数分流：高置信/澄清/向量。
     results = state["knowledge_results"]
-    if results and results[0].score >= 6:
+    if _has_confident_rule_answer(state["message"], results):
         return "answer_high_confidence"
     if results and results[0].score > 0:
         return "clarify"
@@ -222,6 +261,14 @@ def route_after_kb(state: GraphState) -> str:  # 函数：按关键词检索分�
 
 def route_after_vector(state: GraphState) -> str:  # 函数：向量命中达阈值 → 澄清，否则建单。
     results = state["vector_results"]
+
+    if (
+        results
+        and results[0].score >= VECTOR_FALLBACK_THRESHOLD
+        and results[0].score >= 1.0
+    ):
+        return "vector_answer"
+
     if results and results[0].score >= VECTOR_FALLBACK_THRESHOLD:
         return "vector_clarify"
     return "create_ticket"
@@ -237,6 +284,7 @@ builder.add_node("search_knowledge_base", search_knowledge_base)
 builder.add_node("search_vector_store", search_vector_store)
 builder.add_node("answer_high_confidence", answer_high_confidence)
 builder.add_node("clarify", clarify)
+builder.add_node("vector_answer", vector_answer)
 builder.add_node("vector_clarify", vector_clarify)
 builder.add_node("create_ticket", create_ticket)
 builder.add_node("unsupported_question", unsupported_question)
@@ -273,10 +321,15 @@ builder.add_edge("unsupported_question", END)
 builder.add_conditional_edges(
     "search_vector_store",
     route_after_vector,
-    {"vector_clarify": "vector_clarify", "create_ticket": "create_ticket"},
+    {
+        "vector_answer": "vector_answer",
+        "vector_clarify": "vector_clarify",
+        "create_ticket": "create_ticket",
+    },
 )
 builder.add_edge("answer_high_confidence", END)
 builder.add_edge("clarify", END)
+builder.add_edge("vector_answer", END)
 builder.add_edge("vector_clarify", END)
 builder.add_edge("create_ticket", END)
 
@@ -301,9 +354,12 @@ def build_chat_response(state: GraphState) -> ChatResponse:  # 函数：从图�
     )
 
 
-def handle_message(message: str) -> ChatResponse:  # 函数：LangGraph 版入口：初始化状态、运行图、构造响应。
+def handle_message(
+    message: str,
+    request_id: str | None = None,
+) -> ChatResponse:  # 函数：LangGraph 版入口：初始化状态、运行图、构造响应。
     initial: GraphState = {
-        "request_id": str(uuid4()),
+        "request_id": request_id or str(uuid4()),
         "message": message,
         "ticket_id": None,
         "in_support_scope": True,

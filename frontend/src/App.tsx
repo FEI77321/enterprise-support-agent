@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from 'react'
-import { sendChatMessage } from './api'
+import { streamChatMessage } from './api'
 import type { ChatResponse, TicketStatus } from './types'
 import './App.css'
 
@@ -8,6 +8,7 @@ type ChatMessage = {
   role: 'assistant' | 'user'
   text: string
   response?: ChatResponse
+  streamingStatus?: string
 }
 
 const suggestedQuestions = [
@@ -34,6 +35,7 @@ function App() {
   const [input, setInput] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [error, setError] = useState('')
+  const [rateLimitInfo, setRateLimitInfo] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome',
@@ -60,18 +62,57 @@ function App() {
         text: message,
       },
     ])
+    const assistantMessageId = `assistant-${Date.now()}`
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      {
+        id: assistantMessageId,
+        role: 'assistant',
+        text: '',
+        streamingStatus: '正在连接企业支持服务...',
+      },
+    ])
     setIsSending(true)
 
     try {
-      const response = await sendChatMessage(message)
+      const response = await streamChatMessage(message, (event) => {
+        if (event.event === 'rate_limit') {
+          setRateLimitInfo(
+            `当前额度：${event.data.remaining}/${event.data.limit}，约 ${event.data.resetAfterSeconds} 秒后重置。`,
+          )
+        }
+
+        if (event.event === 'status') {
+          setMessages((currentMessages) => currentMessages.map((currentMessage) => (
+            currentMessage.id === assistantMessageId
+              ? { ...currentMessage, streamingStatus: event.data.message }
+              : currentMessage
+          )))
+        }
+
+        if (event.event === 'message_delta') {
+          setMessages((currentMessages) => currentMessages.map((currentMessage) => (
+            currentMessage.id === assistantMessageId
+              ? {
+                  ...currentMessage,
+                  text: currentMessage.text + event.data.delta,
+                  streamingStatus: undefined,
+                }
+              : currentMessage
+          )))
+        }
+      })
       setMessages((currentMessages) => [
-        ...currentMessages,
-        {
-          id: response.request_id,
-          role: 'assistant',
-          text: response.answer ?? '当前请求已处理，但没有可展示的文本回答。',
-          response,
-        },
+        ...currentMessages.map((currentMessage) => (
+          currentMessage.id === assistantMessageId
+            ? {
+                ...currentMessage,
+                text: response.answer ?? currentMessage.text,
+                response,
+                streamingStatus: undefined,
+              }
+            : currentMessage
+        )),
       ])
     } catch (requestError) {
       setError(
@@ -86,6 +127,7 @@ function App() {
 
   function startNewSession() {
     setError('')
+    setRateLimitInfo('')
     setInput('')
     setMessages([
       {
@@ -149,18 +191,14 @@ function App() {
                 {message.role === 'assistant' ? 'Enterprise Agent' : 'You'}
               </div>
               <div className="message-body">
-                <p className="message-text">{message.text}</p>
+                {message.streamingStatus && (
+                  <p className="message-text">{message.streamingStatus}</p>
+                )}
+                {message.text && <p className="message-text">{message.text}</p>}
                 {message.response && <ResponseDetails response={message.response} />}
               </div>
             </article>
           ))}
-
-          {isSending && (
-            <article className="message-row assistant">
-              <div className="message-meta">Enterprise Agent</div>
-              <div className="message-body loading-message">正在检索企业知识库并处理请求...</div>
-            </article>
-          )}
         </div>
 
         <div className="composer-area">
@@ -178,7 +216,9 @@ function App() {
               {isSending ? 'Sending...' : 'Send'}
             </button>
           </form>
-          <p className="composer-hint">企业支持范围：VPN、账号登录、报销、请假及工单查询。</p>
+          <p className="composer-hint">
+            {rateLimitInfo || '企业支持范围：VPN、账号登录、报销、请假及工单查询。'}
+          </p>
         </div>
       </section>
     </main>

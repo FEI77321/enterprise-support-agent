@@ -1,0 +1,20 @@
+{
+  "corpus_id": "enterprise_support_synthetic_v1",
+  "source_type": "synthetic",
+  "purpose": "Controlled RAG ingestion and retrieval evaluation; not real enterprise material.",
+  "created_at": "2026-09-08",
+  "baseline_isolation": "Files in this corpus are not loaded by backend/data/docs/.",
+  "documents": [
+    {"document_id": "ESA-SYN-MD-001", "path": "markdown/asset_lifecycle_sop.md", "format": "markdown", "version": "1.0", "sha256": "98fd7248036b033a4d6c65f980c06209f87a469c2ae56a0c05e7e52b45867680", "focus": ["heading", "steps", "threshold"]},
+    {"document_id": "ESA-SYN-MD-002", "path": "markdown/service_desk_escalation_sop.md", "format": "markdown", "version": "1.0", "sha256": "d55734a8a1b17e0257a0d96664f2b5c6fef40809714347446a35f3a3851ee598", "focus": ["table", "priority", "workflow"]},
+    {"document_id": "ESA-SYN-MD-003", "path": "markdown/identity_access_policy_v1.md", "format": "markdown", "version": "1.0", "sha256": "75ed94581f5551a81636bdceb1821adcd6cf897fc84d3473977ce3fcd4b95e9e", "focus": ["version", "access"]},
+    {"document_id": "ESA-SYN-MD-004", "path": "markdown/identity_access_policy_v2.md", "format": "markdown", "version": "2.0", "sha256": "11aeda5e7f8f24f1c3bf16132b10b312082c5a651356cb5298b16a5dc09abac7", "supersedes": "ESA-SYN-MD-003", "focus": ["version", "access", "conflict"]},
+    {"document_id": "ESA-SYN-MD-005", "path": "markdown/data_classification_policy.md", "format": "markdown", "version": "1.0", "sha256": "a886ad94312f36c51c913fe64ae011ee33bf59866ba56b8e2c357fbf86d9992b", "focus": ["table", "security", "policy"]},
+    {"document_id": "ESA-SYN-PDF-001", "path": "pdf/remote_access_security_policy_v1.pdf", "format": "pdf_text", "version": "1.0", "sha256": "c6c1fc61e2f3077e649707a466b9a2294d6a458ce4172fef3f7a303d23b558c7", "focus": ["pdf", "version", "page"]},
+    {"document_id": "ESA-SYN-PDF-002", "path": "pdf/remote_access_security_policy_v2.pdf", "format": "pdf_text", "version": "2.0", "sha256": "0629ce1879799d997c77e0e71d82d12516cecb9ec70278266b0a178e7b3a1345", "supersedes": "ESA-SYN-PDF-001", "focus": ["pdf", "version", "page"]},
+    {"document_id": "ESA-SYN-PDF-003", "path": "pdf/expense_approval_matrix.pdf", "format": "pdf_table", "version": "1.0", "sha256": "96abd9fe442792fdd4adb234b8b0ba82f5ca27e17de5dc3e651b87f3229b5c17", "focus": ["pdf", "table", "threshold"]},
+    {"document_id": "ESA-SYN-PDF-004", "path": "pdf/incident_response_handbook.pdf", "format": "pdf_text", "version": "1.0", "sha256": "5789cfa0ba45bd39d9a03692482158392ada28518ddc3707d3035c9dbe7d8c41", "focus": ["pdf", "workflow", "cross_page"]},
+    {"document_id": "ESA-SYN-PDF-005", "path": "pdf/network_change_window_calendar.pdf", "format": "pdf_table", "version": "1.0", "sha256": "c1c53669a4a38e8effdb7766e0576725741bc9cb07aa7b2a3ad268e2d7e6db6b", "focus": ["pdf", "table", "schedule"]},
+    {"document_id": "ESA-SYN-PDF-006", "path": "pdf/visitor_access_registration_scan.pdf", "format": "pdf_image_only", "version": "1.0", "sha256": "ca0ca0870d93a59855cac21f5fabf4074edeb204295b735a84f2e2e1defb70f9", "focus": ["pdf", "ocr", "low_confidence"]}
+  ]
+}

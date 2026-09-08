@@ -1,9 +1,13 @@
 # 模块职责：会话记忆集成评估：验证自动工具调用接口会记录用户与 Agent 消息、能利用同一会话的历史完成追问，并且不同会话之间不会泄露上下文。
 
 from eval_path import setup_backend_path
+import os
 
 
 setup_backend_path()
+
+# 本套件验证的是会话记忆行为，固定使用 mock Planner，避免真实模型的随机规划影响断言。
+os.environ["TOOL_CALL_PROVIDER"] = "mock"
 
 from fastapi.testclient import TestClient
 

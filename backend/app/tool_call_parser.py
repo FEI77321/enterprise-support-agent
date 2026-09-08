@@ -96,6 +96,10 @@ def parse_tool_call(text: str) -> ToolCallParseResult:  # 函数：负责 解析
 
     tool_name = data.get("tool_name")
 
+    # 部分模型会把 JSON null 误输出为字符串 "null"；按无工具调用处理。
+    if isinstance(tool_name, str) and tool_name.strip().lower() == "null":
+        tool_name = None
+
     if tool_name is not None and not isinstance(tool_name, str):
         return ToolCallParseResult(
             success=False,

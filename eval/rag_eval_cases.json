@@ -5,78 +5,474 @@
       "query": "VPN 720 错误怎么办",
       "expected_file": "vpn_guide.md",
       "expected_chunk_id": "vpn_guide.md::chunk-6",
-      "min_score": 6
+      "min_score": 6,
+      "category": "error_code",
+      "difficulty": "easy",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "vpn_guide.md::chunk-6",
+          "relevance": 3
+        }
+      ]
     },
     {
       "id": "rag_002",
       "query": "怎么申请报销",
       "expected_file": "reimbursement_policy.md",
       "expected_chunk_id": "reimbursement_policy.md::chunk-2",
-      "min_score": 6
+      "min_score": 6,
+      "category": "direct_question",
+      "difficulty": "easy",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "reimbursement_policy.md::chunk-2",
+          "relevance": 3
+        }
+      ]
     },
     {
       "id": "rag_003",
       "query": "年假怎么申请",
       "expected_file": "leave_policy.md",
-      "expected_chunk_id": "leave_policy.md::chunk-3",
-      "min_score": 6
+      "expected_chunk_id": "leave_policy.md::chunk-5",
+      "min_score": 6,
+      "category": "direct_question",
+      "difficulty": "easy",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "leave_policy.md::chunk-5",
+          "relevance": 3
+        }
+      ]
     },
     {
       "id": "rag_004",
       "query": "账号登录不了怎么办",
       "expected_file": "account_login_faq.md",
       "expected_chunk_id": "account_login_faq.md::chunk-2",
-      "min_score": 6
+      "min_score": 6,
+      "category": "direct_question",
+      "difficulty": "easy",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "account_login_faq.md::chunk-2",
+          "relevance": 3
+        }
+      ]
     },
     {
       "id": "rag_005",
       "query": "今天午饭吃什么",
-      "expected_file": null
+      "expected_file": null,
+      "category": "out_of_scope",
+      "difficulty": "easy",
+      "expect_retrieval": false,
+      "relevant_chunks": []
     },
     {
-  "id": "rag_006",
-  "query": "远程办公时访问不了公司内网",
-  "expected_file": "vpn_guide.md",
-  "min_score": 6
-},
-{
-  "id": "rag_007",
-  "query": "出差费用怎么走流程",
-  "expected_file": "reimbursement_policy.md",
-  "min_score": 6
-},
-{
-  "id": "rag_008",
-  "query": "MFA 验证码收不到怎么办",
-  "expected_file": "account_login_faq.md",
-  "min_score": 6
-},
-{
-  "id": "rag_009",
-  "query": "病假申请需要什么材料",
-  "expected_file": "leave_policy.md",
-  "min_score": 3
-},
-{
-  "id": "rag_010",
-  "query": "虚拟网卡驱动",
-  "retrieval_mode": "vector",
-  "expected_file": "vpn_guide.md",
-  "expected_chunk_id": "vpn_guide.md::chunk-6",
-  "min_score": 0.4
-},
+      "id": "rag_006",
+      "query": "远程办公时访问不了公司内网",
+      "expected_file": "vpn_guide.md",
+      "min_score": 6,
+      "category": "paraphrase",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "vpn_guide.md::chunk-2",
+          "relevance": 3
+        }
+      ]
+    },
     {
-  "id": "rag_011",
-  "query": "账号被锁了怎么办",
-  "expected_file": "account_login_faq.md",
-  "min_score": 6
-},
+      "id": "rag_007",
+      "query": "出差费用怎么走流程",
+      "expected_file": "reimbursement_policy.md",
+      "min_score": 6,
+      "category": "paraphrase",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "reimbursement_policy.md::chunk-3",
+          "relevance": 3
+        }
+      ],
+      "expected_answer_contains": [
+        "登录 OA 系统",
+        "上传发票和付款凭证",
+        "财务审核",
+        "审核通过后 3-5 个工作日打款"
+      ],
+      "expected_context_chunk_id": "reimbursement_policy.md::parent-chunk-3"
+    },
     {
-  "id": "rag_012",
-  "query": "会议室门被锁了怎么办",
-  "expected_file": null
-}
-
-
+      "id": "rag_008",
+      "query": "MFA 验证码收不到怎么办",
+      "expected_file": "account_login_faq.md",
+      "min_score": 6,
+      "category": "acronym",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "account_login_faq.md::chunk-6",
+          "relevance": 2
+        },
+        {
+          "chunk_id": "account_login_faq.md::chunk-7",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_009",
+      "query": "病假申请需要什么材料",
+      "expected_file": "leave_policy.md",
+      "min_score": 3,
+      "category": "direct_question",
+      "difficulty": "easy",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "leave_policy.md::chunk-7",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_010",
+      "query": "虚拟网卡驱动",
+      "retrieval_mode": "vector",
+      "expected_file": "vpn_guide.md",
+      "expected_chunk_id": "vpn_guide.md::chunk-6",
+      "min_score": 0.4,
+      "category": "technical_term",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "vpn_guide.md::chunk-6",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_011",
+      "query": "账号被锁了怎么办",
+      "expected_file": "account_login_faq.md",
+      "min_score": 6,
+      "category": "paraphrase",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "account_login_faq.md::chunk-5",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_012",
+      "query": "会议室门被锁了怎么办",
+      "expected_file": null,
+      "category": "out_of_scope",
+      "difficulty": "medium",
+      "expect_retrieval": false,
+      "relevant_chunks": []
+    },
+    {
+      "id": "rag_013",
+      "query": "VPN 报 691 怎么处理",
+      "expected_file": "vpn_guide.md",
+      "expected_chunk_id": "vpn_guide.md::chunk-7",
+      "min_score": 3,
+      "category": "error_code",
+      "difficulty": "easy",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "vpn_guide.md::chunk-7",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_014",
+      "query": "报销要上传哪些凭证",
+      "expected_file": "reimbursement_policy.md",
+      "expected_chunk_id": "reimbursement_policy.md::chunk-6",
+      "min_score": 3,
+      "category": "direct_question",
+      "difficulty": "easy",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "reimbursement_policy.md::chunk-6",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_015",
+      "query": "超过五千的费用还需要谁审批",
+      "expected_file": "reimbursement_policy.md",
+      "expected_chunk_id": "reimbursement_policy.md::chunk-11",
+      "min_score": 3,
+      "category": "threshold_rule",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "reimbursement_policy.md::chunk-11",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_016",
+      "query": "请年假需要提前几天提交",
+      "expected_file": "leave_policy.md",
+      "expected_chunk_id": "leave_policy.md::chunk-5",
+      "min_score": 3,
+      "category": "policy_rule",
+      "difficulty": "easy",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "leave_policy.md::chunk-5",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_017",
+      "query": "密码过期后要怎么处理",
+      "expected_file": "account_login_faq.md",
+      "expected_chunk_id": "account_login_faq.md::chunk-4",
+      "min_score": 3,
+      "category": "direct_question",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "account_login_faq.md::chunk-4",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_018",
+      "query": "帮我订明天去北京的机票",
+      "expected_file": null,
+      "category": "out_of_scope",
+      "difficulty": "easy",
+      "expect_retrieval": false,
+      "relevant_chunks": []
+    },
+    {
+      "id": "rag_019",
+      "query": "报销审批通过后多久能打款",
+      "expected_file": "reimbursement_policy.md",
+      "expected_chunk_id": "reimbursement_policy.md::chunk-10",
+      "min_score": 3,
+      "category": "policy_rule",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "reimbursement_policy.md::chunk-10",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_020",
+      "query": "连续请假 6 天需要谁审批",
+      "expected_file": "leave_policy.md",
+      "expected_chunk_id": "leave_policy.md::chunk-6",
+      "min_score": 3,
+      "category": "threshold_rule",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "leave_policy.md::chunk-6",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_021",
+      "query": "调休需要关联什么记录",
+      "expected_file": "leave_policy.md",
+      "expected_chunk_id": "leave_policy.md::chunk-8",
+      "min_score": 3,
+      "category": "direct_question",
+      "difficulty": "easy",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "leave_policy.md::chunk-8",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_022",
+      "query": "账号连续输错 5 次会怎样",
+      "expected_file": "account_login_faq.md",
+      "expected_chunk_id": "account_login_faq.md::chunk-5",
+      "min_score": 3,
+      "category": "threshold_rule",
+      "difficulty": "easy",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "account_login_faq.md::chunk-5",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_023",
+      "query": "VPN 客户端需要更新吗",
+      "expected_file": "vpn_guide.md",
+      "expected_chunk_id": "vpn_guide.md::chunk-4",
+      "min_score": 3,
+      "category": "direct_question",
+      "difficulty": "easy",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "vpn_guide.md::chunk-4",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_024",
+      "query": "帮我查一下快递到哪里了",
+      "expected_file": null,
+      "category": "out_of_scope",
+      "difficulty": "easy",
+      "expect_retrieval": false,
+      "relevant_chunks": []
+    },
+    {
+      "id": "rag_025",
+      "query": "VPN 连不上时先检查什么",
+      "expected_file": "vpn_guide.md",
+      "expected_chunk_id": "vpn_guide.md::chunk-3",
+      "min_score": 3,
+      "category": "troubleshooting_step",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "vpn_guide.md::chunk-3",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_026",
+      "query": "远程办公 VPN 故障的工单优先级是什么",
+      "expected_file": "vpn_guide.md",
+      "expected_chunk_id": "vpn_guide.md::chunk-10",
+      "min_score": 3,
+      "category": "priority_rule",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "vpn_guide.md::chunk-10",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_027",
+      "query": "年假要满足什么条件才能使用",
+      "expected_file": "leave_policy.md",
+      "expected_chunk_id": "leave_policy.md::chunk-4",
+      "min_score": 3,
+      "category": "policy_rule",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "leave_policy.md::chunk-4",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_028",
+      "query": "账号安全问题是什么优先级",
+      "expected_file": "account_login_faq.md",
+      "expected_chunk_id": "account_login_faq.md::chunk-9",
+      "min_score": 3,
+      "category": "priority_rule",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "account_login_faq.md::chunk-9",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_029",
+      "query": "报销在什么系统里提交",
+      "expected_file": "reimbursement_policy.md",
+      "expected_chunk_id": "reimbursement_policy.md::chunk-2",
+      "min_score": 3,
+      "category": "direct_question",
+      "difficulty": "easy",
+      "expect_retrieval": true,
+      "relevant_chunks": [
+        {
+          "chunk_id": "reimbursement_policy.md::chunk-2",
+          "relevance": 3
+        }
+      ]
+    },
+    {
+      "id": "rag_030",
+      "query": "帮我把电脑桌面换成深色主题",
+      "expected_file": null,
+      "category": "out_of_scope",
+      "difficulty": "medium",
+      "expect_retrieval": false,
+      "relevant_chunks": []
+    },
+    {
+      "id": "rag_031",
+      "query": "年假有哪些规则",
+      "expected_file": "leave_policy.md",
+      "category": "policy_summary",
+      "difficulty": "medium",
+      "expect_retrieval": true,
+      "expected_context_chunk_id": "leave_policy.md::parent-chunk-3",
+      "relevant_chunks": [
+        {
+          "chunk_id": "leave_policy.md::chunk-3",
+          "relevance": 3
+        }
+      ],
+      "expected_answer_contains": [
+        "入职满一年后可使用年假",
+        "提前 3 个工作日提交",
+        "连续请假超过 5 天",
+        "病假需要上传医院证明",
+        "调休需要关联加班记录"
+      ]
+    }
   ]
 }

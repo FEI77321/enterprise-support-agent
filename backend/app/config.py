@@ -39,6 +39,72 @@ def get_float_env(name: str, default: float) -> float:  # 函数：负责 获取
         return default
 
 
+def is_redis_enabled() -> bool:
+    """判断是否启用依赖 Redis 的可选能力。"""
+    return get_bool_env("REDIS_ENABLED", default=False)
+
+
+def get_redis_url() -> str:
+    return os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
+
+
+def get_redis_connect_timeout_seconds() -> float:
+    return get_float_env("REDIS_CONNECT_TIMEOUT_SECONDS", default=2.0)
+
+
+def get_redis_socket_timeout_seconds() -> float:
+    return get_float_env("REDIS_SOCKET_TIMEOUT_SECONDS", default=2.0)
+
+
+def get_int_env(name: str, default: int, minimum: int = 1) -> int:
+    """读取正整数环境变量；缺失、格式错误或小于下限时使用默认值。"""
+    value = os.getenv(name)
+    if value is None:
+        return default
+
+    try:
+        parsed_value = int(value)
+    except ValueError:
+        return default
+
+    return parsed_value if parsed_value >= minimum else default
+
+
+def is_rate_limit_enabled() -> bool:
+    """判断是否启用 Redis 分布式限流。"""
+    return get_bool_env("RATE_LIMIT_ENABLED", default=False)
+
+
+def get_rate_limit_requests() -> int:
+    """返回每个时间窗口允许的最大请求数。"""
+    return get_int_env("RATE_LIMIT_REQUESTS", default=60)
+
+
+def get_rate_limit_window_seconds() -> int:
+    """返回限流时间窗口长度，单位为秒。"""
+    return get_int_env("RATE_LIMIT_WINDOW_SECONDS", default=60)
+
+
+def is_rate_limit_fail_open() -> bool:
+    """Redis 短暂不可用时，是否放行请求以优先保证服务可用性。"""
+    return get_bool_env("RATE_LIMIT_FAIL_OPEN", default=True)
+
+
+def get_llm_retry_max_attempts() -> int:
+    """返回一次外部 LLM 调用最多尝试次数，包含首次调用。"""
+    return get_int_env("LLM_RETRY_MAX_ATTEMPTS", default=3)
+
+
+def get_llm_retry_base_delay_seconds() -> float:
+    """返回 LLM 重试的初始等待时间，单位为秒。"""
+    return get_float_env("LLM_RETRY_BASE_DELAY_SECONDS", default=0.5)
+
+
+def get_llm_retry_max_delay_seconds() -> float:
+    """返回 LLM 重试等待时间的最大值，单位为秒。"""
+    return get_float_env("LLM_RETRY_MAX_DELAY_SECONDS", default=4.0)
+
+
 def get_openai_timeout_seconds() -> float:  # 函数：负责 获取 OpenAI timeout seconds 相关逻辑。
     return get_float_env("OPENAI_TIMEOUT_SECONDS", default=20.0)
 

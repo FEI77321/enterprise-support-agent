@@ -26,7 +26,7 @@ class FakeInvalidJSONOpenAIResponses:  # 类：模拟返回非法 JSON 响应的
 
 
 class FakeInvalidJSONOpenAIClient:  # 类：模拟会产生非法 JSON 的 OpenAI 客户端。
-    def __init__(self, api_key: str, timeout: float):  # 函数：初始化当前对象所需的状态或依赖。
+    def __init__(self, api_key: str, timeout: float, max_retries: int = 0):  # 函数：初始化当前对象所需的状态或依赖。
         self.responses = FakeInvalidJSONOpenAIResponses()
 
 
@@ -46,7 +46,7 @@ class FakeOpenAIToolCallResponses:  # 类：模拟工具调用场景下的 respo
 
 
 class FakeOpenAIToolCallClient:  # 类：模拟工具调用场景下的 OpenAI 客户端。
-    def __init__(self, api_key: str, timeout: float):  # 函数：初始化当前对象所需的状态或依赖。
+    def __init__(self, api_key: str, timeout: float, max_retries: int = 0):  # 函数：初始化当前对象所需的状态或依赖。
         self.responses = FakeOpenAIToolCallResponses()
 
 
@@ -67,12 +67,10 @@ def test_tool_call_auto_delete_ticket_after_confirmation() -> tuple[bool, str]: 
         return False, f"期望获得 ticket_id，实际为 {ticket_id}"
 
     try:
-        delete_request = client.post(
-            "/tool-call/auto",
-            json={
-                "message": f"删除工单 {ticket_id}",
-                "session_id": session_id,
-            },
+        delete_request = run_auto_with_env(
+            message=f"删除工单 {ticket_id}",
+            env={"TOOL_CALL_PROVIDER": "mock"},
+            session_id=session_id,
         )
 
         if delete_request.status_code != 200:
@@ -97,12 +95,10 @@ def test_tool_call_auto_delete_ticket_after_confirmation() -> tuple[bool, str]: 
         if not (queried_before_confirm.data or {}).get("found"):
             return False, "未确认前不应删除工单，但工单已不存在"
 
-        confirm_request = client.post(
-            "/tool-call/auto",
-            json={
-                "message": "确认删除",
-                "session_id": session_id,
-            },
+        confirm_request = run_auto_with_env(
+            message="确认删除",
+            env={"TOOL_CALL_PROVIDER": "mock"},
+            session_id=session_id,
         )
 
         if confirm_request.status_code != 200:
@@ -343,7 +339,11 @@ def test_tool_call_auto_openai_with_mock_client() -> tuple[bool, str]:  # 测试
     return True, ""
 
 
-def run_auto_with_env(message: str, env: dict[str, str]):  # 函数：负责 运行 自动 带 环境变量 相关逻辑。
+def run_auto_with_env(
+    message: str,
+    env: dict[str, str],
+    session_id: str | None = None,
+):  # 函数：负责 运行 自动 带环境变量和可选会话 ID 的请求。
     old_env = {}
 
     for key, value in env.items():
@@ -355,6 +355,7 @@ def run_auto_with_env(message: str, env: dict[str, str]):  # 函数：负责 运
             "/tool-call/auto",
             json={
                 "message": message,
+                "session_id": session_id,
             },
         )
     finally:

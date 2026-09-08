@@ -10,6 +10,24 @@ import chromadb
 CHROMA_DIR = Path(__file__).resolve().parents[1] / "data" / "chroma"
 COLLECTION_NAME = "enterprise_support_docs"
 
+from chromadb.utils.embedding_functions import (
+    SentenceTransformerEmbeddingFunction,
+)
+
+BGE_COLLECTION_NAME = "enterprise_support_docs_bge_small_zh"
+BGE_MODEL_NAME = "BAAI/bge-small-zh-v1.5"
+BGE_CACHE_DIR = Path(r"D:\AI-Model-Cache\huggingface")
+
+
+def get_bge_embedding_function():
+    """返回使用本地 D 盘缓存的中文 BGE embedding 函数。"""
+    return SentenceTransformerEmbeddingFunction(
+        model_name=BGE_MODEL_NAME,
+        device="cpu",
+        normalize_embeddings=True,
+        cache_folder=str(BGE_CACHE_DIR),
+    )
+
 
 @dataclass
 class VectorSearchResult:  # 类：表示向量检索命中的文本块、来源和相似度。
@@ -26,9 +44,6 @@ def load_knowledge_chunks() -> list[VectorSearchResult]:  # 函数：负责 加�
     for file, content in documents.items():
         for index, chunk in enumerate(split_text_into_chunks(content)):
             if chunk.startswith("#"):
-                continue
-
-            if "优先级" in chunk:
                 continue
 
             chunks.append(
@@ -57,6 +72,40 @@ def _simple_similarity(query: str, content: str) -> float:  # 函数：负责 si
 
     overlap = query_terms & content_terms
     return len(overlap) / len(query_terms)
+
+
+
+def build_bge_vector_index() -> None:
+    """使用 bge-small-zh-v1.5 构建独立中文向量索引。"""
+    client = chromadb.PersistentClient(path=str(CHROMA_DIR))
+
+    collection = client.get_or_create_collection(
+        name=BGE_COLLECTION_NAME,
+        embedding_function=get_bge_embedding_function(),
+    )
+
+    chunks = load_knowledge_chunks()
+
+    ids = [chunk.chunk_id for chunk in chunks]
+    documents = [chunk.content for chunk in chunks]
+    metadatas = [
+        {
+            "file": chunk.file,
+            "chunk_id": chunk.chunk_id,
+        }
+        for chunk in chunks
+    ]
+
+    collection.upsert(
+        ids=ids,
+        documents=documents,
+        metadatas=metadatas,
+    )
+
+    print(
+        f"BGE 索引构建完成：{BGE_COLLECTION_NAME}，"
+        f"共 {len(chunks)} 个子块"
+    )
 
 
 
@@ -149,3 +198,41 @@ def search_vector_store(query: str, top_k: int = 3) -> list[VectorSearchResult]:
 
     results.sort(key=lambda item: item.score, reverse=True)
     return results[:top_k]
+
+
+def search_bge_vector_store(
+    query: str,
+    top_k: int = 3,
+) -> list[VectorSearchResult]:
+    """在 bge-small-zh-v1.5 的独立索引中检索。"""
+    client = chromadb.PersistentClient(path=str(CHROMA_DIR))
+
+    collection = client.get_collection(
+        name=BGE_COLLECTION_NAME,
+        embedding_function=get_bge_embedding_function(),
+    )
+
+    result = collection.query(
+        query_texts=[query],
+        n_results=top_k,
+    )
+
+    results: list[VectorSearchResult] = []
+
+    for chunk_id, document, metadata, distance in zip(
+        result["ids"][0],
+        result["documents"][0],
+        result["metadatas"][0],
+        result["distances"][0],
+    ):
+        results.append(
+            VectorSearchResult(
+                chunk_id=chunk_id,
+                file=metadata["file"],
+                content=document,
+                # 当前阶段主要比较排序；分数只保留为非负展示值。
+                score=max(0.0, 1.0 - float(distance)),
+            )
+        )
+
+    return results

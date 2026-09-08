@@ -3,6 +3,7 @@
 import os
 import logging
 import warnings
+from unittest.mock import AsyncMock, patch
 
 from eval_path import setup_backend_path
 
@@ -14,6 +15,7 @@ from fastapi.testclient import TestClient
 
 
 from app.main import app
+from app.rate_limiter import RateLimitDecision
 
 
 logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -31,6 +33,81 @@ def test_health() -> tuple[bool, str]:  # 测试函数：验证 健康检查 场
 
     if response.json() != {"status": "ok"}:
         return False, f"期望 /health 返回 status=ok，实际为 {response.json()}"
+
+    return True, ""
+
+
+def test_redis_health_when_disabled() -> tuple[bool, str]:
+    old_redis_enabled = os.environ.get("REDIS_ENABLED")
+    os.environ["REDIS_ENABLED"] = "false"
+    try:
+        response = client.get("/health/redis")
+    finally:
+        if old_redis_enabled is None:
+            os.environ.pop("REDIS_ENABLED", None)
+        else:
+            os.environ["REDIS_ENABLED"] = old_redis_enabled
+
+    if response.status_code != 200:
+        return False, f"期望 /health/redis status_code=200，实际为 {response.status_code}"
+
+    if response.json() != {"status": "disabled"}:
+        return False, f"期望 Redis 关闭状态，实际为 {response.json()}"
+
+    return True, ""
+
+
+def test_request_id_header() -> tuple[bool, str]:
+    request_id = "p2-trace-health"
+    response = client.get(
+        "/health",
+        headers={"X-Request-ID": request_id},
+    )
+
+    if response.headers.get("X-Request-ID") != request_id:
+        return False, (
+            "期望响应透传 X-Request-ID="
+            f"{request_id}，实际为 "
+            f"{response.headers.get('X-Request-ID')}"
+        )
+
+    return True, ""
+
+
+def test_rate_limit_response() -> tuple[bool, str]:
+    request_id = "p2-rate-limit"
+    with patch(
+        "app.main.check_rate_limit",
+        new=AsyncMock(
+            return_value=RateLimitDecision(
+                allowed=False,
+                retry_after_seconds=12,
+                limit=60,
+                remaining=0,
+                reset_after_seconds=12,
+            )
+        ),
+    ):
+        response = client.post(
+            "/chat",
+            headers={"X-Request-ID": request_id},
+            json={"message": "VPN 720 错误怎么办"},
+        )
+
+    if response.status_code != 429:
+        return False, f"期望限流状态码 429，实际为 {response.status_code}"
+
+    if response.headers.get("Retry-After") != "12":
+        return False, f"期望 Retry-After=12，实际为 {response.headers.get('Retry-After')}"
+
+    if response.headers.get("X-RateLimit-Remaining") != "0":
+        return False, "限流响应未返回剩余额度"
+
+    if response.headers.get("X-Request-ID") != request_id:
+        return False, "限流响应未透传 X-Request-ID"
+
+    if response.json().get("code") != "rate_limit_exceeded":
+        return False, f"期望限流错误码，实际为 {response.json()}"
 
     return True, ""
 
@@ -82,6 +159,73 @@ def test_chat_answer() -> tuple[bool, str]:  # 测试函数：验证 聊天 回�
     return True, ""
 
 
+def test_chat_request_id_matches_trace() -> tuple[bool, str]:
+    request_id = "p2-trace-chat"
+    old_enable_llm = os.environ.get("ENABLE_LLM_ANSWER")
+    os.environ["ENABLE_LLM_ANSWER"] = "false"
+
+    try:
+        response = client.post(
+            "/chat",
+            headers={"X-Request-ID": request_id},
+            json={"message": "VPN 720 错误怎么办"},
+        )
+    finally:
+        if old_enable_llm is None:
+            os.environ.pop("ENABLE_LLM_ANSWER", None)
+        else:
+            os.environ["ENABLE_LLM_ANSWER"] = old_enable_llm
+
+    if response.status_code != 200:
+        return False, f"/chat 请求失败：{response.status_code}"
+
+    actual_request_id = response.json().get("request_id")
+    if actual_request_id != request_id:
+        return False, (
+            f"期望 ChatResponse.request_id={request_id}，"
+            f"实际为 {actual_request_id}"
+        )
+
+    return True, ""
+
+
+def test_langgraph_request_id_matches_trace() -> tuple[bool, str]:
+    request_id = "p2-trace-langgraph"
+    old_enable_llm = os.environ.get("ENABLE_LLM_ANSWER")
+    old_agent_engine = os.environ.get("AGENT_ENGINE")
+    os.environ["ENABLE_LLM_ANSWER"] = "false"
+    os.environ["AGENT_ENGINE"] = "langgraph"
+
+    try:
+        response = client.post(
+            "/chat",
+            headers={"X-Request-ID": request_id},
+            json={"message": "VPN 720 错误怎么办"},
+        )
+    finally:
+        if old_enable_llm is None:
+            os.environ.pop("ENABLE_LLM_ANSWER", None)
+        else:
+            os.environ["ENABLE_LLM_ANSWER"] = old_enable_llm
+
+        if old_agent_engine is None:
+            os.environ.pop("AGENT_ENGINE", None)
+        else:
+            os.environ["AGENT_ENGINE"] = old_agent_engine
+
+    if response.status_code != 200:
+        return False, f"LangGraph /chat 请求失败：{response.status_code}"
+
+    actual_request_id = response.json().get("request_id")
+    if actual_request_id != request_id:
+        return False, (
+            f"期望 LangGraph ChatResponse.request_id={request_id}，"
+            f"实际为 {actual_request_id}"
+        )
+
+    return True, ""
+
+
 def test_chat_validation_error() -> tuple[bool, str]:  # 测试函数：验证 聊天 validation 错误 场景。
     response = client.post("/chat", json={"message": "V"})
 
@@ -94,8 +238,13 @@ def test_chat_validation_error() -> tuple[bool, str]:  # 测试函数：验证 �
 def main() -> None:  # 函数：运行本文件定义的主流程或全部评估。
     tests = [
         ("health", test_health),
+        ("redis_health_when_disabled", test_redis_health_when_disabled),
+        ("request_id_header", test_request_id_header),
+        ("rate_limit_response", test_rate_limit_response),
         ("version", test_version),
         ("chat_answer", test_chat_answer),
+        ("chat_request_id_matches_trace", test_chat_request_id_matches_trace),
+        ("langgraph_request_id_matches_trace", test_langgraph_request_id_matches_trace),
         ("chat_validation_error", test_chat_validation_error),
     ]
 

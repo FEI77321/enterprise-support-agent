@@ -81,8 +81,8 @@ graph TD
 
 运行 `start.ps1` 一键启动后，浏览器打开 http://localhost:5173 即可与 Agent 交互。下方示例由真实运行抓取，可对照 `eval/run_all_eval.py` 的回归评测复现。
 
-![前端聊天界面](docs/images/frontend_home.png)
-![Swagger 接口文档](docs/images/swagger_docs.png)
+![前端聊天界面](frontend_home.png)
+![Swagger 接口文档](swagger_docs.png)
 
 ### 1. RAG 知识库问答（命中知识库）
 
@@ -174,6 +174,7 @@ Tool Registry 统一执行并返回 workflow_steps
 - LLM：OpenAI Python SDK、DeepSeek OpenAI 兼容接口
 - 数据层：SQLite
 - Agent 编排：LangGraph（显式状态图路由，`graph_agent.py`）
+- Agent 工具协议：MCP Python SDK 2.x（stdio Server + Inspector）
 - 前端：React、TypeScript、Vite
 - 工程化：python-dotenv、结构化日志、eval 脚本、Docker / Docker Compose、PowerShell 启动脚本
 
@@ -209,6 +210,8 @@ enterprise-support-agent/
 │   ├── Dockerfile                    # 前端两阶段构建（nginx 托管）
 │   └── .dockerignore
 ├── eval/                             # 回归评测与 RAG golden case
+├── mcp_server/
+│   └── server.py                     # 只读 MCP 工具适配层
 ├── docs/
 │   └── resume_interview_pack.md      # 简历与面试素材
 ├── start.ps1                         # 一键启动脚本（后端 + 前端）
@@ -254,10 +257,10 @@ workflow_steps   本次 Agent 的执行路径
 
 ## 本地运行
 
-在项目根目录执行：
+在项目根目录执行后续命令；不要使用复制前项目遗留的绝对路径或虚拟环境。
 
 ```powershell
-cd C:\Users\21922\Documents\Codex\2026-07-24\1\enterprise-support-agent
+Get-Location
 ```
 
 ### 0. 一键启动（推荐）
@@ -282,7 +285,7 @@ powershell -ExecutionPolicy Bypass -File .\start.ps1
 docker compose up --build
 ```
 
-一条命令构建并启动三个服务：`backend-init`（构建向量索引后退出）、`backend`（8000）、`frontend`（5173）。SQLite 与 Chroma 数据通过数据卷持久化，`.env` 由 compose 注入容器，无需在容器内放置密钥文件。
+一条命令构建并启动四个服务：`redis`（P2 共享基础设施）、`backend-init`（构建向量索引后退出）、`backend`（8000）、`frontend`（5173）。`backend` 会等待 Redis 健康后再启动；SQLite、Chroma 与 Redis 数据分别持久化，`.env` 由 compose 注入容器，无需在容器内放置密钥文件。
 
 ### 1. 安装后端依赖
 
@@ -306,6 +309,8 @@ TOOL_CALL_PROVIDER=deepseek
 ```
 
 `.env` 已被 `.gitignore` 忽略，真实 Key 不应提交到仓库。
+
+本地直接运行 `start.ps1` 时，Redis 默认关闭，不需要安装 Redis；容器模式会自动启用 compose 内的 Redis。可通过 `GET /health/redis` 查看状态：本地返回 `{"status":"disabled"}`，容器运行正常时返回 `{"status":"ok"}`。
 
 支持的回答模型 provider：
 
@@ -331,10 +336,10 @@ cd ..
 
 ### 5. 启动前端
 
-另开一个终端：
+另开一个终端，在项目根目录执行：
 
 ```powershell
-cd C:\Users\21922\Documents\Codex\2026-07-24\1\enterprise-support-agent\frontend
+cd frontend
 npm install
 npm run dev
 ```
@@ -342,6 +347,22 @@ npm run dev
 前端地址：<http://localhost:5173>
 
 后端已配置 `localhost:5173` 与 `127.0.0.1:5173` 的 CORS，前端可以直接调用 `/chat`。
+
+### 6. 启动 MCP Inspector
+
+项目提供独立的 stdio MCP Server，复用 `backend/app/tool_registry.py` 中的业务工具。确保已安装 Node.js / npm 后，在项目根目录执行：
+
+```powershell
+npx @modelcontextprotocol/inspector .\backend\.venv\Scripts\python.exe .\mcp_server\server.py
+```
+
+Inspector 连接后可发现 3 个只读工具：
+
+- `search_knowledge_base`：检索 Markdown 企业知识库。
+- `search_vector_store`：检索 ChromaDB 向量知识库。
+- `query_ticket_status`：按工单号查询状态。
+
+`create_ticket` 与 `delete_ticket` 暂不通过 MCP 暴露，避免外部客户端绕过主项目的写操作与高风险确认流程。
 
 ## 评测与验证
 
@@ -351,7 +372,7 @@ npm run dev
 .\backend\.venv\Scripts\python.exe eval\run_all_eval.py
 ```
 
-它目前会顺序运行 28 组本地、可复现的评测，重点包括：
+它目前会顺序运行 30 组本地、可复现的评测，重点包括：
 
 - 配置解析与 Prompt 构造。
 - Tool Registry、工具参数解析、执行器、schema 一致性与确认机制。
@@ -359,6 +380,7 @@ npm run dev
 - LLM Stub、无 Key fallback、错误引用 fallback。
 - SQLite 数据库、工单仓储与历史 JSON 迁移。
 - FastAPI 启动、API smoke、接口契约、会话记忆与端到端用户流程。
+- MCP 工具白名单、真实 stdio 调用、参数校验与工单查询。
 
 真实模型 smoke test 单独运行，避免每次回归都产生 API 成本：
 
@@ -397,11 +419,13 @@ knowledge_answer
 
 工具规划器负责选工具，解析器负责把模型输出变成结构化参数，执行器负责真正执行。`delete_ticket` 被标为高风险工具：先保存待确认操作，再等待同一 `session_id` 的确认消息，避免模型或用户的单次表达直接删除数据。
 
+MCP Server 是独立的协议适配层，只复用 Tool Registry，不重写业务逻辑。当前仅暴露 3 个只读工具；创建与删除工单在 MCP 会话尚未接入原确认上下文前保持关闭。两个检索工具还会在协议边界拒绝 `top_k < 1`，以结构化 `invalid_args` 返回错误。
+
 ### 5. 双引擎编排（rules / langgraph）
 
 Agent 路由提供两种实现，由 `AGENT_ENGINE` 环境变量切换，默认 `rules`：
 
-- `rules`：`agent.py` 的 if/else 顺序路由，稳定、直接，被 28 组本地 eval 覆盖。
+- `rules`：`agent.py` 的 if/else 顺序路由，稳定、直接，被 30 组本地 eval 覆盖。
 - `langgraph`：`graph_agent.py` 的显式状态图，9 个节点（提取工单号、查单、范围判断、关键词检索、高置信回答、澄清、向量检索、向量澄清、建单）+ 4 条条件边。节点是纯函数，只返回对 state 的增量更新；`workflow_steps` 通过 LangGraph 的 reducer（`Annotated[list, operator.add]`）自动追加，与规则版行为一致。
 
 两种实现复用同一批辅助函数（`_is_support_related`、`_has_valid_llm_citations`、检索与 LLM 调用），输出可逐条对比；切换通过 `_resolve_handler()` 延迟 import 完成，默认路径零额外开销。状态图把"路由决策"从代码中显式化，后续新增节点（如工单升级、转人工）只需加节点与边，不动主干。
@@ -419,5 +443,41 @@ Agent 路由提供两种实现，由 `AGENT_ENGINE` 环境变量切换，默认 
 
 可以用下面这段介绍项目：
 
-> 我做了一个企业 IT 支持 Agent。它先判断用户是否在问企业支持问题，再根据工单号、知识库置信度和检索结果决定查询工单、回答、追问或创建工单。RAG 层结合关键词检索、ChromaDB 向量检索、exact match 和 rerank，并以 chunk 级来源返回证据。高置信命中后，我把当前知识块作为上下文传给 DeepSeek 生成自然语言回答，同时校验模型返回的文件与 chunk 引用；不合法或模型异常就降级到规则答案。除此之外，我实现了工具规划、统一执行、SQLite 持久化和删除确认，并通过 28 组本地 eval 覆盖核心分支。前端使用 React 展示回答、来源、工单和 Agent 执行轨迹。项目同时提供 PowerShell 一键启动脚本与 Docker Compose 编排，分别满足本机演示与容器化交付。
+> 我做了一个企业 IT 支持 Agent。它先判断用户是否在问企业支持问题，再根据工单号、知识库置信度和检索结果决定查询工单、回答、追问或创建工单。RAG 层结合关键词检索、ChromaDB 向量检索、exact match 和 rerank，并以 chunk 级来源返回证据。高置信命中后，我把当前知识块作为上下文传给 DeepSeek 生成自然语言回答，同时校验模型返回的文件与 chunk 引用；不合法或模型异常就降级到规则答案。除此之外，我实现了工具规划、统一执行、SQLite 持久化、删除确认和只读 MCP Server，并通过 30 组本地 eval 覆盖核心分支。前端使用 React 展示回答、来源、工单和 Agent 执行轨迹。项目同时提供 PowerShell 一键启动脚本与 Docker Compose 编排，分别满足本机演示与容器化交付。
 
+## RAG v2 实操成果（2026-08-14）
+
+本轮将原先“能检索”的知识库升级为“可评测、可比较、可回归”的 RAG 子系统。
+
+- **黄金集与指标**：`eval/rag_eval_cases.json` 共 31 条用例（26 正例、5 负例）；已实现 Recall@3、False Positive Rate@3、MRR@3、nDCG@3。关键词主检索当前为 **1.0000 / 0.0000 / 0.9551 / 0.9602**。
+- **结构化 Chunk**：支持 Markdown 标题、标题后的普通段落和编号流程；检索 child chunk，回答与引用回填 parent chunk。这样既能定位具体事实，也能给出完整的报销、VPN 等流程。
+- **中文向量基线**：使用 `BAAI/bge-small-zh-v1.5` 建立独立 Chroma 索引；BGE 向量基线为 Recall **0.9231**、MRR **0.8333**、nDCG **0.8562**。
+- **检索实验**：RRF 关键词 + 向量融合取得 Recall **1.0000**、MRR **0.9038**、nDCG **0.9226**；同时完成 BGE reranker 实验。实验结果说明在当前小规模、专业术语明确的数据上，原有关键词排序仍是更优的线上主路径，融合/重排作为可插拔能力保留。
+- **回答质量与引用**：覆盖父块引用、流程完整性、规则版/LangGraph 一致性、向量回答分支；自动质量检查 26/26 通过，并已按 Faithfulness、Answer Relevance、Citation Correctness 进行人工抽检。
+- **回归结果**：执行 `eval/run_all_eval.py`，当前 **37/37 passed**。
+
+详细复现实验步骤、指标解读、失败案例和面试问答见知识库文档：`个人档案/学习/实操知识/Enterprise Support Agent_RAG进阶实操复盘.md`。
+
+## P2 工程化实操（进行中）
+
+- P2.1：已接入 `X-Request-ID`、请求耗时日志和 Agent 返回体 trace 对齐，方便从 HTTP 请求追到执行路径。
+- P2.2：已加入 Redis 异步客户端、启动/关闭生命周期、健康检查和 Docker Compose 服务。Redis 在本地默认关闭，容器环境默认开启。
+- P2.3：已基于 Redis Lua 脚本实现按客户端 IP 的固定窗口分布式限流；超限响应为 `429`，带 `Retry-After` 和 `X-Request-ID`。Redis 临时故障时默认放行并记录异常日志，避免基础设施短暂故障中断核心问答服务。
+- P2.4：已为 OpenAI、DeepSeek 的回答与工具规划调用加入统一的指数退避重试。仅网络超时、连接错误、429 与 5xx 会重试；鉴权和参数等 4xx 错误会立即失败。SDK 内置重试已关闭，避免双重重试造成不可控等待；每次尝试和重试均带 request ID 记录到日志。
+- P2.5：新增 `POST /chat/stream` SSE 接口。它先推送处理状态，再推送回答分片，最后用 `complete` 事件返回完整结构化响应；React 前端已改用该接口并逐步渲染回答。当前 Agent 仍同步生成完整答案，因此这里是阶段事件 + 回答分片流；接入模型原生流式 API 后可无缝替换为逐 token 输出。
+- P2.6：限流范围收敛到 `/chat` 和 `/chat/stream`，并通过 `X-RateLimit-Limit`、`X-RateLimit-Remaining`、`X-RateLimit-Reset` 向前端公开额度信息；超限时前端根据 `Retry-After` 提示等待时间。
+
+P2 离线回归命令（不会调用真实模型）：
+
+```powershell
+.\backend\.venv\Scripts\python.exe eval\run_p2_engineering_eval.py
+```
+
+Redis 容器实测需要先启动 Docker Desktop，再执行：
+
+```powershell
+docker compose up --build
+docker compose exec redis redis-cli ping
+```
+
+预期输出为 `PONG`。在 Docker Desktop 未启动时，不应将这一步标记为已验证。

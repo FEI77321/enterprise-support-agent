@@ -24,6 +24,14 @@ Enterprise Support Agent：企业内部 IT 支持智能体
 - 设计配置评测、工具评测、LLM 质量评测和端到端评测四层回归体系，覆盖 7 个工具测试、3 个 LLM 链路测试和 13 个端到端 case，并提供 `run_all_eval.py` 一键运行全部评测。
 - 补充 `.env.example`、`.gitignore`、README 和评测报告，规范密钥管理、运行说明和项目交付文档。
 
+## P2 工程化补充（可替换或追加到简历）
+
+- 为 FastAPI 请求接入 `X-Request-ID` 全链路追踪，统一 HTTP 响应头、结构化日志、Agent 状态和聊天响应中的请求标识，便于定位限流、重试与流式中断问题。
+- 使用 Redis Lua 脚本实现按客户端 IP 的固定窗口分布式限流，仅保护 `/chat` 与 `/chat/stream`；通过 `429`、`Retry-After` 及额度响应头向前端提供可恢复的反馈。
+- 抽象 OpenAI/DeepSeek 的统一重试层：仅对超时、连接异常、429 和 5xx 进行有限指数退避重试，4xx 快速失败，最终沿用规则答案/无工具调用的安全降级。
+- 新增 `POST /chat/stream` SSE 接口和 React `fetch + ReadableStream` 消费端，推送处理状态、回答分片、工作流和最终结构化结果；当前为阶段事件与完成答案分片流，未宣称模型原生 token 流。
+- 新增 P2 聚合回归 `eval/run_p2_engineering_eval.py`，离线覆盖 Redis 配置、限流、LLM 重试、Trace/API、SSE 和 LangGraph 行为一致性。
+
 ## 简历短版
 
 如果简历空间不够，可以压缩成 4 条：
@@ -51,7 +59,7 @@ Enterprise Support Agent：企业内部 IT 支持智能体
 
 我比较重视可解释性，所以每个响应都会带 `workflow_steps`。比如知识库回答路径可能是 `extract_ticket_id -> search_knowledge_base -> rule_answer -> knowledge_answer`，创建工单路径可能是 `extract_ticket_id -> search_knowledge_base -> search_vector_store -> create_ticket -> ticket_created`。这样不仅方便调试，也方便面试时讲清楚 Agent 内部到底做了什么。
 
-LLM 部分我没有一开始就强依赖真实模型，而是做了配置开关。默认 `LLM_PROVIDER=stub`，保证本地 eval 稳定；如果配置 `LLM_PROVIDER=openai` 和 `OPENAI_API_KEY`，就可以走真实 OpenAI 调用。同时如果没有 key 或调用失败，会 fallback，避免影响主流程。
+LLM 部分我没有一开始就强依赖真实模型，而是做了配置开关。默认 `LLM_PROVIDER=stub`，保证本地 eval 稳定；配置 OpenAI 或 DeepSeek 后可走真实模型调用。同时如果没有 key 或调用最终失败，会回退到规则答案；对超时、连接异常、429 与 5xx 会做有限指数退避重试。
 
 最后是评测体系。我把评测拆成四层：配置评测验证环境变量解析；工具评测验证每个工具能独立运行；LLM 质量评测验证开启 LLM Stub 后是否进入 `llm_answer` 分支并保留 sources，同时验证 OpenAI provider 缺少 API Key 时可以安全 fallback，并用 mock client 验证真实 SDK 调用参数；端到端评测验证完整 Agent 工作流。目前工具评测 7/7、LLM 质量评测 3/3、端到端 case 13/13，并且用 `run_all_eval.py` 一键运行全部评测。这是这个项目从 demo 走向工程化的关键。
 
