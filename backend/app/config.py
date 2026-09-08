@@ -1,6 +1,7 @@
 # 模块职责：环境变量配置读取模块：把字符串形式的环境变量安全转换为布尔值、浮点数以及 OpenAI、DeepSeek 等模型配置，避免配置错误散落在业务代码中。
 
 import os
+from pathlib import Path
 
 
 def get_bool_env(name: str, default: bool = False) -> bool:  # 函数：负责 获取 布尔 环境变量 相关逻辑。
@@ -13,6 +14,30 @@ def get_bool_env(name: str, default: bool = False) -> bool:  # 函数：负责 �
 
 def is_llm_answer_enabled() -> bool:  # 函数：负责 is 大模型 回答 enabled 相关逻辑。
     return get_bool_env("ENABLE_LLM_ANSWER", default=False)
+
+
+def is_ingested_knowledge_experiment_enabled() -> bool:
+    """是否启用 RAG 2.0 SQLite 检索实验入口，默认严格关闭。"""
+
+    return get_bool_env(
+        "INGESTED_KNOWLEDGE_EXPERIMENT_ENABLED",
+        default=False,
+    )
+
+
+def get_ingested_knowledge_database_path() -> Path:
+    """读取实验检索数据库位置，默认复用项目 SQLite 数据库。"""
+
+    default_path = (
+        Path(__file__).resolve().parent.parent
+        / "data"
+        / "enterprise_support_agent.db"
+    )
+    configured_path = os.getenv(
+        "INGESTED_KNOWLEDGE_DATABASE_PATH",
+        str(default_path),
+    )
+    return Path(configured_path)
 
 
 def get_llm_provider() -> str:  # 函数：负责 获取 大模型 Provider 相关逻辑。

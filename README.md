@@ -38,6 +38,33 @@
 8. Docker 容器化与一键启动：前后端 Dockerfile、docker compose 编排与 `start.ps1` 一键启动脚本。
 9. LangGraph 状态图重构：将 if/else 路由升级为显式状态图（9 节点 + 条件边），节点纯函数化，通过 `AGENT_ENGINE` 与规则版并行切换，行为回归一致。
 
+## RAG 2.0：受控文档摄入实验（当前增量）
+
+除原有的 Markdown + ChromaDB 主检索链路外，项目新增了一条**隔离、默认关闭**的文档摄入实验链路。它的目的不是替换现有检索，而是验证企业文档在版本、失败隔离、来源回链和灰度接入方面的最小治理闭环。
+
+```text
+受管文件路径
+  → SHA-256 内容哈希与逻辑文档幂等判断
+  → Markdown / 文本型 PDF 解析
+  → 标题感知 Parent / Child Chunk
+  → SQLite 文档、版本、Chunk 元数据
+  → active + INDEXED 准入的隔离词面检索
+  → 文件 / 版本 / 标题路径 / 页码来源回链
+  → 仅在显式开关开启且旧关键词检索无结果时，作为 rules Agent fallback
+```
+
+这条链路由 `INGESTED_KNOWLEDGE_EXPERIMENT_ENABLED=false` 默认关闭；关闭时不会访问实验检索库，也不会改变既有 31 条主 RAG 黄金集路径。打开后，它仅在旧关键词检索未命中时尝试 SQLite 实验检索；无结果或异常时，仍继续原有的向量检索 / 澄清 / 建单流程。因此它是可回退的实验入口，不是生产默认能力，也尚未移植到 LangGraph 分支。
+
+| 已验证项 | 证据 | 结论 |
+| --- | --- | --- |
+| 摄入与版本 | 摄入契约 5/5 | Markdown、文本型 PDF、同 hash 重入复用、扫描件失败隔离、v2 替代 v1 均有可复现验证。 |
+| 来源回链 | 来源契约 3/3 | 新链路结果可返回文件、版本、页码；Markdown 额外返回标题路径，基础 PDF 不伪造视觉标题。 |
+| 隔离检索 | 检索契约 3/3 | 仅 active 文档且 `INDEXED` 的 Child Chunk 可检索；PENDING、旧版本和失败扫描件不会命中。 |
+| 受控接入 | feature flag 契约 2/2 | 默认关闭不调用实验检索；打开时命中结果可带完整来源，失败继续旧 fallback。 |
+| 复杂 PDF 边界 | PDF 基线 2/2 | `pypdf` 可保留文本事实和页码，但不保留表格行列结构；MinerU 暂不接入。 |
+
+RAG 2.0 的架构、指标、边界与取舍见：[架构说明](docs/rag2_architecture.md)、[实验与来源设计](docs/rag2_ingestion_source_reference_design.md)、[PDF 时间盒报告](docs/rag2_pdf_parser_timebox_report.md)、[Chroma ADR](docs/adr/0001-keep-chroma-as-primary-vector-store.md)、[面试题卡](docs/rag2_interview_cards.md) 和 [3—5 分钟演示稿](docs/rag2_demo_script.md)。
+
 ## 系统架构
 
 系统按请求走向分为六层：客户端、接口、Agent 决策、工具与检索、LLM、数据。`request_id` 与 `workflow_steps` 贯穿全链路，保证每次请求可追踪、可复盘。

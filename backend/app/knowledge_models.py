@@ -183,6 +183,7 @@ class RetrievalResult(BaseModel):
     document_id: str = Field(..., pattern=IDENTIFIER_PATTERN)
     document_version: str = Field(..., pattern=VERSION_PATTERN)
     source_filename: str = Field(..., min_length=1)
+    heading_path: list[str] = Field(default_factory=list)
 
     page_start: int = Field(..., ge=1)
     page_end: int = Field(..., ge=1)

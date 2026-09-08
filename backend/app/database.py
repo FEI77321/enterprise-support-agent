@@ -18,6 +18,7 @@ def get_connection(database_path: Path | None = None) -> sqlite3.Connection:  # 
 
     connection = sqlite3.connect(target_database)
     connection.row_factory = sqlite3.Row
+    connection.execute("PRAGMA foreign_keys = ON")
 
     return connection
 
@@ -63,5 +64,11 @@ def initialize_database(database_path: Path | None = None) -> None:  # 函数：
             )
             """
         )
+
+        from app.knowledge_repository import (
+            initialize_knowledge_tables,
+        )
+
+        initialize_knowledge_tables(connection)
     finally:
         connection.close()

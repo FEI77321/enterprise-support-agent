@@ -11,7 +11,13 @@ from app.prompt_builder import build_prompt
 from app.llm_client import generate_answer_result
 from app.tool_registry import run_tool
 from app.agent_state import AgentState
-from app.config import is_llm_answer_enabled
+from app.config import (
+    get_ingested_knowledge_database_path,
+    is_ingested_knowledge_experiment_enabled,
+    is_llm_answer_enabled,
+)
+from app.ingested_knowledge_retriever import search_ingested_knowledge
+from app.knowledge_source_adapter import retrieval_result_to_source
 
 logger = logging.getLogger(__name__)
 TICKET_PATTERN = re.compile(r"TICKET-\d{8}-\d{4}", re.IGNORECASE)
@@ -253,6 +259,9 @@ def handle_message(
 
 
 ##分数小于六但是大于0，就是clarify
+    if _try_ingested_knowledge_experiment(state):
+        return build_chat_response(state)
+
     state.add_step("search_vector_store")
     tool_result = run_tool("search_vector_store", query=message)
 
@@ -355,6 +364,59 @@ def handle_message(
 def _extract_ticket_id(message: str) -> str | None:  # 函数：负责 extract 工单 id 相关逻辑。
     match = TICKET_PATTERN.search(message)
     return match.group(0).upper() if match else None
+
+
+def _try_ingested_knowledge_experiment(state: AgentState) -> bool:
+    """在显式开关开启时，尝试返回隔离 RAG 2.0 的候选证据。
+
+    该能力只作为旧关键词检索无结果时的实验 fallback，不会替换既有
+    ``search_knowledge_base()``，也不会在开关关闭时访问 SQLite 新链路。
+    """
+
+    if not is_ingested_knowledge_experiment_enabled():
+        return False
+
+    state.add_step("search_ingested_knowledge_experiment")
+    try:
+        results = search_ingested_knowledge(
+            query=state.message,
+            database_path=get_ingested_knowledge_database_path(),
+            request_id=state.request_id,
+        )
+    except Exception as error:
+        state.add_step("ingested_knowledge_experiment_error")
+        logger.warning(
+            "request_id=%s action=ingested_knowledge_experiment_error "
+            "error=%s",
+            state.request_id,
+            error,
+        )
+        return False
+
+    if not results:
+        state.add_step("ingested_knowledge_experiment_no_result")
+        return False
+
+    sources = [
+        retrieval_result_to_source(result)
+        for result in results
+    ]
+    best_result = results[0]
+    state.sources = sources
+    state.answer = (
+        "我在实验知识库中找到了一条可追溯的候选资料：\n\n"
+        f"{best_result.content}\n\n"
+        "该结果来自隔离 RAG 2.0 检索链路，请结合返回的文件、版本和页码核对。"
+    )
+    state.add_step("ingested_knowledge_experiment_answer")
+    state.response_type = "answer"
+    logger.info(
+        "request_id=%s action=ingested_knowledge_experiment_answer "
+        "sources=%s",
+        state.request_id,
+        summarize_sources(sources),
+    )
+    return True
 
 def summarize_sources(sources: list[Source]) -> list[dict]:  # 函数：负责 汇总 sources 相关逻辑。
     return [

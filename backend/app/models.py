@@ -2,7 +2,7 @@
 
 from enum import Enum
 from typing import Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class ChatRequest(BaseModel):  # 类：定义聊天接口接收的用户消息请求体。
@@ -31,6 +31,48 @@ class Source(BaseModel):  # 类：表示回答引用的一条知识库来源。
     snippet: str
     score: int = Field(..., ge=0, description="知识库检索匹配分数")
     chunk_id: str | None = Field(default=None, description="知识库片段 ID")
+    document_id: str | None = Field(
+        default=None,
+        description="RAG 2.0 文档版本 ID；旧链路不提供",
+    )
+    document_version: str | None = Field(
+        default=None,
+        description="RAG 2.0 文档版本号；旧链路不提供",
+    )
+    context_chunk_id: str | None = Field(
+        default=None,
+        description="用于回答上下文的父 Chunk ID；旧链路可为空",
+    )
+    heading_path: list[str] | None = Field(
+        default=None,
+        description="命中内容在原文中的 Markdown 标题路径",
+    )
+    page_start: int | None = Field(
+        default=None,
+        ge=1,
+        description="来源 PDF 的起始页；Markdown 固定为第 1 页",
+    )
+    page_end: int | None = Field(
+        default=None,
+        ge=1,
+        description="来源 PDF 的结束页；Markdown 固定为第 1 页",
+    )
+
+    @model_validator(mode="after")
+    def validate_page_reference(self) -> "Source":
+        """页码回链必须成对出现，且结束页不能早于起始页。"""
+
+        if (self.page_start is None) != (self.page_end is None):
+            raise ValueError("page_start and page_end must be provided together")
+
+        if (
+            self.page_start is not None
+            and self.page_end is not None
+            and self.page_end < self.page_start
+        ):
+            raise ValueError("page_end must be greater than or equal to page_start")
+
+        return self
 
 
 class Ticket(BaseModel):  # 类：表示系统中的一张工单及其业务字段。
