@@ -1,0 +1,19 @@
+{
+  "suite_id": "enterprise_support_synthetic_retrieval_assertions_v1",
+  "corpus_id": "enterprise_support_synthetic_v1",
+  "source_golden_suite": "synthetic_golden_cases_v1.json",
+  "source_type": "synthetic",
+  "purpose": "Runtime retrieval assertions for the isolated synthetic ingestion pipeline. Relevant ChildChunk IDs are resolved dynamically from the expected document, version, page, and normalized fact anchors.",
+  "normalization": {
+    "name": "remove_all_whitespace_v1",
+    "description": "Remove whitespace before matching evidence, so PDF and table line wrapping does not erase a fact."
+  },
+  "default_answer_terms_source": "expected_answer_contains",
+  "answer_term_overrides": {
+    "syn_015": [
+      "禁止删除日志",
+      "重启关键服务器",
+      "擅自对外发布信息"
+    ]
+  }
+}
