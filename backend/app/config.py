@@ -16,6 +16,16 @@ def is_llm_answer_enabled() -> bool:  # 函数：负责 is 大模型 回答 enab
     return get_bool_env("ENABLE_LLM_ANSWER", default=False)
 
 
+def is_agent_harness_enabled() -> bool:
+    """Harness 默认启用；设置 false 可回退到既有工具调用基线。"""
+    return get_bool_env("AGENT_HARNESS_ENABLED", default=True)
+
+
+def get_agent_harness_max_steps() -> int:
+    """一次 Agent 请求允许执行的真实工具调用上限。"""
+    return get_int_env("AGENT_HARNESS_MAX_STEPS", default=4)
+
+
 def is_ingested_knowledge_experiment_enabled() -> bool:
     """是否启用 RAG 2.0 SQLite 检索实验入口，默认严格关闭。"""
 

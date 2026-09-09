@@ -13,7 +13,13 @@ from app.models import Source, Ticket, ChatResponseType
 from app.prompt_builder import build_prompt
 from app.llm_client import generate_answer_result
 from app.tool_registry import run_tool
-from app.config import is_llm_answer_enabled
+from app.tool_registry import ToolResult
+from app.agent_harness import AgentHarness, HarnessSession, create_harness_session
+from app.config import (
+    get_agent_harness_max_steps,
+    is_agent_harness_enabled,
+    is_llm_answer_enabled,
+)
 import operator
 from typing import Annotated, TypedDict
 from app.vector_store import VectorSearchResult
@@ -32,6 +38,40 @@ class GraphState(TypedDict):  # 类：LangGraph 的共享状态，字段与 agen
     answer: str | None
     response_type: ChatResponseType | None
     workflow_steps: Annotated[list[str], operator.add]  # reducer：节点返回的 step 自动追加
+    harness_session: HarnessSession | None
+
+
+def _run_graph_tool(
+    state: GraphState,
+    tool_name: str,
+    **arguments: object,
+) -> ToolResult:
+    """Graph 保留业务节点，真实工具执行交给 Harness 统一治理。"""
+    if not is_agent_harness_enabled():
+        return run_tool(tool_name, **arguments)
+
+    session = state.get("harness_session")
+    if session is None:
+        session = create_harness_session(
+            request_id=state["request_id"],
+            engine="langgraph",
+            max_steps=get_agent_harness_max_steps(),
+        )
+        state["harness_session"] = session
+
+    result = AgentHarness().execute_tool(
+        session=session,
+        tool_name=tool_name,
+        arguments=arguments,
+    )
+    if result.tool_result is not None:
+        return result.tool_result
+    return ToolResult(
+        tool_name=tool_name,
+        success=False,
+        error=result.reason or "Harness blocked tool execution",
+        error_type=result.status,
+    )
 
 
 def extract_ticket_id(state: GraphState) -> dict:  # 节点：提取工单号。
@@ -42,7 +82,7 @@ def extract_ticket_id(state: GraphState) -> dict:  # 节点：提取工单号。
 
 def query_ticket(state: GraphState) -> dict:  # 节点：按工单号查询状态。
     steps = ["query_ticket_status"]
-    tool_result = run_tool("query_ticket_status", ticket_id=state["ticket_id"])
+    tool_result = _run_graph_tool(state, "query_ticket_status", ticket_id=state["ticket_id"])
 
     if not tool_result.success:
         steps.append("query_ticket_error")
@@ -87,7 +127,7 @@ def unsupported_question(state: GraphState) -> dict:  # 节点：非 IT 范围�
 
 
 def search_knowledge_base(state: GraphState) -> dict:  # 节点：关键词检索。
-    tool_result = run_tool("search_knowledge_base", query=state["message"])
+    tool_result = _run_graph_tool(state, "search_knowledge_base", query=state["message"])
     results: list[SearchResult] = []
     if tool_result.success:
         search_data = tool_result.data or {}
@@ -159,7 +199,7 @@ def clarify(state: GraphState) -> dict:  # 节点：低置信澄清追问。
 
 
 def search_vector_store(state: GraphState) -> dict:  # 节点：向量检索 fallback。
-    tool_result = run_tool("search_vector_store", query=state["message"])
+    tool_result = _run_graph_tool(state, "search_vector_store", query=state["message"])
     results: list[VectorSearchResult] = []
     if tool_result.success:
         vector_data = tool_result.data or {}
@@ -217,7 +257,7 @@ def vector_clarify(state: GraphState) -> dict:  # 节点：向量命中后的澄
 
 def create_ticket(state: GraphState) -> dict:  # 节点：无解时创建工单。
     steps = ["create_ticket"]
-    tool_result = run_tool("create_ticket", message=state["message"])
+    tool_result = _run_graph_tool(state, "create_ticket", message=state["message"])
 
     if not tool_result.success:
         steps.append("create_ticket_error")
@@ -351,6 +391,11 @@ def build_chat_response(state: GraphState) -> ChatResponse:  # 函数：从图�
         sources=state["sources"],
         ticket=state["ticket"],
         workflow_steps=state["workflow_steps"],
+        harness_trace=(
+            [step.model_dump() for step in state["harness_session"].trace_steps]
+            if state.get("harness_session") is not None
+            else []
+        ),
     )
 
 
@@ -370,6 +415,15 @@ def handle_message(
         "answer": None,
         "response_type": None,
         "workflow_steps": [],
+        "harness_session": (
+            create_harness_session(
+                request_id=request_id,
+                engine="langgraph",
+                max_steps=get_agent_harness_max_steps(),
+            )
+            if is_agent_harness_enabled()
+            else None
+        ),
     }
     result = graph.invoke(initial)
     return build_chat_response(result)

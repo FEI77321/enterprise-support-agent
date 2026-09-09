@@ -1,6 +1,6 @@
 # 模块职责：工具调用 Agent 编排模块：结合会话历史选择 Planner，解析模型给出的工具调用，执行工具，并把执行结果转换为用户可读的最终回答。
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import os
 from app.tool_call_executor import execute_tool_call_text
 from app.tool_prompt_builder import build_tool_selection_prompt
@@ -18,6 +18,8 @@ from app.tool_confirmation import (
     get_pending_confirmation,
 )
 from app.tool_registry import list_openai_tools, run_tool
+from app.agent_harness import AgentHarness, create_harness_session
+from app.config import get_agent_harness_max_steps, is_agent_harness_enabled
 
 class InvalidToolCallProviderError(ValueError):  # 类：表示配置了系统不支持的工具调用 Planner Provider。
     pass
@@ -36,6 +38,7 @@ class ToolCallAgentResponse(BaseModel):  # 类：封装工具调用 Agent 的规
     requires_confirmation: bool = False
     confirmation_reason: str | None = None
     pending_arguments: dict[str, object] | None = None
+    harness_trace: list[dict[str, object]] = Field(default_factory=list)
 
 
 
@@ -116,10 +119,31 @@ def handle_confirmation_reply(  # 函数：处理用户对待确认高风险工�
             decision_type="confirmation_cancelled",
         )
 
-    tool_result = run_tool(
-        pending.tool_name,
-        **pending.arguments,
-    )
+    harness_trace: list[dict[str, object]] = []
+    if is_agent_harness_enabled():
+        session = create_harness_session(
+            request_id=session_id,
+            engine="tool_call",
+            max_steps=get_agent_harness_max_steps(),
+        )
+        harness_result = AgentHarness().execute_tool(
+            session=session,
+            tool_name=pending.tool_name,
+            arguments=pending.arguments,
+            confirmed=True,
+        )
+        tool_result = harness_result.tool_result
+        harness_trace = [step.model_dump() for step in session.trace_steps]
+        if tool_result is None:
+            from app.tool_registry import ToolResult
+            tool_result = ToolResult(
+                tool_name=pending.tool_name,
+                success=False,
+                error=harness_result.reason or "Harness blocked confirmed tool execution",
+                error_type=harness_result.status,
+            )
+    else:
+        tool_result = run_tool(pending.tool_name, **pending.arguments)
 
     if not tool_result.success:
         return ToolCallAgentResponse(
@@ -135,6 +159,7 @@ def handle_confirmation_reply(  # 函数：处理用户对待确认高风险工�
             decision_type="confirmed_tool_call",
             error_type=tool_result.error_type,
             error=tool_result.error,
+            harness_trace=harness_trace,
         )
 
     data = tool_result.data or {}
@@ -161,6 +186,7 @@ def handle_confirmation_reply(  # 函数：处理用户对待确认高风险工�
         tool_name=pending.tool_name,
         answer=answer,
         decision_type="confirmed_tool_call",
+        harness_trace=harness_trace,
     )
 
 
@@ -264,6 +290,7 @@ def handle_tool_call_demo(
             requires_confirmation=True,
             confirmation_reason=reason,
             pending_arguments=execution.arguments,
+            harness_trace=execution.harness_trace,
         )
 
 
@@ -278,6 +305,7 @@ def handle_tool_call_demo(
             decision_type="tool_call",
             error_type=execution.error_type,
             error=execution.error,
+            harness_trace=execution.harness_trace,
         )
 
     workflow_steps.append("execute_tool_call")
@@ -293,6 +321,7 @@ def handle_tool_call_demo(
         tool_name=execution.tool_name,
         answer=answer,
         decision_type="tool_call",
+        harness_trace=execution.harness_trace,
     )
 
 

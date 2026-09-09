@@ -1,5 +1,6 @@
 # 模块职责：工具注册表模块：集中维护工具名称、用途、参数 schema 和执行函数，提供 OpenAI 格式 schema 导出、统一参数校验与安全执行能力。
 
+import inspect
 import logging
 from typing import Any, Callable
 
@@ -26,6 +27,33 @@ class ToolDefinition(BaseModel):  # 类：描述一个可注册工具的名称�
     description: str#工具描述
     parameters: dict[str, str]
     handler: Callable[..., ToolResult]#真正执行工具的函数
+
+
+def validate_tool_arguments(
+    tool_name: str,
+    arguments: dict[str, Any],
+) -> ToolResult | None:
+    """在执行前校验工具存在与 handler 参数绑定，供 Harness 统一拦截。"""
+    tool = TOOL_REGISTRY.get(tool_name)
+    if tool is None:
+        return ToolResult(
+            tool_name=tool_name,
+            success=False,
+            error=f"Unknown tool: {tool_name}",
+            error_type="unknown_tool",
+        )
+
+    try:
+        inspect.signature(tool.handler).bind(**arguments)
+    except TypeError as exc:
+        return ToolResult(
+            tool_name=tool_name,
+            success=False,
+            error=str(exc),
+            error_type="invalid_args",
+        )
+
+    return None
 
 
 

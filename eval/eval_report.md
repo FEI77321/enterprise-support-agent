@@ -121,7 +121,7 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: 我的电脑蓝屏了，开不了机
 - Expected: {"response_type": "ticket_created", "priority": "HIGH"}
 - Env: {}
-- Actual: type=ticket_created, sources=[], ticket_id=TICKET-20260908-0461,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'create_ticket', 'ticket_created']
+- Actual: type=ticket_created, sources=[], ticket_id=TICKET-20260909-0489,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'create_ticket', 'ticket_created']
 - Ticket created: True
 
 ### case_006 PASS
@@ -129,7 +129,7 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: 打印机一直卡纸，没人会修
 - Expected: {"response_type": "ticket_created", "priority": "MEDIUM"}
 - Env: {}
-- Actual: type=ticket_created, sources=[], ticket_id=TICKET-20260908-0462,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'create_ticket', 'ticket_created']
+- Actual: type=ticket_created, sources=[], ticket_id=TICKET-20260909-0490,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'create_ticket', 'ticket_created']
 - Ticket created: True
 
 ### case_007 PASS
@@ -137,7 +137,7 @@ extract_ticket_id -> search_knowledge_base -> rule_answer -> llm_answer -> knowl
 - Input: 显示器突然黑屏，影响办公
 - Expected: {"response_type": "ticket_created", "priority": "MEDIUM"}
 - Env: {}
-- Actual: type=ticket_created, sources=[], ticket_id=TICKET-20260908-0463,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'create_ticket', 'ticket_created']
+- Actual: type=ticket_created, sources=[], ticket_id=TICKET-20260909-0491,workflow_steps=['extract_ticket_id', 'search_knowledge_base', 'search_vector_store', 'create_ticket', 'ticket_created']
 - Ticket created: True
 
 ### case_008 PASS

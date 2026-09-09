@@ -9,10 +9,13 @@ from app.knowledge_base import build_answer, SearchResult
 from app.models import ChatResponse, Source,Ticket
 from app.prompt_builder import build_prompt
 from app.llm_client import generate_answer_result
-from app.tool_registry import run_tool
+from app.tool_registry import ToolResult, run_tool
+from app.agent_harness import AgentHarness, create_harness_session
 from app.agent_state import AgentState
 from app.config import (
+    get_agent_harness_max_steps,
     get_ingested_knowledge_database_path,
+    is_agent_harness_enabled,
     is_ingested_knowledge_experiment_enabled,
     is_llm_answer_enabled,
 )
@@ -97,7 +100,9 @@ def handle_message(
     #找id，如果有id，返回值，如果没有就去找message去检索
     if ticket_id:
         state.add_step("query_ticket_status")
-        tool_result = run_tool("query_ticket_status", ticket_id=ticket_id)
+        tool_result = _run_rules_tool(
+            state, "query_ticket_status", ticket_id=ticket_id
+        )
 
         if not tool_result.success:
             state.add_step("query_ticket_error")
@@ -148,7 +153,7 @@ def handle_message(
 
 
     state.add_step("search_knowledge_base")
-    tool_result = run_tool("search_knowledge_base", query=message)
+    tool_result = _run_rules_tool(state, "search_knowledge_base", query=message)
 
     if not tool_result.success:
         logger.info(
@@ -263,7 +268,7 @@ def handle_message(
         return build_chat_response(state)
 
     state.add_step("search_vector_store")
-    tool_result = run_tool("search_vector_store", query=message)
+    tool_result = _run_rules_tool(state, "search_vector_store", query=message)
 
     if not tool_result.success:
         logger.info(
@@ -335,7 +340,7 @@ def handle_message(
 ##这上面是，找chunk
 
     state.add_step("create_ticket")
-    tool_result = run_tool("create_ticket", message=message)
+    tool_result = _run_rules_tool(state, "create_ticket", message=message)
 
     if not tool_result.success:
 
@@ -401,6 +406,31 @@ def _try_ingested_knowledge_experiment(state: AgentState) -> bool:
         retrieval_result_to_source(result)
         for result in results
     ]
+
+
+def _run_rules_tool(state: AgentState, tool_name: str, **arguments: object) -> ToolResult:
+    """规则 Agent 也经过同一 Harness，避免默认主链路绕过治理。"""
+    if not is_agent_harness_enabled():
+        return run_tool(tool_name, **arguments)
+    if state.harness_session is None:
+        state.harness_session = create_harness_session(
+            request_id=state.request_id,
+            engine="rules",
+            max_steps=get_agent_harness_max_steps(),
+        )
+    result = AgentHarness().execute_tool(
+        session=state.harness_session,
+        tool_name=tool_name,
+        arguments=arguments,
+    )
+    if result.tool_result is not None:
+        return result.tool_result
+    return ToolResult(
+        tool_name=tool_name,
+        success=False,
+        error=result.reason or "Harness blocked tool execution",
+        error_type=result.status,
+    )
     best_result = results[0]
     state.sources = sources
     state.answer = (
@@ -439,6 +469,11 @@ def build_chat_response(state: AgentState) -> ChatResponse:  # 函数：负责 �
         sources=state.sources,
         ticket=state.ticket,
         workflow_steps=state.workflow_steps,
+        harness_trace=(
+            [step.model_dump() for step in state.harness_session.trace_steps]
+            if state.harness_session is not None
+            else []
+        ),
     )
 
 

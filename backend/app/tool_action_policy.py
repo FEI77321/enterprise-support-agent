@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class ToolActionPolicy(BaseModel):  # 类：描述一个工具是否需要用户确认，以及需要确认的原因。
     requires_confirmation: bool
     reason: str | None = None
+    risk_level: str = "read_only"
 
 
 def get_tool_action_policy(tool_name: str) -> ToolActionPolicy:  # 函数：根据工具名称返回该工具的执行确认策略。
@@ -13,8 +14,16 @@ def get_tool_action_policy(tool_name: str) -> ToolActionPolicy:  # 函数：根�
         return ToolActionPolicy(
             requires_confirmation=True,
             reason="删除工单会永久移除数据，需要用户确认。",
+            risk_level="write_high_risk",
+        )
+
+    if tool_name == "create_ticket":
+        return ToolActionPolicy(
+            requires_confirmation=False,
+            risk_level="write_low_risk",
         )
 
     return ToolActionPolicy(
         requires_confirmation=False,
+        risk_level="read_only",
     )

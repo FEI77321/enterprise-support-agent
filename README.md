@@ -1,6 +1,6 @@
 # Enterprise Support Agent
 
-一个面向企业内部 IT 支持场景的 RAG Agent 项目。它把本地 Markdown 知识库、关键词与向量检索、SQLite 工单、真实 DeepSeek 回答生成、工具调用和 React 聊天界面组合为一条可运行、可追踪、可评估的服务链路。
+一个面向企业内部 IT 支持场景的 RAG Agent 项目。它把本地 Markdown 知识库、关键词与向量检索、SQLite 工单、真实 DeepSeek 回答生成、工具调用、Agent Harness 运行时治理和 React 聊天界面组合为一条可运行、可追踪、可评估的服务链路。
 
 项目用于 27 届秋招 AI Agent 应用开发岗位展示。目标不是做一个只会调用模型的聊天框，而是实现一个能够检索依据、执行工具、保护高风险操作、发生异常时降级，并能被自动化评测验证的企业支持 Agent。
 
@@ -16,6 +16,7 @@
 - 引用可信度校验：LLM 输出的 `File` 与 `Chunk ID` 必须来自本次检索结果；不合法或模型调用失败时自动回退到规则答案。
 - 工具调用：支持知识库检索、向量检索、工单查询、创建和删除等工具；可由 DeepSeek 选择工具并生成参数，支持 Prompt 驱动与原生 function calling 两种规划方式。
 - 高风险确认：删除工单不会立即执行，会先把待执行操作写入 SQLite，等待同一会话明确确认或取消。
+- Agent Harness：rules Agent、LangGraph 与 Tool Calling 的真实工具执行统一经过 Harness，执行前进行注册与参数校验、风险分级、删除确认和请求级 `max_steps` 控制，并在响应中返回受限参数摘要的执行 Trace。
 - 会话记忆：支持保存与清除工具调用相关的会话上下文。
 - 工单管理：使用 SQLite 持久化，提供创建、查询、状态更新、筛选和删除接口。
 - 可观测性：`request_id`、结构化日志与 `workflow_steps` 记录一次请求经过的关键路径。
@@ -37,6 +38,7 @@
 7. DeepSeek 工具规划、React + Vite 演示前端和更完整的自动化 eval。
 8. Docker 容器化与一键启动：前后端 Dockerfile、docker compose 编排与 `start.ps1` 一键启动脚本。
 9. LangGraph 状态图重构：将 if/else 路由升级为显式状态图（9 节点 + 条件边），节点纯函数化，通过 `AGENT_ENGINE` 与规则版并行切换，行为回归一致。
+10. Agent Harness 运行时治理：将 rules、LangGraph 与 Tool Calling 的真实工具执行收敛到统一入口，补齐风险等级、确认策略、参数拦截、请求级步数上限和 Trace；保留 feature flag 以便回退至原工具调用路径。
 
 ## RAG 2.0：受控文档摄入实验（当前增量）
 
@@ -63,11 +65,11 @@
 | 受控接入 | feature flag 契约 2/2 | 默认关闭不调用实验检索；打开时命中结果可带完整来源，失败继续旧 fallback。 |
 | 复杂 PDF 边界 | PDF 基线 2/2 | `pypdf` 可保留文本事实和页码，但不保留表格行列结构；MinerU 暂不接入。 |
 
-RAG 2.0 的架构、指标、边界与取舍见：[架构说明](docs/rag2_architecture.md)、[实验与来源设计](docs/rag2_ingestion_source_reference_design.md)、[PDF 时间盒报告](docs/rag2_pdf_parser_timebox_report.md)、[Chroma ADR](docs/adr/0001-keep-chroma-as-primary-vector-store.md)、[面试题卡](docs/rag2_interview_cards.md) 和 [3—5 分钟演示稿](docs/rag2_demo_script.md)。
+RAG 2.0 的架构、指标、边界与取舍见：[架构说明](RAG%202.0%20架构说明.md)、[实验与来源设计](docs/rag2_ingestion_source_reference_design.md)、[PDF 时间盒报告](docs/rag2_pdf_parser_timebox_report.md)、[Chroma ADR](选型说明.md)、[面试题卡](RAG%202.0%20面试深挖题卡.md) 和 [3—5 分钟演示稿](面试一句话.md)。
 
 ## 系统架构
 
-系统按请求走向分为六层：客户端、接口、Agent 决策、工具与检索、LLM、数据。`request_id` 与 `workflow_steps` 贯穿全链路，保证每次请求可追踪、可复盘。
+系统按请求走向分为七层：客户端、接口、Agent 决策、Harness 运行时治理、工具与检索、LLM、数据。`request_id`、`workflow_steps` 与 Harness Trace 共同记录一次请求的业务路由和真实工具执行情况。
 
 ```mermaid
 graph TD
@@ -79,6 +81,9 @@ graph TD
     end
     subgraph Agent 决策层
         AGENT[Agent 路由<br/>工单号 → 知识库 → 澄清 → 向量 → 建单<br/>AgentState]
+    end
+    subgraph Harness 运行时治理层
+        HARNESS[Agent Harness<br/>参数校验 · 风险分级 · 确认 · max_steps · Trace]
     end
     subgraph 工具与检索层
         TOOLS[Tool Registry<br/>规划 · 解析 · 执行 · 确认]
@@ -95,7 +100,8 @@ graph TD
 
     FE --> API
     API --> AGENT
-    AGENT --> TOOLS
+    AGENT --> HARNESS
+    HARNESS --> TOOLS
     AGENT --> RAG
     TOOLS --> LLM
     RAG --> LLM
@@ -103,6 +109,49 @@ graph TD
     RAG --> VEC
     RAG --> DOCS
 ```
+
+## Agent Harness 运行时治理（当前增量）
+
+`AgentHarness` 是所有真实工具执行前的统一治理层，不参与“下一步业务该走哪条边”的决策，也不重写 Tool Registry 中的业务 handler：
+
+```text
+rules Agent / LangGraph / Tool Calling
+                ↓
+       AgentHarness.execute_tool()
+  工具注册与参数校验 / 风险等级 / 确认策略
+       请求级 max_steps / 执行 Trace / 错误分类
+                ↓
+         Tool Registry → 真实工具
+```
+
+三条实际接入路径如下：
+
+- **rules Agent**：`agent.py` 中查询工单、关键词检索、向量检索与创建工单统一通过 `_run_rules_tool()`。
+- **LangGraph**：`graph_agent.py` 的业务节点和条件边保持原样，但对应工具调用通过 `_run_graph_tool()` 进入 Harness。
+- **Tool Calling**：`tool_call_executor.py` 通过 Harness 执行已解析计划；高风险删除在用户确认后仍以 `confirmed=True` 再次经过 Harness，避免确认后的真实执行绕过 Trace、参数校验或步数控制。
+
+### 风险策略与 Trace
+
+| 工具类别 | 风险等级 | Harness 策略 |
+| --- | --- | --- |
+| 工单查询、关键词/向量检索 | `read_only` | 校验后直接执行 |
+| 创建工单 | `write_low_risk` | 校验后执行并记录 Trace |
+| 删除工单 | `write_high_risk` | 首次返回 `confirmation_required`；确认后才执行 |
+
+Harness 在调用真实 handler 前依次检查：请求是否已经达到 `max_steps`、工具是否已注册、参数能否绑定、该操作是否需要确认。未知工具、参数非法、未确认删除和步数超限都不会进入真实 handler。每个 `HarnessTraceStep` 记录步骤号、工具名、风险等级、受限长度的参数摘要、状态、耗时和错误类型；`ChatResponse.harness_trace` 会在 rules / LangGraph 路径中返回本次请求的 Trace。
+
+默认配置如下，可通过环境变量回退或调整上限：
+
+```env
+AGENT_HARNESS_ENABLED=true
+AGENT_HARNESS_MAX_STEPS=4
+```
+
+设置 `AGENT_HARNESS_ENABLED=false` 时，项目回退到改造前的工具调用路径，且不创建 Harness Session 或 Trace。
+
+当前边界：Harness 不是 LangGraph 的替代品，前者治理真实工具执行，后者负责业务节点和条件边；它也不是持久化回放平台。当前未实现跨请求任务恢复、Trace 数据库/前端时间线、通用工具 timeout/retry、RBAC、多 Agent 或 Sandbox；LLM 重试、RAG fallback 和 Redis 限流仍由既有模块负责。
+
+架构说明与面试追问见：[Harness 架构说明](docs/agent_harness_architecture.md) 和 [Harness 面试题卡](docs/agent_harness_interview_cards.md)。
 
 ## 演示场景
 
@@ -223,6 +272,7 @@ enterprise-support-agent/
 │   │   ├── database.py               # SQLite 初始化与连接
 │   │   ├── ticket_repository.py      # 工单持久化仓储
 │   │   ├── tool_registry.py          # 工具注册与统一调用
+│   │   ├── agent_harness.py          # 统一工具执行治理、步数限制与请求级 Trace
 │   │   ├── tool_call_*.py            # 工具规划、解析、执行与接口
 │   │   ├── tool_confirmation.py      # 高风险操作确认
 │   │   └── routers/                  # chat 与 tickets 路由
@@ -240,7 +290,9 @@ enterprise-support-agent/
 ├── mcp_server/
 │   └── server.py                     # 只读 MCP 工具适配层
 ├── docs/
-│   └── resume_interview_pack.md      # 简历与面试素材
+│   ├── resume_interview_pack.md      # 简历与面试素材
+│   ├── agent_harness_architecture.md # Harness 架构与边界
+│   └── agent_harness_interview_cards.md # Harness 面试题卡
 ├── start.ps1                         # 一键启动脚本（后端 + 前端）
 ├── docker-compose.yml                # Docker 一键编排
 ├── .env.example
@@ -280,6 +332,7 @@ answer           最终回答
 sources          当前检索命中的知识来源
 ticket           查询或创建得到的工单
 workflow_steps   本次 Agent 的执行路径
+harness_trace    Harness 开启时的请求级真实工具执行轨迹；关闭时为空
 ```
 
 ## 本地运行
@@ -409,6 +462,14 @@ Inspector 连接后可发现 3 个只读工具：
 - FastAPI 启动、API smoke、接口契约、会话记忆与端到端用户流程。
 - MCP 工具白名单、真实 stdio 调用、参数校验与工单查询。
 
+Agent Harness 提供独立的离线契约评测；在项目根目录执行：
+
+```powershell
+.\backend\.venv\Scripts\python.exe eval\run_agent_harness_contract_eval.py
+```
+
+当前该专项覆盖 8 项契约：风险等级、未知工具拦截、参数非法拦截、高风险确认、步数上限、rules 路径 Trace、LangGraph 路径 Trace 与 feature flag 回退。最近一次本地执行结果为 **8/8 passed**。该专项目前独立于 `run_all_eval.py` 的聚合列表，修改 Harness、工具策略或三条接入路径后应单独运行。
+
 真实模型 smoke test 单独运行，避免每次回归都产生 API 成本：
 
 ```powershell
@@ -448,7 +509,13 @@ knowledge_answer
 
 MCP Server 是独立的协议适配层，只复用 Tool Registry，不重写业务逻辑。当前仅暴露 3 个只读工具；创建与删除工单在 MCP 会话尚未接入原确认上下文前保持关闭。两个检索工具还会在协议边界拒绝 `top_k < 1`，以结构化 `invalid_args` 返回错误。
 
-### 5. 双引擎编排（rules / langgraph）
+### 5. Agent Harness：统一工具执行治理
+
+`AgentHarness.execute_tool()` 位于规则 Agent、LangGraph 和 Tool Calling 与真实 `run_tool()` 之间。它统一执行工具注册与参数校验、风险分级、删除确认、请求级 `max_steps` 与 Trace 记录，避免不同入口各自复制安全判断而出现绕过。
+
+它和已有模块的职责不同：LangGraph 负责业务流程图，Tool Registry 负责实际业务工具分派，Harness 只负责每一次真实工具执行前后的运行时治理。Trace 与 `workflow_steps` 也不同：前者记录“哪个工具以什么风险/状态执行”，后者记录“业务路由走过哪些步骤”。当前 Trace 是请求级、内存态结果，不是数据库持久化回放能力。
+
+### 6. 双引擎编排（rules / langgraph）
 
 Agent 路由提供两种实现，由 `AGENT_ENGINE` 环境变量切换，默认 `rules`：
 
@@ -457,7 +524,7 @@ Agent 路由提供两种实现，由 `AGENT_ENGINE` 环境变量切换，默认 
 
 两种实现复用同一批辅助函数（`_is_support_related`、`_has_valid_llm_citations`、检索与 LLM 调用），输出可逐条对比；切换通过 `_resolve_handler()` 延迟 import 完成，默认路径零额外开销。状态图把"路由决策"从代码中显式化，后续新增节点（如工单升级、转人工）只需加节点与边，不动主干。
 
-### 6. 工具规划双实现（Prompt 驱动 / 原生 function calling）
+### 7. 工具规划双实现（Prompt 驱动 / 原生 function calling）
 
 工具选择由 `TOOL_CALL_PROVIDER` 切换：
 
@@ -470,7 +537,7 @@ Agent 路由提供两种实现，由 `AGENT_ENGINE` 环境变量切换，默认 
 
 可以用下面这段介绍项目：
 
-> 我做了一个企业 IT 支持 Agent。它先判断用户是否在问企业支持问题，再根据工单号、知识库置信度和检索结果决定查询工单、回答、追问或创建工单。RAG 层结合关键词检索、ChromaDB 向量检索、exact match 和 rerank，并以 chunk 级来源返回证据。高置信命中后，我把当前知识块作为上下文传给 DeepSeek 生成自然语言回答，同时校验模型返回的文件与 chunk 引用；不合法或模型异常就降级到规则答案。除此之外，我实现了工具规划、统一执行、SQLite 持久化、删除确认和只读 MCP Server，并通过 30 组本地 eval 覆盖核心分支。前端使用 React 展示回答、来源、工单和 Agent 执行轨迹。项目同时提供 PowerShell 一键启动脚本与 Docker Compose 编排，分别满足本机演示与容器化交付。
+> 我做了一个企业 IT 支持 Agent。它先判断用户是否在问企业支持问题，再根据工单号、知识库置信度和检索结果决定查询工单、回答、追问或创建工单。RAG 层结合关键词检索、ChromaDB 向量检索、exact match 和 rerank，并以 chunk 级来源返回证据。高置信命中后，我把当前知识块作为上下文传给 DeepSeek 生成自然语言回答，同时校验模型返回的文件与 chunk 引用；不合法或模型异常就降级到规则答案。除此之外，我实现了 Tool Registry、工具规划、SQLite 持久化、删除确认和只读 MCP Server；新加入的 Agent Harness 将 rules、LangGraph 与 Tool Calling 的真实工具执行统一纳入参数校验、风险分级、确认、步数限制和请求级 Trace。前端使用 React 展示回答、来源、工单和 Agent 执行轨迹，项目同时提供 PowerShell 一键启动脚本与 Docker Compose 编排。Harness 专项契约最近一次为 8/8 通过；历史全量 eval 结果请以对应报告和当前运行环境为准。
 
 ## RAG v2 实操成果（2026-08-14）
 

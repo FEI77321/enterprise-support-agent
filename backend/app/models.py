@@ -93,6 +93,10 @@ class ChatResponse(BaseModel):  # 类：定义聊天接口返回的回答、来�
     sources: list[Source] = Field(default_factory=list)
     ticket: Ticket | None = None
     workflow_steps: list[str] = Field(default_factory=list)
+    harness_trace: list[dict[str, object]] = Field(
+        default_factory=list,
+        description="Harness 开启时的请求级工具执行轨迹；关闭时为空",
+    )
 
 
 class TicketCreateRequest(BaseModel):  # 类：定义创建工单接口接收的请求字段。
