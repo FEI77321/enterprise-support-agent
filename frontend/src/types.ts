@@ -47,3 +47,32 @@ export interface ChatResponse {
   query_rewrite?: { triggered?: boolean; effective_query?: string; reason?: string };
   memory?: { retrieved_count?: number; write?: { action?: string; reason?: string } };
 }
+
+export type BadCaseStatus = 'open' | 'triaged' | 'regression_added' | 'resolved'
+
+export type BadCaseCategory = 'retrieval' | 'rewrite' | 'safety' | 'tool' | 'authorization' | 'memory' | 'response'
+
+export interface BadCase {
+  bad_case_id: string
+  request_id: string
+  category: BadCaseCategory
+  severity: 'low' | 'medium' | 'high' | 'critical'
+  expected_behavior: string
+  actual_behavior: string
+  status: BadCaseStatus
+  reporter_id: string
+  regression_case_id: string | null
+  created_at: string
+  updated_at: string
+  resolved_at: string | null
+}
+
+export interface AgentOpsMetrics {
+  trace_runs: number
+  tool_calls: number
+  tool_failure_rate: number
+  prompt_injection_block_rate: number
+  query_rewrite_trigger_rate: number
+  bad_cases: Partial<Record<BadCaseStatus, number>>
+  open_bad_case_count: number
+}

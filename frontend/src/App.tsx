@@ -1,6 +1,6 @@
 import { type FormEvent, useState } from 'react'
-import { streamChatMessage } from './api'
-import type { ChatResponse, TicketStatus } from './types'
+import { createBadCase, exportBadCase, fetchAgentOpsMetrics, fetchBadCases, streamChatMessage, updateBadCaseStatus } from './api'
+import type { AgentOpsMetrics, BadCase, BadCaseCategory, BadCaseStatus, ChatResponse, TicketStatus } from './types'
 import './App.css'
 
 type ChatMessage = {
@@ -31,11 +31,28 @@ const ticketStatusLabels: Record<TicketStatus, string> = {
   CLOSED: '已关闭',
 }
 
+const badCaseStatusLabels: Record<BadCaseStatus, string> = {
+  open: '待分诊',
+  triaged: '已分诊',
+  regression_added: '已入回归',
+  resolved: '已解决',
+}
+
 function App() {
   const [input, setInput] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [error, setError] = useState('')
   const [rateLimitInfo, setRateLimitInfo] = useState('')
+  const [isGovernanceOpen, setIsGovernanceOpen] = useState(false)
+  const [governanceLoading, setGovernanceLoading] = useState(false)
+  const [governanceError, setGovernanceError] = useState('')
+  const [agentOps, setAgentOps] = useState<AgentOpsMetrics | null>(null)
+  const [badCases, setBadCases] = useState<BadCase[]>([])
+  const [reportTraceId, setReportTraceId] = useState<string | null>(null)
+  const [reportCategory, setReportCategory] = useState<BadCaseCategory>('retrieval')
+  const [expectedBehavior, setExpectedBehavior] = useState('应返回可核验的企业支持处理路径与来源。')
+  const [actualBehavior, setActualBehavior] = useState('实际结果需要人工复盘并记录为回归案例。')
+  const [exportedCaseId, setExportedCaseId] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome',
@@ -138,6 +155,79 @@ function App() {
     ])
   }
 
+  async function refreshGovernance() {
+    setGovernanceLoading(true)
+    setGovernanceError('')
+    try {
+      const [metrics, cases] = await Promise.all([fetchAgentOpsMetrics(), fetchBadCases()])
+      setAgentOps(metrics)
+      setBadCases(cases)
+    } catch (requestError) {
+      setGovernanceError(requestError instanceof Error ? requestError.message : '无法加载治理数据。')
+    } finally {
+      setGovernanceLoading(false)
+    }
+  }
+
+  function openGovernance() {
+    setIsGovernanceOpen(true)
+    void refreshGovernance()
+  }
+
+  function openBadCaseForm(traceId: string) {
+    setReportTraceId(traceId)
+    setExportedCaseId('')
+    openGovernance()
+  }
+
+  async function submitBadCase(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!reportTraceId) return
+    setGovernanceLoading(true)
+    setGovernanceError('')
+    try {
+      await createBadCase({
+        request_id: reportTraceId,
+        category: reportCategory,
+        severity: 'medium',
+        expected_behavior: expectedBehavior,
+        actual_behavior: actualBehavior,
+      })
+      setReportTraceId(null)
+      await refreshGovernance()
+    } catch (requestError) {
+      setGovernanceError(requestError instanceof Error ? requestError.message : '无法创建 Bad Case。')
+    } finally {
+      setGovernanceLoading(false)
+    }
+  }
+
+  async function advanceBadCase(badCaseId: string, status: BadCaseStatus) {
+    setGovernanceLoading(true)
+    setGovernanceError('')
+    try {
+      await updateBadCaseStatus(badCaseId, status)
+      await refreshGovernance()
+    } catch (requestError) {
+      setGovernanceError(requestError instanceof Error ? requestError.message : '无法更新 Bad Case。')
+    } finally {
+      setGovernanceLoading(false)
+    }
+  }
+
+  async function handleExport(badCaseId: string) {
+    setGovernanceLoading(true)
+    setGovernanceError('')
+    try {
+      const exported = await exportBadCase(badCaseId)
+      setExportedCaseId(exported.case_id)
+    } catch (requestError) {
+      setGovernanceError(requestError instanceof Error ? requestError.message : '当前状态不允许导出。')
+    } finally {
+      setGovernanceLoading(false)
+    }
+  }
+
   return (
     <main className="app-shell">
       <aside className="sidebar">
@@ -181,7 +271,10 @@ function App() {
             <p className="eyebrow">KNOWLEDGE-ASSISTED SUPPORT</p>
             <h2>企业支持工作台</h2>
           </div>
-          <span className="environment-badge">Development</span>
+          <div className="header-actions">
+            <button className="governance-button" type="button" onClick={openGovernance}>治理面板</button>
+            <span className="environment-badge">Development</span>
+          </div>
         </header>
 
         <div className="conversation" aria-live="polite">
@@ -195,7 +288,7 @@ function App() {
                   <p className="message-text">{message.streamingStatus}</p>
                 )}
                 {message.text && <p className="message-text">{message.text}</p>}
-                {message.response && <ResponseDetails response={message.response} />}
+                {message.response && <ResponseDetails response={message.response} onReportBadCase={openBadCaseForm} />}
               </div>
             </article>
           ))}
@@ -221,11 +314,32 @@ function App() {
           </p>
         </div>
       </section>
+      {isGovernanceOpen && (
+        <GovernancePanel
+          agentOps={agentOps}
+          badCases={badCases}
+          error={governanceError}
+          exportedCaseId={exportedCaseId}
+          isLoading={governanceLoading}
+          onAdvance={advanceBadCase}
+          onClose={() => setIsGovernanceOpen(false)}
+          onExport={handleExport}
+          onRefresh={refreshGovernance}
+          onSubmit={submitBadCase}
+          reportActualBehavior={actualBehavior}
+          reportCategory={reportCategory}
+          reportExpectedBehavior={expectedBehavior}
+          reportTraceId={reportTraceId}
+          setReportActualBehavior={setActualBehavior}
+          setReportCategory={setReportCategory}
+          setReportExpectedBehavior={setExpectedBehavior}
+        />
+      )}
     </main>
   )
 }
 
-function ResponseDetails({ response }: { response: ChatResponse }) {
+function ResponseDetails({ response, onReportBadCase }: { response: ChatResponse; onReportBadCase: (traceId: string) => void }) {
   return (
     <div className="response-details">
       <div className="response-summary">
@@ -292,8 +406,92 @@ function ResponseDetails({ response }: { response: ChatResponse }) {
           <span className="timeline-event">Memory · {response.memory?.write?.action ?? 'skip'}</span>
         </div>
         {response.trace_id && <code className="trace-id">Trace {response.trace_id}</code>}
+        {response.trace_id && (
+          <button className="report-bad-case-button" type="button" onClick={() => onReportBadCase(response.trace_id!)}>
+            标记为 Bad Case
+          </button>
+        )}
       </section>
     </div>
+  )
+}
+
+type GovernancePanelProps = {
+  agentOps: AgentOpsMetrics | null
+  badCases: BadCase[]
+  error: string
+  exportedCaseId: string
+  isLoading: boolean
+  reportTraceId: string | null
+  reportCategory: BadCaseCategory
+  reportExpectedBehavior: string
+  reportActualBehavior: string
+  onClose: () => void
+  onRefresh: () => void
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void
+  onAdvance: (badCaseId: string, status: BadCaseStatus) => void
+  onExport: (badCaseId: string) => void
+  setReportCategory: (category: BadCaseCategory) => void
+  setReportExpectedBehavior: (value: string) => void
+  setReportActualBehavior: (value: string) => void
+}
+
+function GovernancePanel(props: GovernancePanelProps) {
+  return (
+    <aside className="governance-panel" aria-label="Agent 治理面板">
+      <header className="governance-header">
+        <div>
+          <p className="eyebrow">TRACE TO REGRESSION</p>
+          <h2>质量治理面板</h2>
+        </div>
+        <button className="panel-close-button" type="button" onClick={props.onClose}>关闭</button>
+      </header>
+
+      <section className="governance-metrics">
+        <div><span>Trace</span><strong>{props.agentOps?.trace_runs ?? '-'}</strong></div>
+        <div><span>未解决</span><strong>{props.agentOps?.open_bad_case_count ?? '-'}</strong></div>
+        <div><span>工具失败率</span><strong>{props.agentOps ? `${(props.agentOps.tool_failure_rate * 100).toFixed(1)}%` : '-'}</strong></div>
+      </section>
+
+      {props.reportTraceId && (
+        <form className="bad-case-form" onSubmit={props.onSubmit}>
+          <p className="detail-label">从当前 TRACE 创建 BAD CASE</p>
+          <code>{props.reportTraceId}</code>
+          <label>失败类别
+            <select value={props.reportCategory} onChange={(event) => props.setReportCategory(event.target.value as BadCaseCategory)}>
+              <option value="retrieval">retrieval</option><option value="rewrite">rewrite</option><option value="safety">safety</option>
+              <option value="tool">tool</option><option value="authorization">authorization</option><option value="memory">memory</option><option value="response">response</option>
+            </select>
+          </label>
+          <label>预期行为<textarea required minLength={5} value={props.reportExpectedBehavior} onChange={(event) => props.setReportExpectedBehavior(event.target.value)} /></label>
+          <label>实际行为<textarea required minLength={5} value={props.reportActualBehavior} onChange={(event) => props.setReportActualBehavior(event.target.value)} /></label>
+          <button className="panel-primary-button" disabled={props.isLoading} type="submit">纳入 Bad Case</button>
+        </form>
+      )}
+
+      <div className="governance-list-header">
+        <p className="detail-label">BAD CASE 生命周期</p>
+        <button className="panel-text-button" disabled={props.isLoading} type="button" onClick={props.onRefresh}>刷新</button>
+      </div>
+      {props.error && <p className="governance-error" role="alert">{props.error}</p>}
+      {props.exportedCaseId && <p className="export-success">已导出 Eval Case：{props.exportedCaseId}</p>}
+      <div className="bad-case-list">
+        {props.badCases.length === 0 && <p className="empty-governance">暂无 Bad Case。完成一次对话后可从 Trace 创建案例。</p>}
+        {props.badCases.map((badCase) => (
+          <article className="bad-case-card" key={badCase.bad_case_id}>
+            <div className="bad-case-card-header"><strong>{badCase.category}</strong><span className={`bad-case-status ${badCase.status}`}>{badCaseStatusLabels[badCase.status]}</span></div>
+            <p>{badCase.expected_behavior}</p>
+            <code>{badCase.request_id}</code>
+            <div className="bad-case-actions">
+              {badCase.status === 'open' && <button type="button" onClick={() => props.onAdvance(badCase.bad_case_id, 'triaged')}>分诊</button>}
+              {badCase.status === 'triaged' && <button type="button" onClick={() => props.onAdvance(badCase.bad_case_id, 'regression_added')}>加入回归</button>}
+              {badCase.status === 'regression_added' && <button type="button" onClick={() => props.onAdvance(badCase.bad_case_id, 'resolved')}>标记解决</button>}
+              {(badCase.status === 'regression_added' || badCase.status === 'resolved') && <button type="button" onClick={() => props.onExport(badCase.bad_case_id)}>导出</button>}
+            </div>
+          </article>
+        ))}
+      </div>
+    </aside>
   )
 }
 

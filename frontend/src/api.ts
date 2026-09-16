@@ -1,9 +1,27 @@
 // 模块职责：封装企业支持 Agent 的 HTTP 调用，并将聊天响应转换为前端类型。
 
-import type { ChatResponse } from './types'
+import type { AgentOpsMetrics, BadCase, BadCaseCategory, BadCaseStatus, ChatResponse } from './types'
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000'
+
+const DEMO_GOVERNANCE_HEADERS = {
+  'Content-Type': 'application/json',
+  'X-Actor-ID': 'frontend-support-demo',
+  'X-Actor-Role': 'support',
+}
+
+async function parseApiResponse<T>(response: Response): Promise<T> {
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => null)
+    throw new Error(
+      typeof errorBody?.detail === 'string'
+        ? errorBody.detail
+        : `请求失败，状态码：${response.status}`,
+    )
+  }
+  return (await response.json()) as T
+}
 
 export async function sendChatMessage(message: string): Promise<ChatResponse> {
   const response = await fetch(`${API_BASE_URL}/chat`, {
@@ -130,4 +148,41 @@ export async function streamChatMessage(
   }
 
   return completeResponse
+}
+
+export async function fetchAgentOpsMetrics(): Promise<AgentOpsMetrics> {
+  return parseApiResponse<AgentOpsMetrics>(await fetch(`${API_BASE_URL}/traces/agentops`))
+}
+
+export async function fetchBadCases(): Promise<BadCase[]> {
+  return parseApiResponse<BadCase[]>(await fetch(`${API_BASE_URL}/bad-cases`))
+}
+
+export async function createBadCase(payload: {
+  request_id: string
+  category: BadCaseCategory
+  severity: 'low' | 'medium' | 'high' | 'critical'
+  expected_behavior: string
+  actual_behavior: string
+}): Promise<BadCase> {
+  return parseApiResponse<BadCase>(await fetch(`${API_BASE_URL}/bad-cases`, {
+    method: 'POST',
+    headers: DEMO_GOVERNANCE_HEADERS,
+    body: JSON.stringify(payload),
+  }))
+}
+
+export async function updateBadCaseStatus(badCaseId: string, status: BadCaseStatus): Promise<BadCase> {
+  return parseApiResponse<BadCase>(await fetch(`${API_BASE_URL}/bad-cases/${badCaseId}`, {
+    method: 'PATCH',
+    headers: DEMO_GOVERNANCE_HEADERS,
+    body: JSON.stringify({ status }),
+  }))
+}
+
+export async function exportBadCase(badCaseId: string): Promise<{ case_id: string }> {
+  return parseApiResponse<{ case_id: string }>(await fetch(`${API_BASE_URL}/bad-cases/${badCaseId}/export`, {
+    method: 'POST',
+    headers: DEMO_GOVERNANCE_HEADERS,
+  }))
 }

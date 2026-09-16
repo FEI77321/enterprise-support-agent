@@ -1,5 +1,7 @@
 # Enterprise Support Agent
 
+[![Agent Quality Gate](https://github.com/FEI77321/enterprise-support-agent/actions/workflows/agent-quality-gate.yml/badge.svg)](https://github.com/FEI77321/enterprise-support-agent/actions/workflows/agent-quality-gate.yml)
+
 一个面向企业内部 IT 支持场景的 RAG Agent 项目。它把本地 Markdown 知识库、关键词与向量检索、SQLite 工单、真实 DeepSeek 回答生成、工具调用、Agent Harness 运行时治理和 React 聊天界面组合为一条可运行、可追踪、可评估的服务链路。
 
 项目用于 27 届秋招 AI Agent 应用开发岗位展示。目标不是做一个只会调用模型的聊天框，而是实现一个能够检索依据、执行工具、保护高风险操作、发生异常时降级，并能被自动化评测验证的企业支持 Agent。
@@ -23,7 +25,7 @@
 - 可观测性：`request_id`、结构化日志、SQLite root/span Trace 与 AgentOps 指标记录安全、改写、检索、工具、审批、记忆和输出链路。
 - Bad Case 回流：失败案例必须绑定真实 `request_id`，按 `open → triaged → regression_added → resolved` 治理；只有已纳入回归的案例才能从原始 Trace 导出为版本化 Eval Dataset。
 - CI 回归门禁：GitHub Actions 在 PR、推送 main 与手动触发时运行离线 Agent 质量门禁，并独立执行前端 lint、TypeScript 检查和生产构建。
-- React 前端：提供聊天、来源展示、工单信息与可扫读的执行 Timeline。
+- React 前端：提供聊天、来源展示、工单信息、可扫读的执行 Timeline，以及由 Trace 直接创建/推进/导出 Bad Case 的质量治理面板。
 - 评测体系：覆盖 RAG golden case、路由阈值、引用校验、工具确认、数据库、API 契约和端到端流程。
 - 一键启动：`start.ps1` 本地脚本与 `docker compose up` 两种方式启动完整服务。
 - 双引擎编排：`rules`（if/else 路由）与 `langgraph`（显式状态图路由）两种实现，由 `AGENT_ENGINE` 环境变量切换，行为一致、可随时回退。
@@ -523,6 +525,8 @@ Bad Case 的治理规则是：先由 `POST /bad-cases` 绑定已存在的 Trace 
 .\backend\.venv\Scripts\python.exe .\eval\export_bad_case_dataset.py `
   --output .\eval\datasets\bad-case-feedback-v1.json
 ```
+
+前端右上角的“治理面板”复用同一套 API：一次聊天返回的 `trace_id` 可以直接打开 Bad Case 表单；面板展示 Trace 数、未解决案例、工具失败率、案例状态及可执行的“分诊 / 加入回归 / 标记解决 / 导出”动作。当前项目使用 `X-Actor-*` demo header 演示 Support 权限，生产环境应由可信 SSO/JWT 网关注入身份，而不是由浏览器自行声明角色。
 
 真实模型 smoke test 单独运行，避免每次回归都产生 API 成本：
 
