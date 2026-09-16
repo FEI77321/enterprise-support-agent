@@ -40,6 +40,7 @@ def persist_trace(
         "harness_trace_count": len(response.harness_trace),
         "source_files": [source.file for source in response.sources],
         "memory": response.memory,
+        "context": response.context,
     }
     spans: list[tuple[str, str, str, dict[str, Any]]] = [
         ("input_guard", "safety", response.safety.get("action", "allow"), response.safety),
@@ -47,6 +48,12 @@ def persist_trace(
         ("workflow", "trajectory", "completed", {"steps": response.workflow_steps}),
         ("retrieval", "retrieval", "completed", {"sources": source_payload}),
         ("memory", "memory", str(response.memory.get("write", {}).get("action", "skip")), response.memory),
+        (
+            "context_budget",
+            "context",
+            "compressed" if response.context.get("compression_triggered") else "within_budget",
+            response.context,
+        ),
     ]
     spans.extend(
         (f"tool:{item.get('tool_name', 'unknown')}", "tool", str(item.get("status", "unknown")), item)
@@ -154,6 +161,12 @@ def _timeline_summary(payload: dict[str, Any]) -> str:
         return " → ".join(payload["steps"])
     if "sources" in payload:
         return f"sources={len(payload['sources'])}"
+    if "compression_triggered" in payload:
+        return (
+            f"compressed={payload.get('compression_triggered')} "
+            f"recent={payload.get('recent_turn_count', 0)} "
+            f"reduction={payload.get('estimated_reduction_ratio', 0)}"
+        )
     if "tool_name" in payload:
         return f"{payload['tool_name']} ({payload.get('error_type') or 'ok'})"
     if "answer" in payload:
@@ -167,7 +180,7 @@ def get_agentops_metrics(database_path: Path | None = None) -> dict[str, Any]:
     initialize_database(target)
     connection = get_connection(target)
     try:
-        runs = connection.execute("SELECT response_type, safety_json, rewrite_json FROM agent_trace_runs").fetchall()
+        runs = connection.execute("SELECT response_type, safety_json, rewrite_json, metadata_json FROM agent_trace_runs").fetchall()
         tool_spans = connection.execute("SELECT status, payload_json FROM agent_trace_spans WHERE span_type = 'tool'").fetchall()
         bad_case_rows = connection.execute(
             "SELECT status, COUNT(*) AS count FROM agent_bad_cases GROUP BY status"
@@ -176,6 +189,7 @@ def get_agentops_metrics(database_path: Path | None = None) -> dict[str, Any]:
         safety_blocks = sum(json.loads(row["safety_json"]).get("action") == "block" for row in runs)
         rewrite_triggered = sum(json.loads(row["rewrite_json"]).get("triggered") is True for row in runs)
         response_types: dict[str, int] = {}
+        context_decisions = [json.loads(row["metadata_json"]).get("context", {}) for row in runs]
         for row in runs:
             response_types[row["response_type"]] = response_types.get(row["response_type"], 0) + 1
         tool_failures = sum(row["status"] not in {"completed"} for row in tool_spans)
@@ -191,6 +205,14 @@ def get_agentops_metrics(database_path: Path | None = None) -> dict[str, Any]:
             "tool_calls": len(tool_spans),
             "tool_failure_rate": round(tool_failures / len(tool_spans), 4) if tool_spans else 0.0,
             "tool_elapsed_ms": {"p50": percentile(0.5), "p95": percentile(0.95)},
+            "context_compression_trigger_rate": round(
+                sum(item.get("compression_triggered") is True for item in context_decisions) / total,
+                4,
+            ) if total else 0.0,
+            "context_estimated_reduction_ratio": round(
+                sum(float(item.get("estimated_reduction_ratio", 0.0)) for item in context_decisions) / total,
+                4,
+            ) if total else 0.0,
             "bad_cases": bad_cases,
             "open_bad_case_count": sum(
                 count for status, count in bad_cases.items() if status != "resolved"

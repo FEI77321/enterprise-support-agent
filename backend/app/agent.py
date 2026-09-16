@@ -86,10 +86,12 @@ def _has_confident_rule_answer(
 def _handle_message_core(
     message: str,
     request_id: str | None = None,
+    session_id: str | None = None,
 ) -> ChatResponse:  # 函数：负责 处理 消息 相关逻辑。
     state = AgentState(
         request_id=request_id or str(uuid4()),
         message=message,
+        session_id=session_id,
     )
 
     logger.info("request_id=%s message=%s", state.request_id, message)
@@ -193,7 +195,7 @@ def _handle_message_core(
 
         answer = build_answer(message, results)
         state.add_step("rule_answer")
-        prompt = build_prompt(message, sources)
+        prompt = build_prompt(message, sources, session_id=state.session_id)
         logger.debug("request_id=%s prompt=%s", state.request_id, prompt)
         if is_llm_answer_enabled():
             llm_result = generate_answer_result(prompt)
@@ -249,7 +251,7 @@ def _handle_message_core(
             for result in results
         ]
         state.sources = sources
-        prompt = build_prompt(message, sources)
+        prompt = build_prompt(message, sources, session_id=state.session_id)
         logger.debug("request_id=%s prompt=%s", state.request_id, prompt)
         state.add_step("clarify")
         logger.info(
@@ -489,6 +491,7 @@ def log_workflow(state: AgentState) -> None:  # 函数：负责 log workflow 相
 def handle_message(
     message: str,
     request_id: str | None = None,
+    session_id: str | None = None,
 ) -> ChatResponse:
     """规则编排入口：统一经过安全、Query Rewrite 与 Trace 治理层。"""
     from app.agent_runtime import execute_agent_request
@@ -498,6 +501,7 @@ def handle_message(
         request_id,
         "rules",
         _handle_message_core,
+        session_id=session_id,
     )
 
 

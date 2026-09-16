@@ -35,6 +35,12 @@ class Source(BaseModel):  # 类：表示回答引用的一条知识库来源。
         default=None,
         description="RAG 2.0 文档版本 ID；旧链路不提供",
     )
+    session_id: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=128,
+        description="可选会话 ID；提供后启用滚动摘要与上下文预算管理",
+    )
     document_version: str | None = Field(
         default=None,
         description="RAG 2.0 文档版本号；旧链路不提供",
@@ -109,6 +115,10 @@ class ChatResponse(BaseModel):  # 类：定义聊天接口返回的回答、来�
     memory: dict[str, Any] = Field(
         default_factory=dict,
         description="长期记忆的写入门控与本次召回摘要",
+    )
+    context: dict[str, Any] = Field(
+        default_factory=dict,
+        description="本次上下文预算、滚动摘要和证据裁剪决策，不返回原始被裁剪内容",
     )
 
 

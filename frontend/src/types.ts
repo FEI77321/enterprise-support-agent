@@ -46,6 +46,14 @@ export interface ChatResponse {
   safety?: { action?: string; risk_level?: string; reason?: string };
   query_rewrite?: { triggered?: boolean; effective_query?: string; reason?: string };
   memory?: { retrieved_count?: number; write?: { action?: string; reason?: string } };
+  context?: {
+    compression_triggered?: boolean;
+    total_budget_tokens?: number;
+    recent_turn_count?: number;
+    summary_source_turns?: number;
+    estimated_reduction_ratio?: number;
+    evidence_dropped?: number;
+  };
 }
 
 export type BadCaseStatus = 'open' | 'triaged' | 'regression_added' | 'resolved'
@@ -73,6 +81,8 @@ export interface AgentOpsMetrics {
   tool_failure_rate: number
   prompt_injection_block_rate: number
   query_rewrite_trigger_rate: number
+  context_compression_trigger_rate: number
+  context_estimated_reduction_ratio: number
   bad_cases: Partial<Record<BadCaseStatus, number>>
   open_bad_case_count: number
 }

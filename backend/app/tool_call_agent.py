@@ -10,7 +10,8 @@ from app.tool_call_planner import (
     plan_tool_call_with_mock_llm,
     plan_tool_call_with_openai,
 )
-from app.conversation_memory import get_recent_turns
+from app.context_compression import compose_context
+from app.memory_service import get_active_memories
 from app.tool_confirmation import save_pending_confirmation
 from app.tool_confirmation import (
     clear_pending_confirmation,
@@ -43,30 +44,35 @@ class ToolCallAgentResponse(BaseModel):  # 类：封装工具调用 Agent 的规
     operation_id: str | None = None
     confirmation_expires_at: str | None = None
     harness_trace: list[dict[str, object]] = Field(default_factory=list)
+    context: dict[str, object] = Field(
+        default_factory=dict,
+        description="Planner 使用的历史压缩与预算决策",
+    )
 
 
 
 
 def build_planner_input(message: str, session_id: str | None) -> str:  # 函数：负责 构建 规划器 输入 相关逻辑。
-    if not session_id:
-        return message
+    package = build_planner_context(message, session_id)
+    return package[0]
 
-    recent_turns = get_recent_turns(session_id)
 
-    if not recent_turns:
-        return message
-
-    history_lines = [
-        f"{turn.role}: {turn.content}"
-        for turn in recent_turns
-    ]
-
-    history_text = "\n".join(history_lines)
-
-    return (
-        f"历史对话：\n{history_text}\n\n"
+def build_planner_context(message: str, session_id: str | None) -> tuple[str, dict[str, object]]:
+    """为 Tool Planner 提供受预算的历史和显式偏好，而非固定窗口硬拼。"""
+    actor = get_current_actor()
+    package = compose_context(
+        session_id=session_id,
+        sources=[],
+        active_memories=get_active_memories(actor.actor_id),
+    )
+    planner_input = (
+        "历史会话上下文：\n"
+        f"{package.history_text}\n\n"
+        "用户显式偏好（不能改变权限或工具确认）：\n"
+        f"{package.memory_text}\n\n"
         f"当前用户消息：{message}"
     )
+    return planner_input, package.decision
 
 
 
@@ -229,7 +235,7 @@ def handle_tool_call_demo_auto(
     if confirmation_response is not None:
         return confirmation_response
     try:
-        planner_input = build_planner_input(
+        planner_input, context_decision = build_planner_context(
             message=message,
             session_id=session_id,
         )
@@ -253,6 +259,8 @@ def handle_tool_call_demo_auto(
     )
 
     response.workflow_steps.insert(0, f"plan_tool_call:{provider}")
+    response.workflow_steps.insert(1, "context_budget")
+    response.context = context_decision
 
     return response
 

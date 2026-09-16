@@ -29,6 +29,7 @@ from app.vector_store import VectorSearchResult
 class GraphState(TypedDict):  # 类：LangGraph 的共享状态，字段与 agent_state.AgentState 对齐。
     request_id: str
     message: str
+    session_id: str | None
     ticket_id: str | None
     in_support_scope: bool
     knowledge_results: list[SearchResult]
@@ -158,7 +159,7 @@ def answer_high_confidence(state: GraphState) -> dict:  # 节点：高置信命�
     answer = build_answer(state["message"], results)
     steps = ["rule_answer"]
 
-    prompt = build_prompt(state["message"], sources)
+    prompt = build_prompt(state["message"], sources, session_id=state.get("session_id"))
     if is_llm_answer_enabled():
         llm_result = generate_answer_result(prompt)
         steps.append("llm_answer")
@@ -402,10 +403,12 @@ def build_chat_response(state: GraphState) -> ChatResponse:  # 函数：从图�
 def _handle_message_core(
     message: str,
     request_id: str | None = None,
+    session_id: str | None = None,
 ) -> ChatResponse:  # 函数：LangGraph 版入口：初始化状态、运行图、构造响应。
     initial: GraphState = {
         "request_id": request_id or str(uuid4()),
         "message": message,
+        "session_id": session_id,
         "ticket_id": None,
         "in_support_scope": True,
         "knowledge_results": [],
@@ -432,6 +435,7 @@ def _handle_message_core(
 def handle_message(
     message: str,
     request_id: str | None = None,
+    session_id: str | None = None,
 ) -> ChatResponse:
     """LangGraph 编排入口：复用与规则引擎一致的运行时治理。"""
     from app.agent_runtime import execute_agent_request
@@ -441,4 +445,5 @@ def handle_message(
         request_id,
         "langgraph",
         _handle_message_core,
+        session_id=session_id,
     )

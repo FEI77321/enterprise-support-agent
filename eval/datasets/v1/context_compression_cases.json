@@ -1,0 +1,13 @@
+{
+  "category": "context_compression",
+  "cases": [
+    {"id": "context-summary-001", "purpose": "超预算历史触发滚动摘要"},
+    {"id": "context-facts-002", "purpose": "摘要保留工单号和已完成排障事实"},
+    {"id": "context-recent-003", "purpose": "最近窗口保持原文与顺序"},
+    {"id": "context-injection-004", "purpose": "恶意历史只作为非可信材料，不升级为指令"},
+    {"id": "context-budget-005", "purpose": "四层 Context 在总预算内且有真实降幅"},
+    {"id": "context-evidence-006", "purpose": "Evidence 裁剪保留 File 和 Chunk ID"},
+    {"id": "context-trace-007", "purpose": "Trace 记录压缩状态和预算决策"},
+    {"id": "context-clear-008", "purpose": "清空会话同时删除滚动摘要"}
+  ]
+}

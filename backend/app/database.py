@@ -66,6 +66,19 @@ def initialize_database(database_path: Path | None = None) -> None:  # 函数：
         )
         connection.execute(
             """
+            CREATE TABLE IF NOT EXISTS conversation_summaries (
+                session_id TEXT PRIMARY KEY,
+                summary TEXT NOT NULL,
+                covered_until_turn_id INTEGER NOT NULL,
+                source_turn_count INTEGER NOT NULL,
+                estimated_tokens INTEGER NOT NULL,
+                strategy TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+            """
+        )
+        connection.execute(
+            """
             CREATE TABLE IF NOT EXISTS agent_trace_runs (
                 request_id TEXT PRIMARY KEY,
                 created_at TEXT NOT NULL,

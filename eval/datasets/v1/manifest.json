@@ -12,6 +12,7 @@
     {"file": "authorization_cases.json", "category": "authorization", "purpose": "角色、资源归属与审批身份"},
     {"file": "reliability_cases.json", "category": "reliability", "purpose": "幂等写入、结果复用与结果未知"},
     {"file": "agentops_cases.json", "category": "agentops", "purpose": "Trace Timeline、运营指标与回归门禁"},
-    {"file": "memory_cases.json", "category": "memory", "purpose": "显式写入、冲突、TTL 与 owner 隔离"}
+    {"file": "memory_cases.json", "category": "memory", "purpose": "显式写入、冲突、TTL 与 owner 隔离"},
+    {"file": "context_compression_cases.json", "category": "context_compression", "purpose": "滚动摘要、预算分配、历史隔离与 Trace"}
   ]
 }

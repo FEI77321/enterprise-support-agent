@@ -12,6 +12,7 @@ from app.vector_store import VectorSearchResult
 class AgentState:  # 类：保存一次聊天 Agent 运行时的全部中间数据和工作流步骤。
     request_id: str
     message: str
+    session_id: str | None = None
     workflow_steps: list[str] = field(default_factory=list)
 
     ticket_id: str | None = None

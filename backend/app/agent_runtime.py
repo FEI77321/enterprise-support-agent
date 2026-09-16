@@ -11,13 +11,15 @@ from app.safety_guard import assess_user_input
 from app.trace_store import persist_trace
 from app.access_control import get_current_actor
 from app.memory_service import get_active_memories, write_explicit_memory
+from app.context_compression import compose_context
 
 
 def execute_agent_request(
     message: str,
     request_id: str | None,
     engine: str,
-    core_handler: Callable[[str, str | None], ChatResponse],
+    core_handler: Callable[[str, str | None, str | None], ChatResponse],
+    session_id: str | None = None,
 ) -> ChatResponse:
     """在编排前做安全边界与受控改写，在编排后统一落 Trace。"""
     resolved_request_id = request_id or f"req-{uuid4().hex[:12]}"
@@ -31,7 +33,7 @@ def execute_agent_request(
             workflow_steps=["input_guard_blocked"],
         )
     else:
-        response = core_handler(rewrite.effective_query, resolved_request_id)
+        response = core_handler(rewrite.effective_query, resolved_request_id, session_id)
 
     actor = get_current_actor()
     memory_write = write_explicit_memory(actor.actor_id, message)
@@ -44,6 +46,11 @@ def execute_agent_request(
         "retrieved_count": len(active_memories),
         "write": memory_write.to_public_dict(),
     }
+    response.context = compose_context(
+        session_id=session_id,
+        sources=response.sources,
+        active_memories=active_memories,
+    ).decision
     persist_trace(
         response,
         original_message=message,

@@ -20,9 +20,9 @@
 - 权限与审批：员工仅能读取归属工单，Support 可处理工单，管理员才可删除/审批高风险操作；审批具备操作 ID、会话绑定、5 分钟 TTL 与单次消费审计。
 - 写操作可靠性：创建等写工具使用幂等 Operation Record；同 key 成功结果复用，冲突 key 拦截，结果未知时禁止盲重试。
 - Agent Harness：rules Agent、LangGraph 与 Tool Calling 的真实工具执行统一经过 Harness，执行前进行注册与参数校验、风险分级、删除确认和请求级 `max_steps` 控制，并在响应中返回受限参数摘要的执行 Trace。
-- 分层 Memory：保留短窗口会话记录；长期记忆仅接受用户显式、稳定的偏好，含 owner 隔离、冲突覆盖、TTL 与敏感内容拒绝。
+- Context Engineering：短期会话不再只做固定窗口截断；超预算历史会被压缩为可审计的滚动结构化摘要，保留最近对话、稳定业务实体与已完成步骤，并与长期偏好、RAG Evidence 按统一 Token Budget 组装。
 - 工单管理：使用 SQLite 持久化，提供创建、查询、状态更新、筛选和删除接口。
-- 可观测性：`request_id`、结构化日志、SQLite root/span Trace 与 AgentOps 指标记录安全、改写、检索、工具、审批、记忆和输出链路。
+- 可观测性：`request_id`、结构化日志、SQLite root/span Trace 与 AgentOps 指标记录安全、改写、检索、工具、审批、记忆、Context Budget 和输出链路。
 - Bad Case 回流：失败案例必须绑定真实 `request_id`，按 `open → triaged → regression_added → resolved` 治理；只有已纳入回归的案例才能从原始 Trace 导出为版本化 Eval Dataset。
 - CI 回归门禁：GitHub Actions 在 PR、推送 main 与手动触发时运行离线 Agent 质量门禁，并独立执行前端 lint、TypeScript 检查和生产构建。
 - React 前端：提供聊天、来源展示、工单信息、可扫读的执行 Timeline，以及由 Trace 直接创建/推进/导出 Bad Case 的质量治理面板。
@@ -46,6 +46,7 @@
 10. Agent Harness 运行时治理：将 rules、LangGraph 与 Tool Calling 的真实工具执行收敛到统一入口，补齐风险等级、确认策略、参数拦截、请求级步数上限和 Trace；保留 feature flag 以便回退至原工具调用路径。
 11. Agent 生产化闭环：补齐 RBAC/资源归属、审批身份、写操作幂等与结果未知治理、AgentOps 指标、Trace Timeline 与长期 Memory Write Gate。
 12. 持续质量闭环：将 Bad Case 与 Trace 强关联，完成失败分类、生命周期审计、回流 Dataset 导出和 AgentOps 未解决计数；同时以 GitHub Actions 固化后端回归与前端构建门禁。
+13. Context Engineering：会话原文始终保留在 SQLite 审计表，超预算时仅把较早历史滚动压缩为不可信结构化摘要；最近窗口、长期显式偏好与 RAG Evidence 分层限额，预算和裁剪结果写入 Trace / AgentOps。
 
 ## RAG 2.0：受控文档摄入实验（当前增量）
 
@@ -495,15 +496,23 @@ Agent Harness 提供独立的离线契约评测；在项目根目录执行：
 
 该入口依次验证主链路 RAG 黄金集、文档摄入、来源回链、检索可见性、Feature Flag、Agent Harness 与真实 stdio MCP 协议，并采样 RAG 2.0 isolated synthetic 语料的纯检索延迟。延迟输出明确限定为内存词法检索微基准，不包含解析、数据库 IO、embedding/reranking、网络或 LLM 耗时，不能视为线上端到端性能。
 
-### Agent 生产化评测：Dataset / Rewrite / Safety / HITL / Trace / RBAC / Reliability / Memory / Bad Case
+### Agent 生产化评测：Dataset / Context / Rewrite / Safety / HITL / Trace / RBAC / Reliability / Memory / Bad Case
 
-`eval/datasets/v1/` 将评测对象拆成检索、引用、Query Rewrite、工具、Prompt Injection、安全审批（HITL）、端到端轨迹、RBAC、写操作可靠性、AgentOps 与长期 Memory 11 类，共 61 条具名用例；每个用例都有稳定 ID，方便回归定位而不是只看一个总分。
+`eval/datasets/v1/` 将评测对象拆成检索、引用、Query Rewrite、工具、Prompt Injection、安全审批（HITL）、端到端轨迹、RBAC、写操作可靠性、AgentOps、长期 Memory 与 Context Compression 12 类，共 69 条具名用例；每个用例都有稳定 ID，方便回归定位而不是只看一个总分。
 
 ```powershell
 .\backend\.venv\Scripts\python.exe .\eval\run_agent_platform_eval.py
 ```
 
-该命令聚合验证：数据集契约 **11/11 类、61 cases**，白名单 Query Rewrite **8/8**，Prompt Injection 边界 **8/8**，会话绑定/单次消费/过期审批 HITL **6/6**，端到端 Trace 轨迹 **4/4**，RBAC/审批身份 **6/6**，写操作幂等、超时与结果未知治理 **7/7**，AgentOps 指标与 Timeline **5/5**，长期 Memory Write Gate/冲突/TTL/隔离 **7/7**，以及 Bad Case 生命周期、Trace 刷新关联保持、导出门禁、Trace 输入回填、Dataset 文件写入和 AgentOps 指标 **10/10**。默认 `/chat` 的每次请求都会落 `agent_trace_runs` 与 `agent_trace_spans`；通过 `GET /traces/{request_id}`、`GET /traces/{request_id}/timeline` 与 `GET /traces/agentops` 可回放执行、查看时间线和聚合运行指标。评测调用时使用临时 Trace 数据库，避免污染业务记录。
+该命令聚合验证：数据集契约 **12/12 类、69 cases**，白名单 Query Rewrite **8/8**，Prompt Injection 边界 **8/8**，会话绑定/单次消费/过期审批 HITL **6/6**，端到端 Trace 轨迹 **4/4**，RBAC/审批身份 **6/6**，写操作幂等、超时与结果未知治理 **7/7**，AgentOps 指标与 Timeline **5/5**，长期 Memory Write Gate/冲突/TTL/隔离 **7/7**，Bad Case 生命周期/回流 **10/10**，以及 Context Compression 的滚动摘要、事实保留、恶意历史隔离、预算降幅、Evidence 可追溯裁剪、Trace 与清理语义 **8/8**。默认 `/chat` 的每次请求都会落 `agent_trace_runs` 与 `agent_trace_spans`；通过 `GET /traces/{request_id}`、`GET /traces/{request_id}/timeline` 与 `GET /traces/agentops` 可回放执行、查看时间线和聚合运行指标。评测调用时使用临时 Trace 数据库，避免污染业务记录。
+
+### Context Budget 与滚动摘要
+
+`/chat` 提供可选 `session_id`。提供后，当前请求会在回答后以原文形式追加进 `conversation_turns`；下一轮组装 Prompt 时，Composer 按“最近对话 → 较早历史摘要 → 显式长期偏好 → RAG Evidence”分层处理，而不是无界地拼接历史。原始对话不被删除，摘要单独写入 `conversation_summaries`，清空会话时才一并删除。
+
+默认总预算为 1200 个**本地估算 token**，其中最近对话 360、滚动摘要 240、长期偏好 120、检索证据 360；该估算用于确定性门禁，不冒充具体模型 tokenizer 的精确值。历史超过阈值后，旧轮次以 `deterministic_structured_compaction_v1` 压缩，保留工单号、错误码、近因用户诉求和已完成处理结论。历史与摘要始终包在 `UNTRUSTED` 边界内，不能改变 System Prompt、权限或工具确认。
+
+每次 Chat Trace 增加 `context_budget` span，记录是否触发压缩、摘要覆盖轮次、最近窗口、原始/实际估算 token、降幅和被裁剪 Evidence 数；`GET /traces/agentops` 同时给出 Context 压缩触发率和平均估算降幅。前端执行时间线与治理面板可直接展示这些指标。
 
 ### CI 回归门禁与 Bad Case 回流
 

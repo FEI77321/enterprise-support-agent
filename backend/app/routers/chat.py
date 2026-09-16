@@ -14,6 +14,7 @@ from app.observability import get_request_id
 from fastapi import HTTPException, APIRouter, Header
 from fastapi.responses import StreamingResponse
 from app.access_control import reset_current_actor, resolve_actor, set_current_actor
+from app.conversation_memory import add_turn
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 logger = logging.getLogger(__name__)
@@ -34,10 +35,15 @@ def chat(
 ) -> ChatResponse:  # 函数：负责 聊天 相关逻辑。
     token = set_current_actor(resolve_actor(x_actor_id, x_actor_role))
     try:
-        return _resolve_handler()(
+        response = _resolve_handler()(
             request.message,
             request_id=get_request_id(),
+            session_id=request.session_id,
         )
+        if request.session_id:
+            add_turn(request.session_id, "user", request.message)
+            add_turn(request.session_id, "assistant", response.answer or "")
+        return response
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
     finally:
@@ -75,6 +81,7 @@ async def chat_stream(
                 _resolve_handler(),
                 request.message,
                 request_id=request_id,
+                session_id=request.session_id,
             )
         except asyncio.CancelledError:
             logger.info("chat_stream_cancelled")
@@ -90,6 +97,9 @@ async def chat_stream(
             reset_current_actor(token)
 
         answer = response.answer or "当前请求已处理，但没有可展示的文本回答。"
+        if request.session_id:
+            add_turn(request.session_id, "user", request.message)
+            add_turn(request.session_id, "assistant", answer)
         yield _sse_event("status", {"message": "回答已生成，正在传输..."})
         for chunk in _answer_chunks(answer):
             yield _sse_event("message_delta", {"delta": chunk})

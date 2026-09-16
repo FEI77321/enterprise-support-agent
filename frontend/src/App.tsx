@@ -404,6 +404,10 @@ function ResponseDetails({ response, onReportBadCase }: { response: ChatResponse
             </span>
           ))}
           <span className="timeline-event">Memory · {response.memory?.write?.action ?? 'skip'}</span>
+          <span className="timeline-event">
+            Context · {response.context?.compression_triggered ? 'compressed' : 'within budget'}
+            {response.context?.estimated_reduction_ratio ? ` · -${(response.context.estimated_reduction_ratio * 100).toFixed(1)}%` : ''}
+          </span>
         </div>
         {response.trace_id && <code className="trace-id">Trace {response.trace_id}</code>}
         {response.trace_id && (
@@ -451,6 +455,7 @@ function GovernancePanel(props: GovernancePanelProps) {
         <div><span>Trace</span><strong>{props.agentOps?.trace_runs ?? '-'}</strong></div>
         <div><span>未解决</span><strong>{props.agentOps?.open_bad_case_count ?? '-'}</strong></div>
         <div><span>工具失败率</span><strong>{props.agentOps ? `${(props.agentOps.tool_failure_rate * 100).toFixed(1)}%` : '-'}</strong></div>
+        <div><span>Context 压缩率</span><strong>{props.agentOps ? `${(props.agentOps.context_compression_trigger_rate * 100).toFixed(1)}%` : '-'}</strong></div>
       </section>
 
       {props.reportTraceId && (
