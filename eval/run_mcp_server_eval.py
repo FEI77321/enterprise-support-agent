@@ -18,6 +18,7 @@
 import asyncio
 import json
 from pathlib import Path
+import sys
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
@@ -26,7 +27,10 @@ from mcp.client.stdio import stdio_client
 # 从测试文件位置反推项目路径，避免依赖终端当前目录，也避免误用其他
 # 项目副本或全局 Python 环境。
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-PYTHON_EXE = PROJECT_ROOT / "backend" / ".venv" / "Scripts" / "python.exe"
+# MCP Server 必须由执行本回归的同一解释器启动：本地 Windows 虚拟环境、
+# GitHub Actions 的 Linux Python 和其他 CI 均可复用同一套协议测试；不再
+# 硬编码 Windows 专属的 ``.venv/Scripts/python.exe`` 路径。
+PYTHON_EXE = Path(sys.executable).resolve()
 SERVER_FILE = PROJECT_ROOT / "mcp_server" / "server.py"
 
 # 这是安全白名单。集合精确相等既能发现工具缺失，也能防止 create_ticket
