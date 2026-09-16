@@ -159,7 +159,12 @@ def answer_high_confidence(state: GraphState) -> dict:  # 节点：高置信命�
     answer = build_answer(state["message"], results)
     steps = ["rule_answer"]
 
-    prompt = build_prompt(state["message"], sources, session_id=state.get("session_id"))
+    prompt = build_prompt(
+        state["message"],
+        sources,
+        session_id=state.get("session_id"),
+        request_id=state["request_id"],
+    )
     if is_llm_answer_enabled():
         llm_result = generate_answer_result(prompt)
         steps.append("llm_answer")

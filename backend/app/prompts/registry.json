@@ -1,0 +1,19 @@
+{
+  "registry_version": "prompt-registry-v1",
+  "active_version": "support-agent-v2.0",
+  "candidate_version": "support-agent-v2.1",
+  "candidate_rollout_percent": 0,
+  "rollback_version": "support-agent-v2.0",
+  "versions": {
+    "support-agent-v2.0": {
+      "file": "support-agent-v2.0.md",
+      "status": "active",
+      "change_summary": "Baseline prompt snapshot before formal registry governance."
+    },
+    "support-agent-v2.1": {
+      "file": "support-agent-v2.1.md",
+      "status": "candidate",
+      "change_summary": "Clarifies evidence grounding, ambiguity handling, current-turn precedence and untrusted-context boundary."
+    }
+  }
+}

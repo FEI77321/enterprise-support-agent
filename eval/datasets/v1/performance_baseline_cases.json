@@ -1,0 +1,6 @@
+{"category":"performance_baseline","cases":[
+  {"id":"performance-rag-001","purpose":"离线 Stub RAG 端到端阶段耗时"},
+  {"id":"performance-tool-002","purpose":"工单工具查询端到端阶段耗时"},
+  {"id":"performance-approval-003","purpose":"高风险审批准备耗时，不含人工等待"},
+  {"id":"performance-context-004","purpose":"长会话滚动摘要与 Context 组装耗时"}
+]}

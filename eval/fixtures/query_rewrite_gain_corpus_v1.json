@@ -1,0 +1,10 @@
+{
+  "scope": "controlled_alias_retrieval_fixture",
+  "disclaimer": "This corpus isolates white-listed alias normalization. It is not reported as a production RAG benchmark.",
+  "documents": [
+    {"file": "vpn_guide.md", "text": "VPN 远程访问 无法连接 排查 账号 网络"},
+    {"file": "reimbursement_policy.md", "text": "报销申请流程 发票 审批 财务"},
+    {"file": "account_login_faq.md", "text": "账号 登录 密码 MFA 验证码"},
+    {"file": "leave_policy.md", "text": "年假 请假 调休 病假 审批"}
+  ]
+}

@@ -10,7 +10,7 @@ import sys
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = (
-    ("run_agent_platform_eval.py", "Agent production capability suite: Passed 11/11"),
+    ("run_agent_platform_eval.py", "Agent production capability suite: Passed 18/18"),
     ("run_resume_evidence_eval.py", "Evidence suites: Passed 7/7"),
 )
 

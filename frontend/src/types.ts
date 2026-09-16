@@ -54,11 +54,13 @@ export interface ChatResponse {
     estimated_reduction_ratio?: number;
     evidence_dropped?: number;
   };
+  prompt?: { version?: string; content_hash?: string; channel?: string; rollout_percent?: number };
+  timing?: Record<string, number>;
 }
 
 export type BadCaseStatus = 'open' | 'triaged' | 'regression_added' | 'resolved'
 
-export type BadCaseCategory = 'retrieval' | 'rewrite' | 'safety' | 'tool' | 'authorization' | 'memory' | 'response'
+export type BadCaseCategory = 'retrieval' | 'rewrite' | 'safety' | 'tool' | 'authorization' | 'memory' | 'response' | 'context' | 'prompt' | 'performance'
 
 export interface BadCase {
   bad_case_id: string
@@ -83,6 +85,7 @@ export interface AgentOpsMetrics {
   query_rewrite_trigger_rate: number
   context_compression_trigger_rate: number
   context_estimated_reduction_ratio: number
+  request_phase_elapsed_ms?: Record<string, { p50: number | null; p95: number | null }>
   bad_cases: Partial<Record<BadCaseStatus, number>>
   open_bad_case_count: number
 }

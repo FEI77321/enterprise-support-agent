@@ -195,7 +195,7 @@ def _handle_message_core(
 
         answer = build_answer(message, results)
         state.add_step("rule_answer")
-        prompt = build_prompt(message, sources, session_id=state.session_id)
+        prompt = build_prompt(message, sources, session_id=state.session_id, request_id=state.request_id)
         logger.debug("request_id=%s prompt=%s", state.request_id, prompt)
         if is_llm_answer_enabled():
             llm_result = generate_answer_result(prompt)
@@ -251,7 +251,7 @@ def _handle_message_core(
             for result in results
         ]
         state.sources = sources
-        prompt = build_prompt(message, sources, session_id=state.session_id)
+        prompt = build_prompt(message, sources, session_id=state.session_id, request_id=state.request_id)
         logger.debug("request_id=%s prompt=%s", state.request_id, prompt)
         state.add_step("clarify")
         logger.info(

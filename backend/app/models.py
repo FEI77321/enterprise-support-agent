@@ -12,6 +12,12 @@ class ChatRequest(BaseModel):  # 类：定义聊天接口接收的用户消息�
         max_length=500,
         description="用户输入的企业支持问题",
     )
+    session_id: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=128,
+        description="可选会话 ID；提供后启用滚动摘要与上下文预算管理",
+    )
 
 
 class TicketStatus(str, Enum):  # 类：枚举工单允许使用的处理状态。
@@ -34,12 +40,6 @@ class Source(BaseModel):  # 类：表示回答引用的一条知识库来源。
     document_id: str | None = Field(
         default=None,
         description="RAG 2.0 文档版本 ID；旧链路不提供",
-    )
-    session_id: str | None = Field(
-        default=None,
-        min_length=1,
-        max_length=128,
-        description="可选会话 ID；提供后启用滚动摘要与上下文预算管理",
     )
     document_version: str | None = Field(
         default=None,
@@ -120,6 +120,14 @@ class ChatResponse(BaseModel):  # 类：定义聊天接口返回的回答、来�
         default_factory=dict,
         description="本次上下文预算、滚动摘要和证据裁剪决策，不返回原始被裁剪内容",
     )
+    prompt: dict[str, Any] = Field(
+        default_factory=dict,
+        description="本次实际使用的 Prompt Registry 版本、哈希和灰度通道，不返回 Prompt 正文",
+    )
+    timing: dict[str, float] = Field(
+        default_factory=dict,
+        description="请求关键阶段耗时毫秒，用于 Trace 和 AgentOps 聚合",
+    )
 
 
 class TicketCreateRequest(BaseModel):  # 类：定义创建工单接口接收的请求字段。
@@ -134,7 +142,7 @@ class TicketStatusUpdate(BaseModel):  # 类：定义更新工单状态接口接�
     status: TicketStatus
 
 
-BadCaseCategory = Literal["retrieval", "rewrite", "safety", "tool", "authorization", "memory", "response"]
+BadCaseCategory = Literal["retrieval", "rewrite", "safety", "tool", "authorization", "memory", "response", "context", "prompt", "performance"]
 BadCaseSeverity = Literal["low", "medium", "high", "critical"]
 BadCaseStatus = Literal["open", "triaged", "regression_added", "resolved"]
 
@@ -147,6 +155,9 @@ class BadCaseCreateRequest(BaseModel):
     severity: BadCaseSeverity = "medium"
     expected_behavior: str = Field(..., min_length=5, max_length=2000)
     actual_behavior: str = Field(..., min_length=5, max_length=2000)
+    root_cause: str | None = Field(default=None, max_length=2000)
+    fix_version: str | None = Field(default=None, max_length=128)
+    fixture_kind: Literal["observed", "controlled_fixture"] = "observed"
 
 
 class BadCaseStatusUpdate(BaseModel):

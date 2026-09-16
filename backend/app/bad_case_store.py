@@ -40,7 +40,8 @@ def _record_event(connection: Any, bad_case_id: str, event_type: str, actor_id: 
 
 def create_bad_case(
     *, request_id: str, category: str, severity: str, expected_behavior: str,
-    actual_behavior: str, reporter_id: str, database_path: Path | None = None,
+    actual_behavior: str, reporter_id: str, root_cause: str | None = None,
+    fix_version: str | None = None, fixture_kind: str = "observed", database_path: Path | None = None,
 ) -> dict[str, Any]:
     """创建与 Trace 强关联的失败案例；不存在 Trace 时拒绝悬空记录。"""
     initialize_database(database_path)
@@ -56,13 +57,13 @@ def create_bad_case(
                 INSERT INTO agent_bad_cases (
                     bad_case_id, request_id, category, severity, expected_behavior,
                     actual_behavior, status, reporter_id, regression_case_id,
-                    created_at, updated_at, resolved_at
-                ) VALUES (?, ?, ?, ?, ?, ?, 'open', ?, NULL, ?, ?, NULL)
+                    root_cause, fix_version, fixture_kind, created_at, updated_at, resolved_at
+                ) VALUES (?, ?, ?, ?, ?, ?, 'open', ?, NULL, ?, ?, ?, ?, ?, NULL)
                 """,
                 (bad_case_id, request_id, category, severity, expected_behavior,
-                 actual_behavior, reporter_id, now, now),
+                 actual_behavior, reporter_id, root_cause, fix_version, fixture_kind, now, now),
             )
-            _record_event(connection, bad_case_id, "created", reporter_id, {"status": "open"}, now)
+            _record_event(connection, bad_case_id, "created", reporter_id, {"status": "open", "fixture_kind": fixture_kind, "root_cause": root_cause, "fix_version": fix_version}, now)
             row = connection.execute("SELECT * FROM agent_bad_cases WHERE bad_case_id = ?", (bad_case_id,)).fetchone()
             return _row_to_case(row) or {}
     finally:
@@ -157,6 +158,9 @@ def export_bad_case_as_eval_case(bad_case_id: str, database_path: Path | None = 
         "actual_behavior": case["actual_behavior"],
         "category": case["category"],
         "severity": case["severity"],
+        "root_cause": case.get("root_cause"),
+        "fix_version": case.get("fix_version"),
+        "fixture_kind": case.get("fixture_kind", "observed"),
         "trace_context": {
             "request_id": trace["request_id"],
             "prompt_version": trace["prompt_version"],

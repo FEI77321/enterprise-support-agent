@@ -13,6 +13,10 @@
     {"file": "reliability_cases.json", "category": "reliability", "purpose": "幂等写入、结果复用与结果未知"},
     {"file": "agentops_cases.json", "category": "agentops", "purpose": "Trace Timeline、运营指标与回归门禁"},
     {"file": "memory_cases.json", "category": "memory", "purpose": "显式写入、冲突、TTL 与 owner 隔离"},
-    {"file": "context_compression_cases.json", "category": "context_compression", "purpose": "滚动摘要、预算分配、历史隔离与 Trace"}
+    {"file": "context_compression_cases.json", "category": "context_compression", "purpose": "滚动摘要、预算分配、历史隔离与 Trace"},
+    {"file": "../../answer_quality_cases.json", "category": "answer_quality", "purpose": "最终回答的确定性质量、Judge 与人工抽检校准"},
+    {"file": "context_strategy_cases.json", "category": "context_strategy", "purpose": "全量历史、固定窗口、滚动摘要的对比实验"},
+    {"file": "query_rewrite_gain_cases.json", "category": "query_rewrite_gain", "purpose": "白名单改写的受控增益与精确实体不退化"},
+    {"file": "performance_baseline_cases.json", "category": "performance_baseline", "purpose": "RAG、工具、审批与长会话的离线端到端性能基线"}
   ]
 }

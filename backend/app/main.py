@@ -17,6 +17,7 @@ from app.routers.tickets import router as tickets_router
 from app.routers.chat import router as chat_router
 from app.routers.traces import router as traces_router
 from app.routers.bad_cases import router as bad_cases_router
+from app.routers.prompts import router as prompts_router
 from app.tool_call_routes import (
     ConversationMemoryClearRequest,
     ToolCallAutoRequest,
@@ -136,6 +137,7 @@ app.include_router(tickets_router)
 app.include_router(chat_router)
 app.include_router(traces_router)
 app.include_router(bad_cases_router)
+app.include_router(prompts_router)
 
 
 

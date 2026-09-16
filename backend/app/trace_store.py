@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from app.config import get_prompt_version, get_trace_database_path, is_trace_persistence_enabled
+from app.config import get_trace_database_path, is_trace_persistence_enabled
 from app.database import get_connection, initialize_database
 from app.models import ChatResponse
 
@@ -41,6 +41,8 @@ def persist_trace(
         "source_files": [source.file for source in response.sources],
         "memory": response.memory,
         "context": response.context,
+        "prompt": response.prompt,
+        "timing": response.timing,
     }
     spans: list[tuple[str, str, str, dict[str, Any]]] = [
         ("input_guard", "safety", response.safety.get("action", "allow"), response.safety),
@@ -49,12 +51,27 @@ def persist_trace(
         ("retrieval", "retrieval", "completed", {"sources": source_payload}),
         ("memory", "memory", str(response.memory.get("write", {}).get("action", "skip")), response.memory),
         (
+            "prompt_resolution",
+            "prompt",
+            str(response.prompt.get("channel", "active")),
+            response.prompt,
+        ),
+        (
             "context_budget",
             "context",
             "compressed" if response.context.get("compression_triggered") else "within_budget",
             response.context,
         ),
     ]
+    spans.extend(
+        (
+            f"timing:{name}",
+            "timing",
+            "completed",
+            {"metric": name, "elapsed_ms": value},
+        )
+        for name, value in response.timing.items()
+    )
     spans.extend(
         (f"tool:{item.get('tool_name', 'unknown')}", "tool", str(item.get("status", "unknown")), item)
         for item in response.harness_trace
@@ -87,7 +104,7 @@ def persist_trace(
                 """,
                 (
                     response.request_id, now, engine, response.type, original_message,
-                    effective_query, get_prompt_version(), _dump(response.safety),
+                    effective_query, str(response.prompt.get("version", "unresolved")), _dump(response.safety),
                     _dump(response.query_rewrite), _dump(response.workflow_steps),
                     len(response.sources), _dump(metadata),
                 ),
@@ -169,6 +186,10 @@ def _timeline_summary(payload: dict[str, Any]) -> str:
         )
     if "tool_name" in payload:
         return f"{payload['tool_name']} ({payload.get('error_type') or 'ok'})"
+    if "content_hash" in payload:
+        return f"{payload.get('version', 'unknown')} ({payload.get('channel', 'active')})"
+    if "elapsed_ms" in payload:
+        return f"{payload.get('metric', 'phase')}={payload['elapsed_ms']}ms"
     if "answer" in payload:
         return str(payload.get("type", "response"))
     return "recorded"
@@ -182,6 +203,7 @@ def get_agentops_metrics(database_path: Path | None = None) -> dict[str, Any]:
     try:
         runs = connection.execute("SELECT response_type, safety_json, rewrite_json, metadata_json FROM agent_trace_runs").fetchall()
         tool_spans = connection.execute("SELECT status, payload_json FROM agent_trace_spans WHERE span_type = 'tool'").fetchall()
+        timing_spans = connection.execute("SELECT payload_json FROM agent_trace_spans WHERE span_type = 'timing'").fetchall()
         bad_case_rows = connection.execute(
             "SELECT status, COUNT(*) AS count FROM agent_bad_cases GROUP BY status"
         ).fetchall()
@@ -196,7 +218,20 @@ def get_agentops_metrics(database_path: Path | None = None) -> dict[str, Any]:
         bad_cases = {row["status"]: row["count"] for row in bad_case_rows}
         latencies = [json.loads(row["payload_json"]).get("elapsed_ms") for row in tool_spans]
         latency_values = sorted(value for value in latencies if isinstance(value, (float, int)))
+        timing_by_metric: dict[str, list[float]] = {}
+        for row in timing_spans:
+            payload = json.loads(row["payload_json"])
+            metric, value = payload.get("metric"), payload.get("elapsed_ms")
+            if isinstance(metric, str) and isinstance(value, (float, int)):
+                timing_by_metric.setdefault(metric, []).append(float(value))
         percentile = lambda ratio: latency_values[max(0, int(len(latency_values) * ratio + 0.9999) - 1)] if latency_values else None
+        timing_percentiles = {
+            metric: {
+                "p50": sorted(values)[max(0, int(len(values) * 0.5 + 0.9999) - 1)],
+                "p95": sorted(values)[max(0, int(len(values) * 0.95 + 0.9999) - 1)],
+            }
+            for metric, values in timing_by_metric.items()
+        }
         return {
             "trace_runs": total,
             "response_types": response_types,
@@ -205,6 +240,7 @@ def get_agentops_metrics(database_path: Path | None = None) -> dict[str, Any]:
             "tool_calls": len(tool_spans),
             "tool_failure_rate": round(tool_failures / len(tool_spans), 4) if tool_spans else 0.0,
             "tool_elapsed_ms": {"p50": percentile(0.5), "p95": percentile(0.95)},
+            "request_phase_elapsed_ms": timing_percentiles,
             "context_compression_trigger_rate": round(
                 sum(item.get("compression_triggered") is True for item in context_decisions) / total,
                 4,

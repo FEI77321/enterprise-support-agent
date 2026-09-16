@@ -408,6 +408,12 @@ function ResponseDetails({ response, onReportBadCase }: { response: ChatResponse
             Context · {response.context?.compression_triggered ? 'compressed' : 'within budget'}
             {response.context?.estimated_reduction_ratio ? ` · -${(response.context.estimated_reduction_ratio * 100).toFixed(1)}%` : ''}
           </span>
+          <span className="timeline-event">
+            Prompt · {response.prompt?.version ?? 'unresolved'} · {response.prompt?.channel ?? 'active'}
+          </span>
+          {response.timing?.total_ms !== undefined && (
+            <span className="timeline-event">E2E · {response.timing.total_ms.toFixed(1)}ms</span>
+          )}
         </div>
         {response.trace_id && <code className="trace-id">Trace {response.trace_id}</code>}
         {response.trace_id && (
@@ -456,6 +462,7 @@ function GovernancePanel(props: GovernancePanelProps) {
         <div><span>未解决</span><strong>{props.agentOps?.open_bad_case_count ?? '-'}</strong></div>
         <div><span>工具失败率</span><strong>{props.agentOps ? `${(props.agentOps.tool_failure_rate * 100).toFixed(1)}%` : '-'}</strong></div>
         <div><span>Context 压缩率</span><strong>{props.agentOps ? `${(props.agentOps.context_compression_trigger_rate * 100).toFixed(1)}%` : '-'}</strong></div>
+        <div><span>E2E P95</span><strong>{props.agentOps?.request_phase_elapsed_ms?.total_ms?.p95 !== undefined && props.agentOps.request_phase_elapsed_ms.total_ms.p95 !== null ? `${props.agentOps.request_phase_elapsed_ms.total_ms.p95.toFixed(1)}ms` : '-'}</strong></div>
       </section>
 
       {props.reportTraceId && (
@@ -466,6 +473,7 @@ function GovernancePanel(props: GovernancePanelProps) {
             <select value={props.reportCategory} onChange={(event) => props.setReportCategory(event.target.value as BadCaseCategory)}>
               <option value="retrieval">retrieval</option><option value="rewrite">rewrite</option><option value="safety">safety</option>
               <option value="tool">tool</option><option value="authorization">authorization</option><option value="memory">memory</option><option value="response">response</option>
+              <option value="context">context</option><option value="prompt">prompt</option><option value="performance">performance</option>
             </select>
           </label>
           <label>预期行为<textarea required minLength={5} value={props.reportExpectedBehavior} onChange={(event) => props.setReportExpectedBehavior(event.target.value)} /></label>

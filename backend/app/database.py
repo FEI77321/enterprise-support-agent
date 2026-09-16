@@ -223,6 +223,49 @@ def initialize_database(database_path: Path | None = None) -> None:  # 函数：
         )
         connection.execute("CREATE INDEX IF NOT EXISTS idx_agent_bad_cases_status ON agent_bad_cases(status, category)")
         connection.execute("CREATE INDEX IF NOT EXISTS idx_agent_bad_cases_request ON agent_bad_cases(request_id)")
+        columns = {row["name"] for row in connection.execute("PRAGMA table_info(agent_bad_cases)").fetchall()}
+        for name, definition in (
+            ("root_cause", "TEXT"),
+            ("fix_version", "TEXT"),
+            ("fixture_kind", "TEXT NOT NULL DEFAULT 'observed'"),
+        ):
+            if name not in columns:
+                connection.execute(f"ALTER TABLE agent_bad_cases ADD COLUMN {name} {definition}")
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS agent_eval_runs (
+                eval_run_id TEXT PRIMARY KEY,
+                suite_name TEXT NOT NULL,
+                dataset_version TEXT NOT NULL,
+                baseline_prompt_version TEXT,
+                candidate_prompt_version TEXT,
+                judge_provider TEXT NOT NULL,
+                status TEXT NOT NULL,
+                summary_json TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS agent_eval_case_results (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                eval_run_id TEXT NOT NULL,
+                case_id TEXT NOT NULL,
+                prompt_version TEXT NOT NULL,
+                request_id TEXT,
+                status TEXT NOT NULL,
+                deterministic_json TEXT NOT NULL,
+                judge_json TEXT NOT NULL,
+                human_json TEXT NOT NULL,
+                trace_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                UNIQUE(eval_run_id, case_id, prompt_version),
+                FOREIGN KEY(eval_run_id) REFERENCES agent_eval_runs(eval_run_id) ON DELETE CASCADE
+            )
+            """
+        )
+        connection.execute("CREATE INDEX IF NOT EXISTS idx_agent_eval_cases_run ON agent_eval_case_results(eval_run_id, case_id)")
 
         from app.knowledge_repository import (
             initialize_knowledge_tables,

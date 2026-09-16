@@ -1,0 +1,8 @@
+{"category":"query_rewrite_gain","cases":[
+  {"id":"rewrite-gain-dataset-001","purpose":"内网别名改写提升受控语料召回"},
+  {"id":"rewrite-gain-dataset-002","purpose":"远程访问别名改写提升受控语料召回"},
+  {"id":"rewrite-gain-dataset-003","purpose":"报销口语别名改写提升受控语料召回"},
+  {"id":"rewrite-gain-dataset-004","purpose":"登录口语别名改写提升受控语料召回"},
+  {"id":"rewrite-gain-dataset-005","purpose":"工单 ID 精确实体不得改写"},
+  {"id":"rewrite-gain-dataset-006","purpose":"错误码精确实体不得改写"}
+]}

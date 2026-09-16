@@ -1,0 +1,5 @@
+{"category":"context_strategy","cases":[
+  {"id":"context-strategy-full-001","purpose":"全量历史保留全部关键事实作为上界基线"},
+  {"id":"context-strategy-window-002","purpose":"固定窗口在早期事实被截断时暴露局限"},
+  {"id":"context-strategy-rolling-003","purpose":"滚动摘要在预算内保留 Ticket、错误码与设备约束"}
+]}

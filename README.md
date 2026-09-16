@@ -21,12 +21,13 @@
 - 写操作可靠性：创建等写工具使用幂等 Operation Record；同 key 成功结果复用，冲突 key 拦截，结果未知时禁止盲重试。
 - Agent Harness：rules Agent、LangGraph 与 Tool Calling 的真实工具执行统一经过 Harness，执行前进行注册与参数校验、风险分级、删除确认和请求级 `max_steps` 控制，并在响应中返回受限参数摘要的执行 Trace。
 - Context Engineering：短期会话不再只做固定窗口截断；超预算历史会被压缩为可审计的滚动结构化摘要，保留最近对话、稳定业务实体与已完成步骤，并与长期偏好、RAG Evidence 按统一 Token Budget 组装。
+- Prompt Registry：System Prompt 以版本快照、内容哈希、稳定分桶灰度和强制版本回退治理；每次请求将实际命中版本与通道写入 Trace，可进行候选版本回归对比。
 - 工单管理：使用 SQLite 持久化，提供创建、查询、状态更新、筛选和删除接口。
 - 可观测性：`request_id`、结构化日志、SQLite root/span Trace 与 AgentOps 指标记录安全、改写、检索、工具、审批、记忆、Context Budget 和输出链路。
 - Bad Case 回流：失败案例必须绑定真实 `request_id`，按 `open → triaged → regression_added → resolved` 治理；只有已纳入回归的案例才能从原始 Trace 导出为版本化 Eval Dataset。
 - CI 回归门禁：GitHub Actions 在 PR、推送 main 与手动触发时运行离线 Agent 质量门禁，并独立执行前端 lint、TypeScript 检查和生产构建。
 - React 前端：提供聊天、来源展示、工单信息、可扫读的执行 Timeline，以及由 Trace 直接创建/推进/导出 Bad Case 的质量治理面板。
-- 评测体系：覆盖 RAG golden case、路由阈值、引用校验、工具确认、数据库、API 契约和端到端流程。
+- 评测体系：覆盖 RAG golden case、回答质量、路由阈值、引用校验、工具确认、数据库、API 契约、端到端流程及性能边界；所有受控 Fixture、离线 Stub 基线与真实项目知识库对照均单独标明。
 - 一键启动：`start.ps1` 本地脚本与 `docker compose up` 两种方式启动完整服务。
 - 双引擎编排：`rules`（if/else 路由）与 `langgraph`（显式状态图路由）两种实现，由 `AGENT_ENGINE` 环境变量切换，行为一致、可随时回退。
 
@@ -47,6 +48,7 @@
 11. Agent 生产化闭环：补齐 RBAC/资源归属、审批身份、写操作幂等与结果未知治理、AgentOps 指标、Trace Timeline 与长期 Memory Write Gate。
 12. 持续质量闭环：将 Bad Case 与 Trace 强关联，完成失败分类、生命周期审计、回流 Dataset 导出和 AgentOps 未解决计数；同时以 GitHub Actions 固化后端回归与前端构建门禁。
 13. Context Engineering：会话原文始终保留在 SQLite 审计表，超预算时仅把较早历史滚动压缩为不可信结构化摘要；最近窗口、长期显式偏好与 RAG Evidence 分层限额，预算和裁剪结果写入 Trace / AgentOps。
+14. Prompt 与质量闭环：引入 Prompt Registry（版本 / 哈希 / 灰度 / 回滚）、Eval Trace、回答质量集、受控 Bad Case Fixture、Context 三策略对比、Rewrite 增益实验和端到端离线性能基线；候选 Prompt 必须通过回归门禁才能放量。
 
 ## RAG 2.0：受控文档摄入实验（当前增量）
 
@@ -327,6 +329,7 @@ enterprise-support-agent/
 | `GET /traces/{request_id}` | 回放一次完整 Agent Trace |
 | `GET /traces/{request_id}/timeline` | 获取按执行顺序整理的 Trace Timeline |
 | `GET /traces/agentops` | 获取聚合运行指标及未解决 Bad Case 数 |
+| `GET /prompts/status` | 获取 Prompt 版本、内容哈希、灰度与回滚元数据（不返回正文） |
 | `POST /bad-cases` | 将指定 Trace 标记为 Bad Case |
 | `PATCH /bad-cases/{bad_case_id}` | Support / Admin 推进 Bad Case 生命周期 |
 | `POST /bad-cases/{bad_case_id}/export` | Support / Admin 导出已纳入回归的 Eval Case |
@@ -496,15 +499,15 @@ Agent Harness 提供独立的离线契约评测；在项目根目录执行：
 
 该入口依次验证主链路 RAG 黄金集、文档摄入、来源回链、检索可见性、Feature Flag、Agent Harness 与真实 stdio MCP 协议，并采样 RAG 2.0 isolated synthetic 语料的纯检索延迟。延迟输出明确限定为内存词法检索微基准，不包含解析、数据库 IO、embedding/reranking、网络或 LLM 耗时，不能视为线上端到端性能。
 
-### Agent 生产化评测：Dataset / Context / Rewrite / Safety / HITL / Trace / RBAC / Reliability / Memory / Bad Case
+### Agent 生产化评测：Dataset / Prompt / Answer Quality / Context / Rewrite / Safety / HITL / Trace / RBAC / Reliability / Memory / Bad Case / Performance
 
-`eval/datasets/v1/` 将评测对象拆成检索、引用、Query Rewrite、工具、Prompt Injection、安全审批（HITL）、端到端轨迹、RBAC、写操作可靠性、AgentOps、长期 Memory 与 Context Compression 12 类，共 69 条具名用例；每个用例都有稳定 ID，方便回归定位而不是只看一个总分。
+`eval/datasets/v1/` 将评测对象拆成检索、引用、Query Rewrite、工具、Prompt Injection、安全审批（HITL）、端到端轨迹、RBAC、写操作可靠性、AgentOps、长期 Memory、Context Compression、回答质量、Rewrite 对照与性能基线 **16 类、108 条具名用例**；每个用例都有稳定 ID，方便回归定位而不是只看一个总分。
 
 ```powershell
 .\backend\.venv\Scripts\python.exe .\eval\run_agent_platform_eval.py
 ```
 
-该命令聚合验证：数据集契约 **12/12 类、69 cases**，白名单 Query Rewrite **8/8**，Prompt Injection 边界 **8/8**，会话绑定/单次消费/过期审批 HITL **6/6**，端到端 Trace 轨迹 **4/4**，RBAC/审批身份 **6/6**，写操作幂等、超时与结果未知治理 **7/7**，AgentOps 指标与 Timeline **5/5**，长期 Memory Write Gate/冲突/TTL/隔离 **7/7**，Bad Case 生命周期/回流 **10/10**，以及 Context Compression 的滚动摘要、事实保留、恶意历史隔离、预算降幅、Evidence 可追溯裁剪、Trace 与清理语义 **8/8**。默认 `/chat` 的每次请求都会落 `agent_trace_runs` 与 `agent_trace_spans`；通过 `GET /traces/{request_id}`、`GET /traces/{request_id}/timeline` 与 `GET /traces/agentops` 可回放执行、查看时间线和聚合运行指标。评测调用时使用临时 Trace 数据库，避免污染业务记录。
+该命令聚合验证：数据集契约 **16/16 类、108 cases**，白名单 Query Rewrite **8/8**，Prompt Injection 边界 **8/8**，会话绑定/单次消费/过期审批 HITL **6/6**，端到端 Trace 轨迹 **4/4**，RBAC/审批身份 **6/6**，写操作幂等、超时与结果未知治理 **7/7**，AgentOps 指标与 Timeline **5/5**，长期 Memory Write Gate/冲突/TTL/隔离 **7/7**，Bad Case 生命周期/回流 **10/10**，Context Compression 契约 **8/8**，Prompt Registry **7/7**，Prompt 回归门禁（基线/候选各 **26/26**），受控 Bad Case 回放 **12/12**，回答质量（确定性断言 + Judge + 既有人工抽检样本）**26/26**，Context 三策略对比 **5/5**，Rewrite 增益 **6/6**，离线端到端性能基线 **4/4**。默认 `/chat` 与 `/tool-call/auto` 都会落 `agent_trace_runs` 与 `agent_trace_spans`；通过 `GET /traces/{request_id}`、`GET /traces/{request_id}/timeline` 与 `GET /traces/agentops` 可回放执行、查看时间线和聚合运行指标。评测调用时使用临时 Trace 数据库，避免污染业务记录。
 
 ### Context Budget 与滚动摘要
 
@@ -513,6 +516,20 @@ Agent Harness 提供独立的离线契约评测；在项目根目录执行：
 默认总预算为 1200 个**本地估算 token**，其中最近对话 360、滚动摘要 240、长期偏好 120、检索证据 360；该估算用于确定性门禁，不冒充具体模型 tokenizer 的精确值。历史超过阈值后，旧轮次以 `deterministic_structured_compaction_v1` 压缩，保留工单号、错误码、近因用户诉求和已完成处理结论。历史与摘要始终包在 `UNTRUSTED` 边界内，不能改变 System Prompt、权限或工具确认。
 
 每次 Chat Trace 增加 `context_budget` span，记录是否触发压缩、摘要覆盖轮次、最近窗口、原始/实际估算 token、降幅和被裁剪 Evidence 数；`GET /traces/agentops` 同时给出 Context 压缩触发率和平均估算降幅。前端执行时间线与治理面板可直接展示这些指标。
+
+### Prompt Registry、Eval Trace 与发布门禁
+
+`backend/app/prompts/registry.json` 管理 `active`、`candidate` 与可回退版本的元数据；Prompt 文件以版本快照保存，运行时会校验内容 SHA-256。分桶策略对同一 `session_id` / `request_id` 稳定，环境变量 `PROMPT_CANDIDATE_ROLLOUT_PERCENT` 可控制候选版本灰度比例，`PROMPT_FORCE_VERSION` 可用于冻结、回归和回滚。`GET /prompts/status` 只返回版本、哈希、灰度与回滚元数据，不返回 System Prompt 正文。
+
+评测执行会另外写入 `agent_eval_runs` 与 `agent_eval_case_results`：每条结果关联数据集版本、Prompt 版本、请求 Trace、确定性断言、Judge 输出与人工复核状态。`run_prompt_regression_eval.py` 会以相同的回答质量集对比 baseline / candidate；当前本地门禁为两版各 **26/26**，候选只有在无回归时才允许放量。默认 Judge 是显式标识的 `deterministic_stub`；配置可用模型后才会调用 LLM Judge，模型不可用时记录为不可用而不是伪造评分。
+
+### 受控失败样本、三策略 Context、Rewrite 对照与性能边界
+
+`eval/fixtures/reproducible_bad_cases_v1.json` 提供 **12 条受控、可复现的工程失败 Fixture**，覆盖检索缺失/噪声、受保护实体改写、间接注入、非法参数、资源越权、记忆污染、长上下文丢失、未知写操作重试、审批过期和阶段计时缺失等。每条均含 Trace、预期/实际、根因、修复版本与回归状态；它们明确是受控测试样本，**不宣称为线上事故**。
+
+Context 对比实验将全量历史、固定窗口与滚动摘要置于相同长会话下，评估关键事实保留、任务完成代理、估算 token 与回答质量代理；滚动摘要需同时保留工单号、错误码和设备事实并处于预算内。这里的“任务完成 / 回答质量”是确定性的事实保留代理，不能替代真实用户满意度。
+
+Rewrite 实验拆为两层：受控别名语料用于量化 Rewrite 能力（Recall@3 / MRR@3 / nDCG@3 从 **0.3333** 到 **1.0000**），真实项目知识库则单独验证改写不造成指标回退；受控结果不被表述为线上检索收益。端到端基线覆盖 RAG、工具查询、审批准备和长会话四类 Trace，输出 P50 / P95；其范围是本地离线 Stub，**不含** LLM 生成、远程 API、embedding 服务、网络传输与人工审批等待，不能替代生产压测。
 
 ### CI 回归门禁与 Bad Case 回流
 

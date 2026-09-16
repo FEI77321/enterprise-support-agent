@@ -1,6 +1,7 @@
 # 模块职责：工具调用 Agent 编排模块：结合会话历史选择 Planner，解析模型给出的工具调用，执行工具，并把执行结果转换为用户可读的最终回答。
 
 from pydantic import BaseModel, Field
+from typing import Any
 import os
 from app.tool_call_executor import execute_tool_call_text
 from app.tool_prompt_builder import build_tool_selection_prompt
@@ -48,6 +49,10 @@ class ToolCallAgentResponse(BaseModel):  # 类：封装工具调用 Agent 的规
         default_factory=dict,
         description="Planner 使用的历史压缩与预算决策",
     )
+    request_id: str | None = None
+    trace_id: str | None = None
+    prompt: dict[str, Any] = Field(default_factory=dict)
+    timing: dict[str, float] = Field(default_factory=dict)
 
 
 
