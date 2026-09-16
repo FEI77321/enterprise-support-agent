@@ -1,0 +1,6 @@
+{"category":"citation","cases":[
+  {"id":"citation-vpn-001","input":"VPN 连接失败怎么处理","required_fields":["file","chunk_id"]},
+  {"id":"citation-account-002","input":"忘记密码怎么重置","required_fields":["file","chunk_id"]},
+  {"id":"citation-expense-003","input":"报销发票有什么要求","required_fields":["file","chunk_id"]},
+  {"id":"citation-source-004","input":"远程办公 VPN 指南","required_fields":["file","chunk_id"]}
+]}

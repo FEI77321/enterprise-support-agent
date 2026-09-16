@@ -8,3 +8,4 @@ python-dotenv
 mcp>=2.0.0,<3.0.0
 redis>=5.0,<6.0
 pypdf>=5.0,<6.0
+langgraph>=0.2,<1.0

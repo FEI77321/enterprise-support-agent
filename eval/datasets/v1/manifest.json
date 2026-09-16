@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "description": "Enterprise Support Agent 分层评测集；每个 case 都带稳定 ID 和可自动判定的期望。",
+  "datasets": [
+    {"file": "retrieval_cases.json", "category": "retrieval", "purpose": "检索召回、无关拒答与可见性"},
+    {"file": "citation_cases.json", "category": "citation", "purpose": "来源回链与证据完整性"},
+    {"file": "query_rewrite_cases.json", "category": "query_rewrite", "purpose": "受控别名改写与实体保护"},
+    {"file": "tool_cases.json", "category": "tool", "purpose": "工具选择、参数及策略"},
+    {"file": "safety_cases.json", "category": "safety", "purpose": "Prompt Injection 与越权输入"},
+    {"file": "hitl_cases.json", "category": "hitl", "purpose": "高风险操作审批、过期和重放"},
+    {"file": "trajectory_cases.json", "category": "trajectory", "purpose": "端到端轨迹与 Trace 可解释性"},
+    {"file": "authorization_cases.json", "category": "authorization", "purpose": "角色、资源归属与审批身份"},
+    {"file": "reliability_cases.json", "category": "reliability", "purpose": "幂等写入、结果复用与结果未知"},
+    {"file": "agentops_cases.json", "category": "agentops", "purpose": "Trace Timeline、运营指标与回归门禁"},
+    {"file": "memory_cases.json", "category": "memory", "purpose": "显式写入、冲突、TTL 与 owner 隔离"}
+  ]
+}

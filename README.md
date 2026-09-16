@@ -15,12 +15,15 @@
 - 真实 LLM：已接入 DeepSeek；模型根据当前检索到的知识块生成回答，而不是脱离知识库自由作答。
 - 引用可信度校验：LLM 输出的 `File` 与 `Chunk ID` 必须来自本次检索结果；不合法或模型调用失败时自动回退到规则答案。
 - 工具调用：支持知识库检索、向量检索、工单查询、创建和删除等工具；可由 DeepSeek 选择工具并生成参数，支持 Prompt 驱动与原生 function calling 两种规划方式。
-- 高风险确认：删除工单不会立即执行，会先把待执行操作写入 SQLite，等待同一会话明确确认或取消。
+- 权限与审批：员工仅能读取归属工单，Support 可处理工单，管理员才可删除/审批高风险操作；审批具备操作 ID、会话绑定、5 分钟 TTL 与单次消费审计。
+- 写操作可靠性：创建等写工具使用幂等 Operation Record；同 key 成功结果复用，冲突 key 拦截，结果未知时禁止盲重试。
 - Agent Harness：rules Agent、LangGraph 与 Tool Calling 的真实工具执行统一经过 Harness，执行前进行注册与参数校验、风险分级、删除确认和请求级 `max_steps` 控制，并在响应中返回受限参数摘要的执行 Trace。
-- 会话记忆：支持保存与清除工具调用相关的会话上下文。
+- 分层 Memory：保留短窗口会话记录；长期记忆仅接受用户显式、稳定的偏好，含 owner 隔离、冲突覆盖、TTL 与敏感内容拒绝。
 - 工单管理：使用 SQLite 持久化，提供创建、查询、状态更新、筛选和删除接口。
-- 可观测性：`request_id`、结构化日志与 `workflow_steps` 记录一次请求经过的关键路径。
-- React 前端：提供聊天、来源展示、工单信息与执行路径展示界面。
+- 可观测性：`request_id`、结构化日志、SQLite root/span Trace 与 AgentOps 指标记录安全、改写、检索、工具、审批、记忆和输出链路。
+- Bad Case 回流：失败案例必须绑定真实 `request_id`，按 `open → triaged → regression_added → resolved` 治理；只有已纳入回归的案例才能从原始 Trace 导出为版本化 Eval Dataset。
+- CI 回归门禁：GitHub Actions 在 PR、推送 main 与手动触发时运行离线 Agent 质量门禁，并独立执行前端 lint、TypeScript 检查和生产构建。
+- React 前端：提供聊天、来源展示、工单信息与可扫读的执行 Timeline。
 - 评测体系：覆盖 RAG golden case、路由阈值、引用校验、工具确认、数据库、API 契约和端到端流程。
 - 一键启动：`start.ps1` 本地脚本与 `docker compose up` 两种方式启动完整服务。
 - 双引擎编排：`rules`（if/else 路由）与 `langgraph`（显式状态图路由）两种实现，由 `AGENT_ENGINE` 环境变量切换，行为一致、可随时回退。
@@ -39,6 +42,8 @@
 8. Docker 容器化与一键启动：前后端 Dockerfile、docker compose 编排与 `start.ps1` 一键启动脚本。
 9. LangGraph 状态图重构：将 if/else 路由升级为显式状态图（9 节点 + 条件边），节点纯函数化，通过 `AGENT_ENGINE` 与规则版并行切换，行为回归一致。
 10. Agent Harness 运行时治理：将 rules、LangGraph 与 Tool Calling 的真实工具执行收敛到统一入口，补齐风险等级、确认策略、参数拦截、请求级步数上限和 Trace；保留 feature flag 以便回退至原工具调用路径。
+11. Agent 生产化闭环：补齐 RBAC/资源归属、审批身份、写操作幂等与结果未知治理、AgentOps 指标、Trace Timeline 与长期 Memory Write Gate。
+12. 持续质量闭环：将 Bad Case 与 Trace 强关联，完成失败分类、生命周期审计、回流 Dataset 导出和 AgentOps 未解决计数；同时以 GitHub Actions 固化后端回归与前端构建门禁。
 
 ## RAG 2.0：受控文档摄入实验（当前增量）
 
@@ -149,7 +154,7 @@ AGENT_HARNESS_MAX_STEPS=4
 
 设置 `AGENT_HARNESS_ENABLED=false` 时，项目回退到改造前的工具调用路径，且不创建 Harness Session 或 Trace。
 
-当前边界：Harness 不是 LangGraph 的替代品，前者治理真实工具执行，后者负责业务节点和条件边；它也不是持久化回放平台。当前未实现跨请求任务恢复、Trace 数据库/前端时间线、通用工具 timeout/retry、RBAC、多 Agent 或 Sandbox；LLM 重试、RAG fallback 和 Redis 限流仍由既有模块负责。
+当前边界：Harness 不是 LangGraph 的替代品，前者治理真实工具执行，后者负责业务节点和条件边。Trace 已升级为 SQLite 持久化回放能力（`/traces/{request_id}`）；RBAC、读工具受控重试/超时、写操作幂等与结果未知治理均已接入。跨请求任务恢复、多 Agent 和隔离 Sandbox 仍是后续扩展方向；LLM 重试、RAG fallback 和 Redis 限流仍由既有模块负责。
 
 架构说明与面试追问见：[Harness 架构说明](docs/agent_harness_architecture.md) 和 [Harness 面试题卡](docs/agent_harness_interview_cards.md)。
 
@@ -249,10 +254,10 @@ Tool Registry 统一执行并返回 workflow_steps
 - RAG：Markdown、ChromaDB、关键词检索、向量检索、rerank
 - LLM：OpenAI Python SDK、DeepSeek OpenAI 兼容接口
 - 数据层：SQLite
-- Agent 编排：LangGraph（显式状态图路由，`graph_agent.py`）
+- Agent 编排：LangGraph（显式状态图路由，`graph_agent.py`）、rules Agent、Agent Harness
 - Agent 工具协议：MCP Python SDK 2.x（stdio Server + Inspector）
 - 前端：React、TypeScript、Vite
-- 工程化：python-dotenv、结构化日志、eval 脚本、Docker / Docker Compose、PowerShell 启动脚本
+- 工程化：SQLite Trace / Bad Case 生命周期、AgentOps、Eval Dataset、GitHub Actions、python-dotenv、结构化日志、Docker / Docker Compose、PowerShell 启动脚本
 
 
 
@@ -273,9 +278,10 @@ enterprise-support-agent/
 │   │   ├── ticket_repository.py      # 工单持久化仓储
 │   │   ├── tool_registry.py          # 工具注册与统一调用
 │   │   ├── agent_harness.py          # 统一工具执行治理、步数限制与请求级 Trace
+│   │   ├── bad_case_store.py          # Bad Case 生命周期、审计与回流 Dataset 组装
 │   │   ├── tool_call_*.py            # 工具规划、解析、执行与接口
 │   │   ├── tool_confirmation.py      # 高风险操作确认
-│   │   └── routers/                  # chat 与 tickets 路由
+│   │   └── routers/                  # chat、tickets、traces 与 bad-cases 路由
 │   ├── data/
 │   │   ├── docs/                     # 企业知识库 Markdown
 │   │   ├── chroma/                   # 本地向量索引
@@ -287,6 +293,7 @@ enterprise-support-agent/
 │   ├── Dockerfile                    # 前端两阶段构建（nginx 托管）
 │   └── .dockerignore
 ├── eval/                             # 回归评测与 RAG golden case
+├── .github/workflows/                # GitHub Actions 质量门禁
 ├── mcp_server/
 │   └── server.py                     # 只读 MCP 工具适配层
 ├── docs/
@@ -314,6 +321,12 @@ enterprise-support-agent/
 | `POST /tool-call/demo` | 工具调用演示入口 |
 | `POST /tool-call/auto` | 自动工具规划与执行入口 |
 | `POST /conversation-memory/clear` | 清除指定会话的工具调用记忆 |
+| `GET /traces/{request_id}` | 回放一次完整 Agent Trace |
+| `GET /traces/{request_id}/timeline` | 获取按执行顺序整理的 Trace Timeline |
+| `GET /traces/agentops` | 获取聚合运行指标及未解决 Bad Case 数 |
+| `POST /bad-cases` | 将指定 Trace 标记为 Bad Case |
+| `PATCH /bad-cases/{bad_case_id}` | Support / Admin 推进 Bad Case 生命周期 |
+| `POST /bad-cases/{bad_case_id}/export` | Support / Admin 导出已纳入回归的 Eval Case |
 
 `POST /chat` 示例：
 
@@ -470,6 +483,47 @@ Agent Harness 提供独立的离线契约评测；在项目根目录执行：
 
 当前该专项覆盖 8 项契约：风险等级、未知工具拦截、参数非法拦截、高风险确认、步数上限、rules 路径 Trace、LangGraph 路径 Trace 与 feature flag 回退。最近一次本地执行结果为 **8/8 passed**。该专项目前独立于 `run_all_eval.py` 的聚合列表，修改 Harness、工具策略或三条接入路径后应单独运行。
 
+### 简历证据评测
+
+为将项目能力转化为可复现的简历与面试证据，新增一个只运行离线链路的聚合入口：
+
+```powershell
+.\backend\.venv\Scripts\python.exe .\eval\run_resume_evidence_eval.py
+```
+
+该入口依次验证主链路 RAG 黄金集、文档摄入、来源回链、检索可见性、Feature Flag、Agent Harness 与真实 stdio MCP 协议，并采样 RAG 2.0 isolated synthetic 语料的纯检索延迟。延迟输出明确限定为内存词法检索微基准，不包含解析、数据库 IO、embedding/reranking、网络或 LLM 耗时，不能视为线上端到端性能。
+
+### Agent 生产化评测：Dataset / Rewrite / Safety / HITL / Trace / RBAC / Reliability / Memory / Bad Case
+
+`eval/datasets/v1/` 将评测对象拆成检索、引用、Query Rewrite、工具、Prompt Injection、安全审批（HITL）、端到端轨迹、RBAC、写操作可靠性、AgentOps 与长期 Memory 11 类，共 61 条具名用例；每个用例都有稳定 ID，方便回归定位而不是只看一个总分。
+
+```powershell
+.\backend\.venv\Scripts\python.exe .\eval\run_agent_platform_eval.py
+```
+
+该命令聚合验证：数据集契约 **11/11 类、61 cases**，白名单 Query Rewrite **8/8**，Prompt Injection 边界 **8/8**，会话绑定/单次消费/过期审批 HITL **6/6**，端到端 Trace 轨迹 **4/4**，RBAC/审批身份 **6/6**，写操作幂等、超时与结果未知治理 **7/7**，AgentOps 指标与 Timeline **5/5**，长期 Memory Write Gate/冲突/TTL/隔离 **7/7**，以及 Bad Case 生命周期、Trace 刷新关联保持、导出门禁、Trace 输入回填、Dataset 文件写入和 AgentOps 指标 **10/10**。默认 `/chat` 的每次请求都会落 `agent_trace_runs` 与 `agent_trace_spans`；通过 `GET /traces/{request_id}`、`GET /traces/{request_id}/timeline` 与 `GET /traces/agentops` 可回放执行、查看时间线和聚合运行指标。评测调用时使用临时 Trace 数据库，避免污染业务记录。
+
+### CI 回归门禁与 Bad Case 回流
+
+`.github/workflows/agent-quality-gate.yml` 配置了两条彼此独立的 GitHub Actions Job：后端将依次执行生产能力聚合回归与简历证据回归；前端将执行 `eslint src`、TypeScript 检查及 Vite production build。两类任务均使用离线 Stub / mock 配置，不依赖真实模型 Key，也不会产生模型调用成本。
+
+本地可用同一后端门禁入口复现：
+
+```powershell
+.\backend\.venv\Scripts\python.exe .\eval\run_ci_quality_gate.py
+cd frontend
+npm ci
+npm run lint
+npm run build
+```
+
+Bad Case 的治理规则是：先由 `POST /bad-cases` 绑定已存在的 Trace 并记录失败类别、严重级别、预期与实际行为；Support / Admin 审核后按 `open → triaged → regression_added → resolved` 前进。只有 `regression_added` 或 `resolved` 状态才能导出为 Eval Case，导出的 `input` 固定取自 Trace 原始请求，保留 `prompt_version`、执行引擎与失败来源，防止人工二次改写导致回归样本失真。可按需导出实际数据：
+
+```powershell
+.\backend\.venv\Scripts\python.exe .\eval\export_bad_case_dataset.py `
+  --output .\eval\datasets\bad-case-feedback-v1.json
+```
+
 真实模型 smoke test 单独运行，避免每次回归都产生 API 成本：
 
 ```powershell
@@ -513,7 +567,7 @@ MCP Server 是独立的协议适配层，只复用 Tool Registry，不重写业�
 
 `AgentHarness.execute_tool()` 位于规则 Agent、LangGraph 和 Tool Calling 与真实 `run_tool()` 之间。它统一执行工具注册与参数校验、风险分级、删除确认、请求级 `max_steps` 与 Trace 记录，避免不同入口各自复制安全判断而出现绕过。
 
-它和已有模块的职责不同：LangGraph 负责业务流程图，Tool Registry 负责实际业务工具分派，Harness 只负责每一次真实工具执行前后的运行时治理。Trace 与 `workflow_steps` 也不同：前者记录“哪个工具以什么风险/状态执行”，后者记录“业务路由走过哪些步骤”。当前 Trace 是请求级、内存态结果，不是数据库持久化回放能力。
+它和已有模块的职责不同：LangGraph 负责业务流程图，Tool Registry 负责实际业务工具分派，Harness 只负责每一次真实工具执行前后的运行时治理。Trace 与 `workflow_steps` 也不同：前者记录“哪个工具以什么风险/状态执行”，后者记录“业务路由走过哪些步骤”。当前 Trace 已持久化到 SQLite，既可通过 API 回放，也可由 trajectory eval 进行端到端回归。
 
 ### 6. 双引擎编排（rules / langgraph）
 
@@ -548,7 +602,7 @@ Agent 路由提供两种实现，由 `AGENT_ENGINE` 环境变量切换，默认 
 - **中文向量基线**：使用 `BAAI/bge-small-zh-v1.5` 建立独立 Chroma 索引；BGE 向量基线为 Recall **0.9231**、MRR **0.8333**、nDCG **0.8562**。
 - **检索实验**：RRF 关键词 + 向量融合取得 Recall **1.0000**、MRR **0.9038**、nDCG **0.9226**；同时完成 BGE reranker 实验。实验结果说明在当前小规模、专业术语明确的数据上，原有关键词排序仍是更优的线上主路径，融合/重排作为可插拔能力保留。
 - **回答质量与引用**：覆盖父块引用、流程完整性、规则版/LangGraph 一致性、向量回答分支；自动质量检查 26/26 通过，并已按 Faithfulness、Answer Relevance、Citation Correctness 进行人工抽检。
-- **回归结果**：执行 `eval/run_all_eval.py`，当前 **37/37 passed**。
+- **回归结果**：历史 `run_all_eval.py` 结果不再作为当前统一通过结论；外部模型额度和本地状态会影响其中部分链路。日常交付以 RAG、摄入、来源、Feature Flag、Harness、MCP 等专项契约及 `eval/run_resume_evidence_eval.py` 的当前运行输出为准。
 
 详细复现实验步骤、指标解读、失败案例和面试问答见知识库文档：`个人档案/学习/实操知识/Enterprise Support Agent_RAG进阶实操复盘.md`。
 

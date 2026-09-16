@@ -1,0 +1,9 @@
+{"category":"reliability","cases":[
+  {"id":"reliability-write-001","expected":"first_write_executes"},
+  {"id":"reliability-replay-002","expected":"same_key_reuses_result"},
+  {"id":"reliability-conflict-003","expected":"key_payload_conflict_blocked"},
+  {"id":"reliability-unknown-004","expected":"unknown_blocks_blind_retry"},
+  {"id":"reliability-read-005","expected":"read_not_operation_record"},
+  {"id":"reliability-error-006","expected":"structured_error_type"},
+  {"id":"reliability-timeout-007","expected":"write_timeout_marks_unknown_without_retry"}
+]}

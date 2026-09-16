@@ -11,8 +11,9 @@ from app.agent import ChatResponse, handle_message as handle_rules_message
 from app.models import ChatRequest
 from app.config import get_agent_engine
 from app.observability import get_request_id
-from fastapi import HTTPException, APIRouter
+from fastapi import HTTPException, APIRouter, Header
 from fastapi.responses import StreamingResponse
+from app.access_control import reset_current_actor, resolve_actor, set_current_actor
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 logger = logging.getLogger(__name__)
@@ -26,7 +27,12 @@ def _resolve_handler():  # 函数：按 AGENT_ENGINE 选择规则版或 LangGrap
 
 
 @router.post("", response_model=ChatResponse)
-def chat(request: ChatRequest) -> ChatResponse:  # 函数：负责 聊天 相关逻辑。
+def chat(
+    request: ChatRequest,
+    x_actor_id: str | None = Header(default=None),
+    x_actor_role: str | None = Header(default=None),
+) -> ChatResponse:  # 函数：负责 聊天 相关逻辑。
+    token = set_current_actor(resolve_actor(x_actor_id, x_actor_role))
     try:
         return _resolve_handler()(
             request.message,
@@ -34,6 +40,8 @@ def chat(request: ChatRequest) -> ChatResponse:  # 函数：负责 聊天 相关
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
+    finally:
+        reset_current_actor(token)
 
 
 def _sse_event(event: str, payload: dict) -> str:
@@ -47,11 +55,17 @@ def _answer_chunks(answer: str, chunk_size: int = 24) -> list[str]:
 
 
 @router.post("/stream")
-async def chat_stream(request: ChatRequest) -> StreamingResponse:
+async def chat_stream(
+    request: ChatRequest,
+    x_actor_id: str | None = Header(default=None),
+    x_actor_role: str | None = Header(default=None),
+) -> StreamingResponse:
     """以 SSE 推送聊天执行状态、回答分片及完整结构化结果。"""
     request_id = get_request_id()
+    actor = resolve_actor(x_actor_id, x_actor_role)
 
     async def event_stream() -> AsyncIterator[str]:
+        token = set_current_actor(actor)
         stream_started_at = perf_counter()
         yield _sse_event("meta", {"request_id": request_id})
         yield _sse_event("status", {"message": "正在检索知识库并规划处理路径..."})
@@ -72,6 +86,8 @@ async def chat_stream(request: ChatRequest) -> StreamingResponse:
                 {"code": "chat_stream_failed", "detail": "处理请求时发生错误，请稍后重试。"},
             )
             return
+        finally:
+            reset_current_actor(token)
 
         answer = response.answer or "当前请求已处理，但没有可展示的文本回答。"
         yield _sse_event("status", {"message": "回答已生成，正在传输..."})

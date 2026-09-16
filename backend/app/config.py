@@ -170,3 +170,29 @@ def get_deepseek_timeout_seconds() -> float:  # 函数：获取 DeepSeek 调用�
 
 def get_agent_engine() -> str:  # 函数：获取 Agent 编排引擎：rules=if/else 版，langgraph=状态图版。
     return os.getenv("AGENT_ENGINE", "rules").lower()
+
+
+def is_trace_persistence_enabled() -> bool:
+    """是否持久化 Agent 结构化轨迹；评测中可显式关闭以隔离数据。"""
+    return get_bool_env("TRACE_PERSISTENCE_ENABLED", default=True)
+
+
+def get_trace_database_path() -> Path:
+    """读取 Trace 存储路径，默认复用项目业务数据库。"""
+    default_path = Path(__file__).resolve().parent.parent / "data" / "enterprise_support_agent.db"
+    return Path(os.getenv("TRACE_DATABASE_PATH", str(default_path)))
+
+
+def get_prompt_version() -> str:
+    """给评测与线上观测提供可回溯的提示词版本。"""
+    return os.getenv("PROMPT_VERSION", "support-agent-v2.0")
+
+
+def get_tool_execution_timeout_seconds() -> float:
+    """单个工具调用的治理超时；超时不等价于业务未执行。"""
+    return get_float_env("TOOL_EXECUTION_TIMEOUT_SECONDS", default=5.0)
+
+
+def get_read_tool_retry_attempts() -> int:
+    """只读工具的受控重试次数；写操作由幂等记录保护且禁止盲重试。"""
+    return get_int_env("READ_TOOL_RETRY_ATTEMPTS", default=2)

@@ -273,6 +273,26 @@ function ResponseDetails({ response }: { response: ChatResponse }) {
           </div>
         </section>
       )}
+
+      <section className="detail-section trace-timeline">
+        <p className="detail-label">EXECUTION TIMELINE</p>
+        <div className="timeline-list">
+          <span className={`timeline-event ${response.safety?.action === 'block' ? 'blocked' : ''}`}>
+            Guard · {response.safety?.action ?? 'allow'}
+          </span>
+          <span className="timeline-event">
+            Rewrite · {response.query_rewrite?.triggered ? 'applied' : 'passthrough'}
+          </span>
+          <span className="timeline-event">Retrieval · {response.sources.length} sources</span>
+          {(response.harness_trace ?? []).map((step, index) => (
+            <span className={`timeline-event ${step.status !== 'completed' ? 'blocked' : ''}`} key={`${step.tool_name}-${index}`}>
+              Tool · {step.tool_name} · {step.status}
+            </span>
+          ))}
+          <span className="timeline-event">Memory · {response.memory?.write?.action ?? 'skip'}</span>
+        </div>
+        {response.trace_id && <code className="trace-id">Trace {response.trace_id}</code>}
+      </section>
     </div>
   )
 }

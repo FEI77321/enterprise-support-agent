@@ -399,7 +399,7 @@ def build_chat_response(state: GraphState) -> ChatResponse:  # 函数：从图�
     )
 
 
-def handle_message(
+def _handle_message_core(
     message: str,
     request_id: str | None = None,
 ) -> ChatResponse:  # 函数：LangGraph 版入口：初始化状态、运行图、构造响应。
@@ -427,3 +427,18 @@ def handle_message(
     }
     result = graph.invoke(initial)
     return build_chat_response(result)
+
+
+def handle_message(
+    message: str,
+    request_id: str | None = None,
+) -> ChatResponse:
+    """LangGraph 编排入口：复用与规则引擎一致的运行时治理。"""
+    from app.agent_runtime import execute_agent_request
+
+    return execute_agent_request(
+        message,
+        request_id,
+        "langgraph",
+        _handle_message_core,
+    )

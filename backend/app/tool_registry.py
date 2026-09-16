@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from app.knowledge_base import search_knowledge_base
 from app.tools import query_ticket_status, create_ticket, delete_ticket
 from app.vector_store import search_vector_store
+from app.access_control import authorize_tool, get_current_actor, record_ticket_owner
 
 
 logger = logging.getLogger(__name__)
@@ -99,6 +100,9 @@ def list_openai_tools() -> list[dict[str, object]]:  # 函数：负责 列表 Op
 
 
 def query_ticket_status_tool(ticket_id: str) -> ToolResult:  # 函数：负责 查询 工单 状态 工具 相关逻辑。
+    decision = authorize_tool(get_current_actor(), "query_ticket_status", {"ticket_id": ticket_id})
+    if not decision.allowed:
+        return ToolResult(tool_name="query_ticket_status", success=False, error="当前身份无权读取该工单。", error_type="authorization_denied")
     ticket = query_ticket_status(ticket_id)
 
     if ticket is None:
@@ -122,6 +126,7 @@ def query_ticket_status_tool(ticket_id: str) -> ToolResult:  # 函数：负责 �
 
 def create_ticket_tool(message: str) -> ToolResult:  # 函数：负责 创建 工单 工具 相关逻辑。
     ticket = create_ticket(message)
+    record_ticket_owner(ticket.ticket_id, get_current_actor().actor_id)
 
     return ToolResult(
         tool_name="create_ticket",
@@ -133,6 +138,9 @@ def create_ticket_tool(message: str) -> ToolResult:  # 函数：负责 创建 �
 
 
 def delete_ticket_tool(ticket_id: str) -> ToolResult:  # 函数：将删除工单操作封装为注册工具，并返回是否删除成功。
+    decision = authorize_tool(get_current_actor(), "delete_ticket", {"ticket_id": ticket_id})
+    if not decision.allowed:
+        return ToolResult(tool_name="delete_ticket", success=False, error="只有管理员可以删除工单。", error_type="authorization_denied")
     deleted = delete_ticket(ticket_id)
 
     return ToolResult(
@@ -199,6 +207,10 @@ def run_tool(tool_name: str, **kwargs: Any) -> ToolResult:  # 函数：负责 �
             error=f"Unknown tool: {tool_name}",
             error_type="unknown_tool",
         )
+
+    decision = authorize_tool(get_current_actor(), tool_name, kwargs)
+    if not decision.allowed:
+        return ToolResult(tool_name=tool_name, success=False, error="当前身份无权执行该操作。", error_type="authorization_denied")
 
     try:
         result= tool.handler(**kwargs)

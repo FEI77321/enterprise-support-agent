@@ -83,7 +83,7 @@ def _has_confident_rule_answer(
     )
 
 
-def handle_message(
+def _handle_message_core(
     message: str,
     request_id: str | None = None,
 ) -> ChatResponse:  # 函数：负责 处理 消息 相关逻辑。
@@ -406,6 +406,22 @@ def _try_ingested_knowledge_experiment(state: AgentState) -> bool:
         retrieval_result_to_source(result)
         for result in results
     ]
+    best_result = results[0]
+    state.sources = sources
+    state.answer = (
+        "我在实验知识库中找到了一条可追溯的候选资料：\n\n"
+        f"{best_result.content}\n\n"
+        "该结果来自隔离 RAG 2.0 检索链路，请结合返回的文件、版本和页码核对。"
+    )
+    state.add_step("ingested_knowledge_experiment_answer")
+    state.response_type = "answer"
+    logger.info(
+        "request_id=%s action=ingested_knowledge_experiment_answer "
+        "sources=%s",
+        state.request_id,
+        summarize_sources(sources),
+    )
+    return True
 
 
 def _run_rules_tool(state: AgentState, tool_name: str, **arguments: object) -> ToolResult:
@@ -431,22 +447,6 @@ def _run_rules_tool(state: AgentState, tool_name: str, **arguments: object) -> T
         error=result.reason or "Harness blocked tool execution",
         error_type=result.status,
     )
-    best_result = results[0]
-    state.sources = sources
-    state.answer = (
-        "我在实验知识库中找到了一条可追溯的候选资料：\n\n"
-        f"{best_result.content}\n\n"
-        "该结果来自隔离 RAG 2.0 检索链路，请结合返回的文件、版本和页码核对。"
-    )
-    state.add_step("ingested_knowledge_experiment_answer")
-    state.response_type = "answer"
-    logger.info(
-        "request_id=%s action=ingested_knowledge_experiment_answer "
-        "sources=%s",
-        state.request_id,
-        summarize_sources(sources),
-    )
-    return True
 
 def summarize_sources(sources: list[Source]) -> list[dict]:  # 函数：负责 汇总 sources 相关逻辑。
     return [
@@ -483,6 +483,21 @@ def log_workflow(state: AgentState) -> None:  # 函数：负责 log workflow 相
         state.request_id,
         state.response_type,
         state.workflow_steps,
+    )
+
+
+def handle_message(
+    message: str,
+    request_id: str | None = None,
+) -> ChatResponse:
+    """规则编排入口：统一经过安全、Query Rewrite 与 Trace 治理层。"""
+    from app.agent_runtime import execute_agent_request
+
+    return execute_agent_request(
+        message,
+        request_id,
+        "rules",
+        _handle_message_core,
     )
 
 

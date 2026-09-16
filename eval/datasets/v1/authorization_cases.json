@@ -1,0 +1,8 @@
+{"category":"authorization","cases":[
+  {"id":"auth-owner-001","actor":"employee-a","role":"employee","expected":"own_ticket_read"},
+  {"id":"auth-cross-002","actor":"employee-b","role":"employee","expected":"cross_ticket_denied"},
+  {"id":"auth-support-003","actor":"support-a","role":"support","expected":"support_scope_read"},
+  {"id":"auth-delete-004","actor":"employee-a","role":"employee","expected":"delete_denied"},
+  {"id":"auth-approve-005","actor":"support-a","role":"support","expected":"approval_denied"},
+  {"id":"auth-admin-006","actor":"admin-a","role":"admin","expected":"approval_allowed"}
+]}

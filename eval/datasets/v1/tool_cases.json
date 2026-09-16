@@ -1,0 +1,6 @@
+{"category":"tool","cases":[
+  {"id":"tool-ticket-001","input":"查询 TICKET-20240101-0001","expected_tool":"query_ticket_status"},
+  {"id":"tool-rag-002","input":"VPN 无法连接怎么办","expected_tool":"search_knowledge_base"},
+  {"id":"tool-create-003","input":"我的 VPN 今天一直无法连接，请创建工单","expected_tool":"create_ticket"},
+  {"id":"tool-delete-004","input":"删除 TICKET-20240101-0001","expected_policy":"confirmation_required"}
+]}

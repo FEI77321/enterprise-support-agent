@@ -1,0 +1,10 @@
+{"category":"query_rewrite","cases":[
+  {"id":"rewrite-vpn-001","input":"内网打不开","triggered":true,"effective_query":"VPN 远程访问 无法连接"},
+  {"id":"rewrite-vpn-002","input":"vpn连不上","triggered":true,"effective_query":"VPN 无法连接 排查"},
+  {"id":"rewrite-expense-003","input":"报销咋整","triggered":true,"effective_query":"报销申请流程 发票 审批"},
+  {"id":"rewrite-account-004","input":"账号登不上","triggered":true,"effective_query":"账号 登录 密码 MFA"},
+  {"id":"rewrite-ticket-005","input":"查询 TICKET-20240101-0001","triggered":false,"reason":"protected_entity"},
+  {"id":"rewrite-code-006","input":"VPN 720 错误","triggered":false,"reason":"protected_entity"},
+  {"id":"rewrite-normal-007","input":"如何申请年假","triggered":false,"reason":"no_safe_rewrite"},
+  {"id":"rewrite-normal-008","input":"显示器黑屏","triggered":false,"reason":"no_safe_rewrite"}
+]}

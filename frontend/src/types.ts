@@ -41,4 +41,9 @@ export interface ChatResponse {
   sources: Source[];
   ticket: Ticket | null;
   workflow_steps: string[];
+  harness_trace?: Array<{ tool_name: string; status: string; risk_level: string; elapsed_ms?: number; authorization_reason?: string }>;
+  trace_id?: string | null;
+  safety?: { action?: string; risk_level?: string; reason?: string };
+  query_rewrite?: { triggered?: boolean; effective_query?: string; reason?: string };
+  memory?: { retrieved_count?: number; write?: { action?: string; reason?: string } };
 }

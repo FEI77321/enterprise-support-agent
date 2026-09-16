@@ -1,0 +1,7 @@
+{"category":"agentops","cases":[
+  {"id":"agentops-timeline-001","expected":"timeline_contains_guard"},
+  {"id":"agentops-timeline-002","expected":"timeline_contains_memory"},
+  {"id":"agentops-metric-003","expected":"injection_rate"},
+  {"id":"agentops-metric-004","expected":"rewrite_rate"},
+  {"id":"agentops-metric-005","expected":"tool_failure_rate"}
+]}

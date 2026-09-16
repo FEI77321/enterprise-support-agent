@@ -1,0 +1,6 @@
+{"category":"retrieval","cases":[
+  {"id":"retrieval-vpn-001","input":"VPN 无法连接怎么办","expected":"vpn"},
+  {"id":"retrieval-account-002","input":"账号被锁定如何处理","expected":"account"},
+  {"id":"retrieval-expense-003","input":"报销流程需要什么材料","expected":"expense"},
+  {"id":"retrieval-oos-004","input":"帮我预测明天股票","expected":"clarify"}
+]}

@@ -14,12 +14,14 @@ from app.conversation_memory import get_recent_turns
 from app.tool_confirmation import save_pending_confirmation
 from app.tool_confirmation import (
     clear_pending_confirmation,
+    consume_pending_confirmation,
     get_confirmation_decision,
     get_pending_confirmation,
 )
 from app.tool_registry import list_openai_tools, run_tool
 from app.agent_harness import AgentHarness, create_harness_session
 from app.config import get_agent_harness_max_steps, is_agent_harness_enabled
+from app.access_control import can_approve_high_risk, get_current_actor, record_approval_event
 
 class InvalidToolCallProviderError(ValueError):  # 类：表示配置了系统不支持的工具调用 Planner Provider。
     pass
@@ -38,6 +40,8 @@ class ToolCallAgentResponse(BaseModel):  # 类：封装工具调用 Agent 的规
     requires_confirmation: bool = False
     confirmation_reason: str | None = None
     pending_arguments: dict[str, object] | None = None
+    operation_id: str | None = None
+    confirmation_expires_at: str | None = None
     harness_trace: list[dict[str, object]] = Field(default_factory=list)
 
 
@@ -103,9 +107,9 @@ def handle_confirmation_reply(  # 函数：处理用户对待确认高风险工�
     if decision is None:
         return None
 
-    clear_pending_confirmation(session_id)
-
     if decision == "cancel":
+        clear_pending_confirmation(session_id)
+        record_approval_event(pending.operation_id, session_id, get_current_actor().actor_id, "cancelled")
         return ToolCallAgentResponse(
             message=message,
             llm_output="",
@@ -118,6 +122,28 @@ def handle_confirmation_reply(  # 函数：处理用户对待确认高风险工�
             answer="已取消该操作，工单未被删除。",
             decision_type="confirmation_cancelled",
         )
+
+    approval = can_approve_high_risk(get_current_actor())
+    if not approval.allowed:
+        record_approval_event(pending.operation_id, session_id, get_current_actor().actor_id, "rejected", approval.reason)
+        return ToolCallAgentResponse(
+            message=message, llm_output="", success=False,
+            workflow_steps=["confirmation_received", "approver_authorization_denied"],
+            tool_name=pending.tool_name, decision_type="confirmation_rejected",
+            error_type="approver_authorization_denied",
+            error="高风险操作必须由管理员审批。",
+        )
+
+    consumed = consume_pending_confirmation(session_id, pending.operation_id)
+    if consumed is None:
+        return ToolCallAgentResponse(
+            message=message, llm_output="", success=False,
+            workflow_steps=["confirmation_received", "confirmation_invalid_or_expired"],
+            tool_name=pending.tool_name, decision_type="confirmation_rejected",
+            error_type="approval_invalid_or_expired",
+            error="该审批已过期、被消费或与当前会话不匹配，请重新发起操作。",
+        )
+    record_approval_event(pending.operation_id, session_id, get_current_actor().actor_id, "approved")
 
     harness_trace: list[dict[str, object]] = []
     if is_agent_harness_enabled():
@@ -271,8 +297,9 @@ def handle_tool_call_demo(
 
         reason = execution.confirmation_reason or "该操作需要用户确认。"
 
+        pending = None
         if session_id:
-            save_pending_confirmation(
+            pending = save_pending_confirmation(
                 session_id=session_id,
                 tool_name=execution.tool_name or "",
                 arguments=execution.arguments,
@@ -285,11 +312,13 @@ def handle_tool_call_demo(
             success=True,
             workflow_steps=workflow_steps,
             tool_name=execution.tool_name,
-            answer=f"{reason} 是否确认执行：删除{target}？",
+            answer=(f"{reason} 是否确认执行：删除{target}？" if pending is None else f"{reason} 是否确认执行：删除{target}？操作编号 {pending.operation_id}，5 分钟内有效。"),
             decision_type="confirmation_required",
             requires_confirmation=True,
             confirmation_reason=reason,
             pending_arguments=execution.arguments,
+            operation_id=pending.operation_id if pending else None,
+            confirmation_expires_at=pending.expires_at if pending else None,
             harness_trace=execution.harness_trace,
         )
 

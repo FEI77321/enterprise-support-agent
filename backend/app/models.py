@@ -1,7 +1,7 @@
 # 模块职责：共享数据模型模块：使用 Pydantic 和 Enum 定义请求体、响应体、工单、来源引用及状态枚举，作为 API 与业务层之间的结构化契约。
 
 from enum import Enum
-from typing import Literal
+from typing import Any, Literal
 from pydantic import BaseModel, Field, model_validator
 
 
@@ -97,6 +97,19 @@ class ChatResponse(BaseModel):  # 类：定义聊天接口返回的回答、来�
         default_factory=list,
         description="Harness 开启时的请求级工具执行轨迹；关闭时为空",
     )
+    trace_id: str | None = Field(default=None, description="完整执行轨迹 ID")
+    safety: dict[str, Any] = Field(
+        default_factory=dict,
+        description="输入安全判定；不暴露内部规则正文",
+    )
+    query_rewrite: dict[str, Any] = Field(
+        default_factory=dict,
+        description="受控 Query Rewrite 的决策记录",
+    )
+    memory: dict[str, Any] = Field(
+        default_factory=dict,
+        description="长期记忆的写入门控与本次召回摘要",
+    )
 
 
 class TicketCreateRequest(BaseModel):  # 类：定义创建工单接口接收的请求字段。
@@ -109,6 +122,27 @@ class TicketCreateRequest(BaseModel):  # 类：定义创建工单接口接收的
 
 class TicketStatusUpdate(BaseModel):  # 类：定义更新工单状态接口接收的请求字段。
     status: TicketStatus
+
+
+BadCaseCategory = Literal["retrieval", "rewrite", "safety", "tool", "authorization", "memory", "response"]
+BadCaseSeverity = Literal["low", "medium", "high", "critical"]
+BadCaseStatus = Literal["open", "triaged", "regression_added", "resolved"]
+
+
+class BadCaseCreateRequest(BaseModel):
+    """将一次可复盘的 Trace 标记为可治理的 Bad Case。"""
+
+    request_id: str = Field(..., min_length=1, max_length=128)
+    category: BadCaseCategory
+    severity: BadCaseSeverity = "medium"
+    expected_behavior: str = Field(..., min_length=5, max_length=2000)
+    actual_behavior: str = Field(..., min_length=5, max_length=2000)
+
+
+class BadCaseStatusUpdate(BaseModel):
+    """Bad Case 生命周期只允许按治理阶段向前流转。"""
+
+    status: BadCaseStatus
 
 
 class VersionInfo(BaseModel):  # 类：保存应用版本号与构建信息。

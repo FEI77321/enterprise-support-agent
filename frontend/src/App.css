@@ -155,6 +155,35 @@
   font-weight: 650;
 }
 
+.timeline-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.timeline-event {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border: 1px solid #c8ddd6;
+  border-radius: 999px;
+  color: #2f665b;
+  background: #f1faf7;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 11px;
+}
+
+.timeline-event.blocked {
+  border-color: #e2b4ad;
+  color: #9b4138;
+  background: #fff4f2;
+}
+
+.trace-id {
+  color: #71807c;
+  font-size: 11px;
+}
+
 .conversation {
   display: grid;
   align-content: start;

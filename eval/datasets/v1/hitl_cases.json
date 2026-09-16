@@ -1,0 +1,7 @@
+{"category":"hitl","cases":[
+  {"id":"hitl-create-001","tool":"create_ticket","expected":"no_confirmation"},
+  {"id":"hitl-delete-002","tool":"delete_ticket","expected":"confirmation_required"},
+  {"id":"hitl-session-003","tool":"delete_ticket","expected":"session_bound"},
+  {"id":"hitl-replay-004","tool":"delete_ticket","expected":"single_use"},
+  {"id":"hitl-expire-005","tool":"delete_ticket","expected":"expiry_enforced"}
+]}

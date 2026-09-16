@@ -1,0 +1,8 @@
+{"category":"memory","cases":[
+  {"id":"memory-write-001","input":"请记住我喜欢中文、简洁的回答","expected":"written"},
+  {"id":"memory-update-002","input":"请记住我偏好带技术细节的中文回答","expected":"updated"},
+  {"id":"memory-sensitive-003","input":"请记住我的密码是 123456","expected":"reject"},
+  {"id":"memory-implicit-004","input":"我今天在家办公","expected":"skip"},
+  {"id":"memory-isolation-005","expected":"cross_owner_hidden"},
+  {"id":"memory-ttl-006","expected":"expired_hidden"}
+]}

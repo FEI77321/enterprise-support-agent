@@ -187,4 +187,5 @@ if __name__ == "__main__":
     test_mcp_rejects_non_positive_top_k()
     test_mcp_vector_search_rejects_non_positive_top_k()
     test_mcp_returns_not_found_for_missing_ticket()
+    print("MCP stdio protocol contract: Passed 5/5")
     print("PASS: MCP 工具发现、检索、参数校验和工单查询均正常")

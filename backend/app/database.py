@@ -64,6 +64,152 @@ def initialize_database(database_path: Path | None = None) -> None:  # 函数：
             )
             """
         )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS agent_trace_runs (
+                request_id TEXT PRIMARY KEY,
+                created_at TEXT NOT NULL,
+                engine TEXT NOT NULL,
+                response_type TEXT NOT NULL,
+                original_message TEXT NOT NULL,
+                effective_query TEXT NOT NULL,
+                prompt_version TEXT NOT NULL,
+                safety_json TEXT NOT NULL,
+                rewrite_json TEXT NOT NULL,
+                workflow_json TEXT NOT NULL,
+                source_count INTEGER NOT NULL,
+                metadata_json TEXT NOT NULL
+            )
+            """
+        )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS agent_trace_spans (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                request_id TEXT NOT NULL,
+                span_name TEXT NOT NULL,
+                span_type TEXT NOT NULL,
+                status TEXT NOT NULL,
+                payload_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY(request_id) REFERENCES agent_trace_runs(request_id)
+            )
+            """
+        )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS tool_approvals (
+                operation_id TEXT PRIMARY KEY,
+                session_id TEXT NOT NULL,
+                tool_name TEXT NOT NULL,
+                arguments_json TEXT NOT NULL,
+                reason TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                expires_at TEXT NOT NULL,
+                consumed_at TEXT
+            )
+            """
+        )
+        connection.execute(
+            "CREATE INDEX IF NOT EXISTS idx_agent_trace_spans_request ON agent_trace_spans(request_id)"
+        )
+        connection.execute(
+            "CREATE INDEX IF NOT EXISTS idx_tool_approvals_session ON tool_approvals(session_id)"
+        )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS ticket_ownership (
+                ticket_id TEXT PRIMARY KEY,
+                owner_id TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY(ticket_id) REFERENCES tickets(ticket_id) ON DELETE CASCADE
+            )
+            """
+        )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS approval_audit_events (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                operation_id TEXT NOT NULL,
+                requester_id TEXT NOT NULL,
+                approver_id TEXT,
+                decision TEXT NOT NULL,
+                reason TEXT,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS agent_operations (
+                operation_id TEXT PRIMARY KEY,
+                idempotency_key TEXT NOT NULL UNIQUE,
+                actor_id TEXT NOT NULL,
+                tool_name TEXT NOT NULL,
+                arguments_hash TEXT NOT NULL,
+                status TEXT NOT NULL,
+                result_json TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+            """
+        )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS agent_memories (
+                memory_id TEXT PRIMARY KEY,
+                owner_id TEXT NOT NULL,
+                memory_type TEXT NOT NULL,
+                memory_key TEXT NOT NULL,
+                memory_value TEXT NOT NULL,
+                source TEXT NOT NULL,
+                confidence REAL NOT NULL,
+                sensitivity TEXT NOT NULL,
+                status TEXT NOT NULL,
+                expires_at TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                UNIQUE(owner_id, memory_type, memory_key)
+            )
+            """
+        )
+        connection.execute("CREATE INDEX IF NOT EXISTS idx_ticket_ownership_owner ON ticket_ownership(owner_id)")
+        connection.execute("CREATE INDEX IF NOT EXISTS idx_agent_operations_key ON agent_operations(idempotency_key)")
+        connection.execute("CREATE INDEX IF NOT EXISTS idx_agent_memories_owner ON agent_memories(owner_id, status)")
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS agent_bad_cases (
+                bad_case_id TEXT PRIMARY KEY,
+                request_id TEXT NOT NULL,
+                category TEXT NOT NULL,
+                severity TEXT NOT NULL,
+                expected_behavior TEXT NOT NULL,
+                actual_behavior TEXT NOT NULL,
+                status TEXT NOT NULL,
+                reporter_id TEXT NOT NULL,
+                regression_case_id TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                resolved_at TEXT,
+                FOREIGN KEY(request_id) REFERENCES agent_trace_runs(request_id)
+            )
+            """
+        )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS agent_bad_case_events (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                bad_case_id TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                actor_id TEXT NOT NULL,
+                detail_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY(bad_case_id) REFERENCES agent_bad_cases(bad_case_id) ON DELETE CASCADE
+            )
+            """
+        )
+        connection.execute("CREATE INDEX IF NOT EXISTS idx_agent_bad_cases_status ON agent_bad_cases(status, category)")
+        connection.execute("CREATE INDEX IF NOT EXISTS idx_agent_bad_cases_request ON agent_bad_cases(request_id)")
 
         from app.knowledge_repository import (
             initialize_knowledge_tables,

@@ -5,7 +5,7 @@ from pathlib import Path
 from time import perf_counter
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Header
 from fastapi.responses import JSONResponse
 from app.logger import configure_logging
 from app.observability import (
@@ -15,6 +15,8 @@ from app.observability import (
 )
 from app.routers.tickets import router as tickets_router
 from app.routers.chat import router as chat_router
+from app.routers.traces import router as traces_router
+from app.routers.bad_cases import router as bad_cases_router
 from app.tool_call_routes import (
     ConversationMemoryClearRequest,
     ToolCallAutoRequest,
@@ -33,6 +35,7 @@ from app.redis_client import (
     initialize_redis_connection,
 )
 from app.rate_limiter import check_rate_limit, requires_rate_limit
+from app.access_control import reset_current_actor, resolve_actor, set_current_actor
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(PROJECT_ROOT / ".env")
 configure_logging()
@@ -131,6 +134,8 @@ app.add_middleware(
 
 app.include_router(tickets_router)
 app.include_router(chat_router)
+app.include_router(traces_router)
+app.include_router(bad_cases_router)
 
 
 
@@ -165,8 +170,17 @@ def tool_call_demo(request: ToolCallDemoRequest):  # 函数：负责 工具 调�
 
 
 @app.post("/tool-call/auto")
-def tool_call_auto(request: ToolCallAutoRequest):  # 函数：负责 工具 调用 自动 相关逻辑。
-    return handle_tool_call_auto_request(request)
+def tool_call_auto(
+    request: ToolCallAutoRequest,
+    x_actor_id: str | None = Header(default=None),
+    x_actor_role: str | None = Header(default=None),
+):  # 函数：负责 工具 调用 自动 相关逻辑。
+    # 独立 Tool Calling demo 未接入真实 SSO 时保留本地管理员沙箱；生产调用必须由网关注入身份头。
+    token = set_current_actor(resolve_actor(x_actor_id or "system-admin", x_actor_role or "admin"))
+    try:
+        return handle_tool_call_auto_request(request)
+    finally:
+        reset_current_actor(token)
 
 
 @app.post("/conversation-memory/clear")
